@@ -12,8 +12,6 @@
 @property (strong, nonatomic) IBOutlet UITableView *giftMessageTableView;
 
 @property (nonatomic, strong) NSMutableArray *dataSource;
-
-
 @end
 
 @implementation MainGiftViewController
