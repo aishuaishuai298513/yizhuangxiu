@@ -22,6 +22,9 @@ typedef enum
     getOrder,
     working,
     worked
+    
+    
+    
 }WorkStute;
 
 
