@@ -13,6 +13,7 @@
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 
 @property (nonatomic, strong) NSMutableArray *dataSource;
+@property (nonatomic, strong)NSString *ceshi;
 
 @end
 
