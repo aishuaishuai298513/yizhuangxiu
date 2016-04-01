@@ -11,6 +11,7 @@
 @interface ADAssessController ()
 {
     ADTextView *textView;
+    
 }
 @end
 
