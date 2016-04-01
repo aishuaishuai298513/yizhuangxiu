@@ -1,0 +1,178 @@
+//
+//  My_pocket_tixian_FeedbackController.m
+//  zhaiyi
+//
+//  Created by sks on 15/12/5.
+//  Copyright © 2015年 apple. All rights reserved.
+//
+
+#import "My_pocket_tixian_FeedbackController.h"
+
+#define FEEDBACK_URL @"http://zhaiyi.bjqttd.com/api/personal/user_feedback"
+@interface My_pocket_tixian_FeedbackController ()
+<
+UITextViewDelegate,
+UIAlertViewDelegate,
+UITextFieldDelegate
+>
+{
+    ADAccount *_account;
+    BOOL _isFirst;
+    CGRect _orignalFrame;
+    
+}
+@property (weak, nonatomic) IBOutlet UITextView *textView;
+@property (weak, nonatomic) IBOutlet UITextField *contactText;
+@end
+
+@implementation My_pocket_tixian_FeedbackController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self initalData];
+
+}
+
+-(void)initalData{
+    
+    self.title = @"意见反馈";
+    _textView.delegate = self;
+     _contactText.delegate =self;
+    _orignalFrame = _contactText.frame;
+    
+    _account = [ADAccountTool account];
+    [self resignTheFirstResponse];
+    _isFirst = YES;
+    
+}
+
+
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:_contactView selector:@selector(textViewChanged) name:UITextViewTextDidChangeNotification object:nil];
+ 
+}
+-(void)textViewChanged{
+    _isFirst = NO;
+}
+-(void)textFieldDidBeginEditing:(UITextField *)textField{
+ 
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyBoardShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyBoardHidden:) name:UIKeyboardWillHideNotification object:nil];
+
+}
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField{
+    [Function isMobileNumber:textField.text];
+    return YES;
+}
+-(void)textFieldDidEndEditing:(UITextField *)textField{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+    
+}
+
+
+#pragma mark ---- UITextViewDelegate
+
+-(void)textViewDidBeginEditing:(UITextView *)textView{
+    if (_isFirst) {
+        textView.text = @"";
+        _isFirst = NO;
+    }
+}
+-(void)textViewDidEndEditing:(UITextView *)textView{
+    
+    if ([textView.text isEqualToString:@""]) {
+        
+        textView.text = @"尊贵的用户,您好,请简要的描述你遇到的问题及建议,我们将提供更好的服务给您.";
+        textView.textColor = [UIColor lightGrayColor];
+        _isFirst = YES;
+    }
+ 
+}
+-(void)textViewDidChange:(UITextView *)textView{
+    textView.textColor = [UIColor blackColor];
+    
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    
+}
+
+- (IBAction)commitBtn:(UIButton *)sender {
+    
+    NSLog(@"提交反馈");
+    [self postFeedBack];
+}
+//注销第一响应者
+-(void)resignTheFirstResponse{
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapEndediting:)];
+    [self.view addGestureRecognizer:tap];
+}
+-(void)tapEndediting:(UITapGestureRecognizer *)tap{
+    
+    [self.view endEditing:YES];
+}
+#pragma mark 键盘监控
+-(void)keyBoardShow:(NSNotification *)notity{
+    
+   NSTimeInterval time=[[notity.userInfo objectForKey:@"UIKeyboardAnimationDurationUserInfoKey"] floatValue];
+    float height=[[notity.userInfo objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue].size.height;
+    [UIView animateWithDuration:time animations:^{
+        if (self.contactText.frame.origin.y + 30 > Ga - height) {
+            self.contactText.frame = CGRectMake(0, Ga-height-30, kU, 30);
+        }
+ 
+        [self.view layoutIfNeeded];
+    }];
+}
+-(void)keyBoardHidden:(NSNotification *)notity{
+    
+    NSTimeInterval time=[[notity.userInfo objectForKey:@"UIKeyboardAnimationDurationUserInfoKey"] floatValue];
+
+    [UIView animateWithDuration:time animations:^{
+        self.contactText.frame = _orignalFrame;
+        [self.view layoutIfNeeded];
+    }];
+}
+
+
+#pragma mark 上传信息
+-(void)postFeedBack{
+    
+    if ([_textView.text isEqualToString:@""]) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"反馈信息不能为空" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+    NSLog(@"电话:%@",_contactText.text);
+    NSLog(@"反馈: %@",_textView.text);
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:_contactText.text forKey:@"mobile"];
+    [params setObject:_textView.text forKey:@"content"];
+    [params setObject:_account.nickname forKey:@"nickname"];
+    [params setObject:_account.type forKey:@"type"];
+    [params setObject:_account.userid forKey:@"user_id"];
+    NSLog(@"反馈信息: %@",params);
+    [NetWork postNoParm:FEEDBACK_URL params:params success:^(id responseObj) {
+        NSLog(@"反馈信息: %@",responseObj);
+        [ITTPromptView showMessage:responseObj[@"message"]];
+
+        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+            
+            [self.navigationController popViewControllerAnimated:YES];
+        } else {
+            
+        }
+        
+    } failure:^(NSError *error) {
+        NSLog(@"反馈信息失败: %@",error.localizedDescription);
+        
+    }];
+}
+
+
+@end

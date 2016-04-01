@@ -1,0 +1,192 @@
+//
+//  ADAccount.m
+//  ADSweep
+//
+//  Created by exe on 15/12/15.
+//  Copyright © 2015年 Adan. All rights reserved.
+//
+
+#import "ADAccount.h"
+
+@implementation ADAccount
+
++ (NSDictionary *)mj_replacedKeyFromPropertyName{
+    return @{@"ID":@"id"};
+}
+//字典转模型
++(instancetype)accountWithDict:(NSDictionary *)dict
+{
+    ADAccount *account = [[self alloc]init];
+    account.userid = dict[@"userid"];
+    account.token = dict[@"token"];
+    account.mobile = dict[@"mobile"];
+    account.nickname = dict[@"nickname"];
+    account.type = dict[@"type"];
+    account.money = dict[@"money"];
+    account.address = dict[@"address"];
+    account.createtime = dict[@"createtime"];
+    account.updatetime = dict[@"updatetime"];
+    
+    account.job_year = dict[@"job_year"];
+    account.education = dict[@"education"];
+    account.username = dict[@"username"];
+    account.tel = dict[@"tel"];
+    account.sex = dict[@"sex"];
+   // account.adminid = dict[@"adminid"];
+    account.picture = dict[@"picture"];
+    account.id_card = dict[@"id_card"];
+    account.education_image = dict[@"education_image"];
+    account.user_desc = dict[@"user_desc"];
+    account.record = dict[@"record"];
+    account.logintime = dict[@"logintime"];
+    
+    account.salt = dict[@"salt"];
+    
+    account.jpushcode = dict[@"jpushcode"];
+    account.ID = dict[@"id"];
+    account.set_rule = dict[@"set_rule"];
+    account.password = dict[@"password"];
+    account.live_city = dict[@"live_city"];
+
+    account.em_name = dict[@"em_name"];
+    account.gztypeid = dict[@"gztypeid"];
+    account.em_sex = dict[@"em_sex"];
+    account.recharge_money = dict[@"recharge_money"];
+    account.em_nickname = dict[@"em_nickname"];
+    account.em_image = dict[@"em_image"];
+    account.em_money = dict[@"em_money"];
+    account.em_address = dict[@"em_address"];
+
+
+
+//    em_name gztypeid em_sex recharge_money em_nickname em_image
+
+    //job_year = ,
+    //education = ,
+    //username = ,
+    //userid = 7,
+    //money = ,
+    //tel = ,
+    //nickname = 会员5631号,
+    //updatetime = 2016-01-08 20:50:00,
+    //sex = ,
+    //adminid = 1,
+    //picture = ,
+    //id_card = ,
+    //education_image = ,
+    //user_desc = ,
+    //record = 0,
+    //logintime = 2016-01-08 20:50:46,
+    //type = 78,
+    //salt = ,
+    //jpushcode = 011cce1f529,
+    //id = 7,
+    //set_rule = 94,
+    //token = adbd364dd25,
+    //mobile = 13608928032,
+    //createtime = 2016-01-08 20:50:00,
+    //password = ,
+    //address = ,
+    //live_city =
+    
+    return account;
+}
+//从文件中解析一个对象的时候调用
+-(id)initWithCoder:(NSCoder *)decoder
+{
+    if (self = [super init]) {
+        self.userid = [decoder decodeObjectForKey:@"userid"];
+        self.token = [decoder decodeObjectForKey:@"token"];
+        self.mobile = [decoder decodeObjectForKey:@"mobile"];
+        self.nickname = [decoder decodeObjectForKey:@"nickname"];
+        self.type = [decoder decodeObjectForKey:@"type"];
+        self.money = [decoder decodeObjectForKey:@"money"];
+        self.address = [decoder decodeObjectForKey:@"address"];
+        self.createtime = [decoder decodeObjectForKey:@"createtime"];
+        self.updatetime = [decoder decodeObjectForKey:@"updatetime"];
+        
+        self.job_year = [decoder decodeObjectForKey:@"job_year"];
+        self.education = [decoder decodeObjectForKey:@"education"];
+        self.username = [decoder decodeObjectForKey:@"username"];
+        self.tel = [decoder decodeObjectForKey:@"tel"];
+        self.updatetime = [decoder decodeObjectForKey:@"updatetime"];
+        self.sex = [decoder decodeObjectForKey:@"sex"];
+        // account.adminid = dict[@"adminid"];
+        self.picture = [decoder decodeObjectForKey:@"picture"];
+        self.id_card = [decoder decodeObjectForKey:@"id_card"];
+        self.education_image = [decoder decodeObjectForKey:@"education_image"];
+        self.user_desc = [decoder decodeObjectForKey:@"user_desc"];
+        self.record = [decoder decodeObjectForKey:@"record"];
+        self.logintime = [decoder decodeObjectForKey:@"logintime"];
+        
+        self.salt = [decoder decodeObjectForKey:@"salt"];
+  
+        self.jpushcode = [decoder decodeObjectForKey:@"jpushcode"];
+        self.ID = [decoder decodeObjectForKey:@"id"];
+        self.set_rule = [decoder decodeObjectForKey:@"set_rule"];
+        self.password = [decoder decodeObjectForKey:@"password"];
+        self.logintime = [decoder decodeObjectForKey:@"logintime"];
+        
+        self.live_city = [decoder decodeObjectForKey:@"live_city"];
+        self.em_name = [decoder decodeObjectForKey:@"em_name"];
+        self.gztypeid = [decoder decodeObjectForKey:@"gztypeid"];
+        self.em_sex = [decoder decodeObjectForKey:@"em_sex"];
+        self.recharge_money = [decoder decodeObjectForKey:@"recharge_money"];
+        self.em_nickname = [decoder decodeObjectForKey:@"em_nickname"];
+        self.em_image = [decoder decodeObjectForKey:@"em_image"];
+        self.em_money = [decoder decodeObjectForKey:@"em_money"];
+        self.em_address = [decoder decodeObjectForKey:@"em_address"];
+
+        
+    }
+    return self;
+}
+//将对象写入文件的时候调用
+-(void)encodeWithCoder:(NSCoder *)encoder
+{
+    [encoder encodeObject:self.userid forKey:@"userid"];
+    [encoder encodeObject:self.token forKey:@"token"];
+    [encoder encodeObject:self.mobile forKey:@"mobile"];
+    [encoder encodeObject:self.nickname forKey:@"nickname"];
+    [encoder encodeObject:self.type forKey:@"type"];
+    [encoder encodeObject:self.money forKey:@"money"];
+    [encoder encodeObject:self.address forKey:@"address"];
+    [encoder encodeObject:self.createtime forKey:@"createtime"];
+    [encoder encodeObject:self.updatetime forKey:@"updatetime"];
+    
+     [encoder encodeObject:self.job_year forKey:@"job_year"];
+    [encoder encodeObject:self.education forKey:@"education"];
+    [encoder encodeObject:self.username forKey:@"username"];
+    [encoder encodeObject:self.tel forKey:@"tel"];
+    [encoder encodeObject:self.updatetime forKey:@"updatetime"];
+    [encoder encodeObject:self.sex forKey:@"sex"];
+    // account.adminid = dict[@"adminid"];
+    [encoder encodeObject:self.picture forKey:@"picture"];
+    [encoder encodeObject:self.id_card forKey:@"id_card"];
+    [encoder encodeObject:self.education_image forKey:@"education_image"];
+    [encoder encodeObject:self.user_desc forKey:@"user_desc"];
+    [encoder encodeObject:self.record forKey:@"record"];
+    [encoder encodeObject:self.logintime forKey:@"logintime"];
+    
+    [encoder encodeObject:self.salt forKey:@"salt"];
+    
+    [encoder encodeObject:self.jpushcode forKey:@"jpushcode"];
+     [encoder encodeObject:self.ID forKey:@"id"];
+     [encoder encodeObject:self.set_rule forKey:@"set_rule"];
+    [encoder encodeObject:self.password forKey:@"password"];
+     [encoder encodeObject:self.logintime forKey:@"logintime"];
+
+    [encoder encodeObject:self.live_city forKey:@"live_city"];
+    [encoder encodeObject:self.em_name forKey:@"em_name"];
+    [encoder encodeObject:self.gztypeid forKey:@"gztypeid"];
+    [encoder encodeObject:self.em_sex forKey:@"em_sex"];
+    [encoder encodeObject:self.recharge_money forKey:@"recharge_money"];
+    [encoder encodeObject:self.em_nickname forKey:@"em_nickname"];
+    [encoder encodeObject:self.em_image forKey:@"em_image"];
+    [encoder encodeObject:self.em_money forKey:@"em_money"];
+    [encoder encodeObject:self.em_address forKey:@"em_address"];
+
+    
+}
+
+@end

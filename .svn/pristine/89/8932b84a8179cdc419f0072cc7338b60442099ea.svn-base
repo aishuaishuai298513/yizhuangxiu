@@ -1,0 +1,107 @@
+//
+//  My_Login_input_Cell.m
+//  zhaiyi
+//
+//  Created by mac on 15/12/8.
+//  Copyright © 2015年 apple. All rights reserved.
+//
+
+#import "My_Login_input_Cell.h"
+
+@interface My_Login_input_Cell()
+{
+    NSDictionary *_userDict;
+}
+@property (weak, nonatomic) IBOutlet UITextField *UserName;
+@property (weak, nonatomic) IBOutlet UITextField *passWord;
+
+@property (weak, nonatomic) IBOutlet UIButton *Guzhu;
+
+@property (weak, nonatomic) IBOutlet UIButton *GongRen;
+
+//
+@property (weak, nonatomic) IBOutlet UIView *guZhuLine;
+@property (weak, nonatomic) IBOutlet UIView *gongZhongLine;
+
+
+- (IBAction)GuzhuClicked:(id)sender;
+- (IBAction)GongRenClicked:(id)sender;
+
+@property (nonatomic, assign)BOOL IsGuzhu;
+
+@end
+
+@implementation My_Login_input_Cell
+
+- (void)awakeFromNib {
+    // Initialization code
+    _IsGuzhu = YES;
+    //_Guzhu.backgroundColor = [UIColor redColor];
+    
+    NSString *id_string = [[NSUserDefaults standardUserDefaults]objectForKey:@"qiehuan_id"];
+    NSLog(@"身份切换   当前想切换身份 %@",id_string);
+    if ([id_string isEqualToString:@"78"]) {
+        [self GongRenClicked:_GongRen];
+    } else {
+        [self GuzhuClicked:_Guzhu];
+    }
+    
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+
+    // Configure the view for the selected state
+}
+- (IBAction)Resign:(id)sender {
+    
+    if ([self.delegate respondsToSelector:@selector(ReginClick:PassWord:)]) {
+        
+        [self.delegate ReginClick:self.UserName.text PassWord:self.passWord.text];
+    }
+    
+}
+
+- (IBAction)forgetPassWord:(id)sender {
+    
+    if ([self.delegate respondsToSelector:@selector(ForgetPassClicked:PassWord:)]) {
+        
+        [self.delegate ForgetPassClicked:self.UserName.text PassWord:self.passWord.text];
+    }
+    
+}
+
+-(NSString *)getUserName
+{
+    
+    return self.UserName.text;
+}
+-(NSString *)getPassWord
+{
+    return  self.passWord.text;
+}
+-(BOOL)getGongRenLeiXinag
+{
+    return _IsGuzhu;
+
+}
+
+- (IBAction)GuzhuClicked:(id)sender {
+    
+     _IsGuzhu = YES;
+//    _Guzhu.backgroundColor = [UIColor redColor];
+//    _GongRen.backgroundColor = [UIColor clearColor];
+    
+    _guZhuLine.alpha = 1;
+    _gongZhongLine.alpha = 0.1;
+}
+
+- (IBAction)GongRenClicked:(id)sender {
+    _IsGuzhu = NO;
+//    _Guzhu.backgroundColor = [UIColor clearColor];
+//    _GongRen.backgroundColor = [UIColor redColor];
+    
+    _guZhuLine.alpha = 0.1;
+    _gongZhongLine.alpha = 1;
+}
+@end

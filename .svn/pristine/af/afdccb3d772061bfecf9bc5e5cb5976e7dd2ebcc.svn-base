@@ -1,0 +1,267 @@
+//
+//  workerRobViewController.m
+//  zhaiyi
+//
+//  Created by apple on 15/12/4.
+//  Copyright © 2015年 apple. All rights reserved.
+//
+
+#import "workerRobViewController.h"
+#import "QiangDanTableViewCell.h"
+#import "DetatilViewController.h"
+#import "DWOrderModel.h"
+#import "MJRefresh.h"
+
+@interface workerRobViewController ()<UITableViewDataSource,UITableViewDelegate>
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (nonatomic ,assign) int pageIndex;
+
+- (IBAction)QiangBtnClicked:(id)sender;
+
+@property (nonatomic,strong)NSMutableArray *dataSource;
+
+@end
+
+@implementation workerRobViewController
+
+-(NSMutableArray *)dataSource
+{
+    if (!_dataSource) {
+        _dataSource = [NSMutableArray array];
+    }
+    return _dataSource;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    _pageIndex = 1;
+    self.tableView.delegate = self;
+    self.tableView.dataSource  =self;
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
+    
+    //抢单列表
+    [self netWorkQiangDan];
+    // Do any additional setup after loading the view.
+    
+    [self MJRefreachHeader];
+    [self MJRefreachFooter];
+    
+    self.title =@"订单列表";
+    
+}
+
+
+//header
+-(void)MJRefreachHeader
+{
+    [self.dataSource removeAllObjects];
+    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
+    MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(netWorkQiangDanHeader)];
+    // 设置自动切换透明度(在导航栏下面自动隐藏)
+    header.automaticallyChangeAlpha = YES;
+    // 隐藏时间
+    header.lastUpdatedTimeLabel.hidden = YES;
+    // 马上进入刷新状态
+    //[header beginRefreshing];
+    // 设置header
+    self.tableView.mj_header = header;
+    
+    _pageIndex = 1;
+//    [self.dataSource removeAllObjects];
+//    [self netWorkQiangDan];
+    
+    
+}
+
+//footer
+-(void)MJRefreachFooter
+{
+    __unsafe_unretained __typeof(self) weakSelf = self;
+    // 设置回调（一旦进入刷新状态就会调用这个refreshingBlock）
+    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        
+        _pageIndex++;
+        [weakSelf netWorkQiangDanFooter];
+        //[weakSelf loadMoreData];
+    }];
+    
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    static  NSString  *CellIdentiferId = @"cell";
+    QiangDanTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentiferId];
+
+    if (cell == nil) {
+        NSArray *nibs = [[NSBundle mainBundle]loadNibNamed:@"QiangDanTableViewCell" owner:nil options:nil];
+        cell = [nibs lastObject];
+    };
+    
+    cell.indexPath = indexPath;
+    
+    [cell setQiangBlock:^(NSIndexPath *indexpath) {
+        
+        //跳到抢单详情页
+        UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"workerRob" bundle:nil];
+        DetatilViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"qiangdanxiangqing"];
+        
+        test2obj.Model = self.dataSource[indexPath.row];
+        
+        [self.navigationController pushViewController:test2obj animated:YES];
+        
+
+    }];
+    
+    cell.cellModel= self.dataSource[indexPath.row];
+    
+    cell.height = 150;
+    return cell;
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    
+   return self.dataSource.count;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+}
+
+//工人端|工人端查看雇主下单列表  抢单列表
+-(void)netWorkQiangDan
+{
+    ADAccount *acount = [ADAccountTool account];
+    NSLog(@"%@",acount.userid);
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    
+    //[parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"pageindex"];
+    //84已发布
+    //[parm setObject:@"84" forKey:@"status"];
+    
+    [NetWork postNoParm:qiangDanLieBiao params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        
+        if ([[responseObj objectForKey:@"code"] isEqualToString:@"1000"]) {
+       
+            NSMutableArray *array = [NSMutableArray array];
+            array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
+            //self.dataSource = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
+            [self.dataSource addObjectsFromArray:array];
+            
+            //            NSLog(@"%@",self.dataSource);
+            //            NSLog(@"%ld",self.dataSource.count);
+            [self.tableView reloadData];
+            
+            [self.tableView.mj_footer endRefreshing];
+            [self.tableView.mj_header endRefreshing];
+        }
+        
+    } failure:^(NSError *error) {
+        
+        [self.tableView.mj_footer endRefreshing];
+        [self.tableView.mj_header endRefreshing];
+        
+        NSLog(@"%@",error);
+    }];
+
+}
+
+-(void)netWorkQiangDanHeader
+{
+    
+    [self.dataSource removeAllObjects];
+    
+    ADAccount *acount = [ADAccountTool account];
+    NSLog(@"%@",acount.userid);
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    
+    //[parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"pageindex"];
+    //84已发布
+    //[parm setObject:@"84" forKey:@"status"];
+    NSLog(@"%d",_pageIndex);
+    
+    [NetWork postNoParm:qiangDanLieBiao params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        
+        if ([[responseObj objectForKey:@"code"] isEqualToString:@"1000"]) {
+            
+            NSMutableArray *array = [NSMutableArray array];
+            array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
+            
+            NSLog(@"%ld",array.count);
+            //self.dataSource = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
+            [self.dataSource addObjectsFromArray:array];
+            
+            //            NSLog(@"%@",self.dataSource);
+            //            NSLog(@"%ld",self.dataSource.count);
+            [self.tableView reloadData];
+            
+           // [self.tableView.mj_footer endRefreshing];
+            [self.tableView.mj_header endRefreshing];
+        }
+        
+    } failure:^(NSError *error) {
+        
+       // [self.tableView.mj_footer endRefreshing];
+        [self.tableView.mj_header endRefreshing];
+        
+        NSLog(@"%@",error);
+    }];
+    
+}
+
+-(void)netWorkQiangDanFooter
+{
+    ADAccount *acount = [ADAccountTool account];
+    NSLog(@"%@",acount.userid);
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    
+    //[parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"pageindex"];
+    //84已发布
+    //[parm setObject:@"84" forKey:@"status"];
+    
+    NSLog(@"%d",_pageIndex);
+    
+    [NetWork postNoParm:qiangDanLieBiao params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        
+        if ([[responseObj objectForKey:@"code"] isEqualToString:@"1000"]) {
+            
+            NSMutableArray *array = [NSMutableArray array];
+            array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
+            
+            NSLog(@"%ld",array.count);
+            //self.dataSource = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
+            [self.dataSource addObjectsFromArray:array];
+            
+            //            NSLog(@"%@",self.dataSource);
+            //            NSLog(@"%ld",self.dataSource.count);
+            [self.tableView reloadData];
+            
+            [self.tableView.mj_footer endRefreshing];
+            //[self.tableView.mj_header endRefreshing];
+        }
+        
+    } failure:^(NSError *error) {
+        
+        [self.tableView.mj_footer endRefreshing];
+        //[self.tableView.mj_header endRefreshing];
+        
+        NSLog(@"%@",error);
+    }];
+    
+}
+
+
+@end

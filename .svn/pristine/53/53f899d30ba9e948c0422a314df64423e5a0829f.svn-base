@@ -1,0 +1,61 @@
+//
+//  AboutXiaoMuJiangController.m
+//  zhaiyi
+//
+//  Created by cajan on 16/1/20.
+//  Copyright © 2016年 apple. All rights reserved.
+//
+
+#import "AboutXiaoMuJiangController.h"
+#import "SVProgressHUD.h"
+
+@interface AboutXiaoMuJiangController ()
+<
+UIWebViewDelegate
+>
+{
+    UIWebView *_webView;
+}
+@end
+
+@implementation AboutXiaoMuJiangController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    self.title = @"关于小木匠";
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    [self initalData];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    NSURL *url = [NSURL URLWithString:@""];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [_webView loadRequest:request];
+}
+-(void)initalData{
+    
+    _webView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 0, kU, Ga)];
+    _webView.scalesPageToFit = YES;
+    _webView.delegate = self;
+    [self.view addSubview:_webView];
+}
+
+-(void)webViewDidStartLoad:(UIWebView *)webView{
+    
+    [SVProgressHUD showWithStatus:@"正在加载"];
+}
+-(void)webViewDidFinishLoad:(UIWebView *)webView{
+    
+    [SVProgressHUD dismiss];
+}
+
+
+@end

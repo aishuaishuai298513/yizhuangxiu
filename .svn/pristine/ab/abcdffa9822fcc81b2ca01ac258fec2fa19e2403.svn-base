@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ADFinishController">
+            <connections>
+                <outlet property="bottomText" destination="5Fi-8M-1Gv" id="Dox-Ny-ucg"/>
+                <outlet property="topText" destination="K60-bG-c1Y" id="Sw3-ic-eQy"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="确认完工，是否立即去评价？点击评价按钮跳转" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K60-bG-c1Y">
+                    <rect key="frame" x="20" y="124" width="335" height="42"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="42" id="Ttk-Pu-GbU"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="med-Jp-fsI">
+                    <rect key="frame" x="130" y="189" width="110" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="eoL-LP-GQh"/>
+                        <constraint firstAttribute="width" constant="110" id="nJ2-mB-HVR"/>
+                    </constraints>
+                    <state key="normal" title="评价" backgroundImage="订单详情1">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="AccessClick:" destination="-1" eventType="touchUpInside" id="Pxx-HD-eDa"/>
+                    </connections>
+                </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cv7-2r-CXZ">
+                    <rect key="frame" x="0.0" y="339" width="375" height="328"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="返回已竣工订单，进行评价，您的评价对工人的信誉很重要" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Fi-8M-1Gv">
+                            <rect key="frame" x="80" y="146" width="215" height="62"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="62" id="9gb-jV-rtm"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.27058823529411763" green="0.79607843137254897" blue="0.70980392156862748" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="5Fi-8M-1Gv" secondAttribute="trailing" constant="80" id="Dcb-5a-hSN"/>
+                        <constraint firstItem="5Fi-8M-1Gv" firstAttribute="leading" secondItem="cv7-2r-CXZ" secondAttribute="leading" constant="80" id="Z1J-wx-ofi"/>
+                        <constraint firstAttribute="bottom" secondItem="5Fi-8M-1Gv" secondAttribute="bottom" constant="120" id="pCO-LK-6TF"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="K60-bG-c1Y" secondAttribute="trailing" constant="20" id="0T9-f5-Cz9"/>
+                <constraint firstAttribute="trailing" secondItem="cv7-2r-CXZ" secondAttribute="trailing" id="1FO-sE-2V8"/>
+                <constraint firstItem="K60-bG-c1Y" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="124" id="Cbe-mF-kHQ"/>
+                <constraint firstItem="cv7-2r-CXZ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="GAf-j9-EaN"/>
+                <constraint firstAttribute="trailing" secondItem="med-Jp-fsI" secondAttribute="trailing" constant="130" id="JKt-Jd-xOV"/>
+                <constraint firstAttribute="bottom" secondItem="cv7-2r-CXZ" secondAttribute="bottom" id="MQp-iX-vPk"/>
+                <constraint firstItem="med-Jp-fsI" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="130" id="My0-Wq-2Xv"/>
+                <constraint firstItem="cv7-2r-CXZ" firstAttribute="top" secondItem="med-Jp-fsI" secondAttribute="bottom" constant="110" id="W3r-de-lr4"/>
+                <constraint firstItem="K60-bG-c1Y" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="kRe-aH-V04"/>
+                <constraint firstItem="med-Jp-fsI" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" constant="-2.5" id="lJK-hS-f83"/>
+                <constraint firstItem="med-Jp-fsI" firstAttribute="top" secondItem="K60-bG-c1Y" secondAttribute="bottom" constant="23" id="pqE-V0-dYY"/>
+            </constraints>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="JKt-Jd-xOV"/>
+                    <exclude reference="My0-Wq-2Xv"/>
+                </mask>
+            </variation>
+            <point key="canvasLocation" x="507.5" y="352.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="订单详情1" width="110" height="40"/>
+    </resources>
+</document>

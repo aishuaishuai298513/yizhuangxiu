@@ -1,0 +1,196 @@
+//
+//  My_pocket_index_ViewController.m
+//  zhaiyi
+//
+//  Created by mac on 15/12/5.
+//  Copyright © 2015年 apple. All rights reserved.
+//
+
+#import "My_pocket_index_ViewController.h"
+#import "My_pocket_Hongbao_ViewController.h"
+#import "My_pocket_tixian_ViewController.h"
+#import "My_pocket_jiaoyijilu_ViewController.h"
+#import "My_pocket_recharge_Controller.h"
+
+
+@interface My_pocket_index_ViewController ()
+<UITableViewDataSource,UITableViewDelegate>
+
+{
+    UITableView * tb;
+//    NSString *_lx;
+    NSString *_moneyText;
+    
+    ADAccount *_account;
+}
+@end
+
+@implementation My_pocket_index_ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.title=@"钱包";
+    UIBarButtonItem *myButton = [[UIBarButtonItem alloc]initWithTitle:@"银行卡" style:UIBarButtonItemStylePlain target:self action:@selector(card)];
+    self.navigationItem.rightBarButtonItem = myButton;
+     [self MakeUI];
+ }
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    _account = [ADAccountTool account];
+    
+}
+
+-(void)card
+{
+    UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"employersInMy" bundle:nil];
+    UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"card"];
+    [self.navigationController pushViewController:test2obj animated:YES];
+}
+-(void)MakeUI
+{
+    self.view.backgroundColor=[UIColor whiteColor];
+    
+    tb=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, kU , Ga-64)];
+    tb.delegate=self;
+    tb.dataSource=self;
+    tb.bounces=NO;
+    [self.view addSubview:tb];
+}
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    NSLog(@"计算分组数");
+    return 1;
+}
+
+#pragma mark 返回每组行数
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    if ([_account.type isEqualToString:@"78"]) {
+        return 4;
+    }else {
+        return 5;
+    }
+
+}
+
+#pragma mark返回每行的单元格
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    tb.separatorStyle=UITableViewCellSeparatorStyleNone;
+    if (indexPath.row==0) {
+        UITableViewCell * cell;
+        if (!cell) {
+            cell=[[UITableViewCell alloc]init];
+            cell.selectionStyle=UITableViewCellSelectionStyleNone;
+        }
+        
+        cell.contentView.backgroundColor=ZYgreenColor;
+        
+        UIButton * zhye=[[UIButton alloc]initWithFrame:CGRectMake(kU/3, 20, kU/3, 25)];
+        [zhye setImage:[UIImage imageNamed:@"qianbao.png"] forState:UIControlStateNormal];
+        [zhye setTitle:@" 账户余额" forState:UIControlStateNormal];
+        zhye.titleLabel.font = [UIFont systemFontOfSize: 14.0];
+        [cell.contentView addSubview:zhye];
+        
+        UILabel * money=[[UILabel alloc]initWithFrame:CGRectMake(0, 60, kU, 50)];
+        if ([_account.type isEqualToString:@"78"]) {
+            money.text=[NSString stringWithFormat:@"￥%@",_account.money];
+        } else {
+            money.text=[NSString stringWithFormat:@"￥%@",_account.recharge_money];
+        }
+        
+        money.textColor=[UIColor whiteColor];
+        money.textAlignment=NSTextAlignmentCenter;
+        money.font=[UIFont systemFontOfSize:35];
+        [cell.contentView addSubview:money];
+        
+        return cell;
+        
+    }else
+    {
+        UITableViewCell *cell1=[tableView dequeueReusableCellWithIdentifier:@"cell1"];
+        if (!cell1) {
+            cell1=[[UITableViewCell alloc]init];
+        }
+        UILabel * title=[[UILabel alloc]initWithFrame:CGRectMake(10, 7, 100, 30)];
+        title.font=[UIFont systemFontOfSize:17];
+        [cell1.contentView addSubview:title];
+        NSArray * name;
+        if ([_account.type isEqualToString:@"78"]) {
+            name=@[@"红包",@"提现",@"交易记录"];
+        }else {
+            name=@[@"红包",@"充值",@"提现",@"交易记录"];
+
+        }
+        title.text=name[indexPath.row-1];
+        UIImageView * jt=[[UIImageView alloc]initWithFrame:CGRectMake(kU-30, 12, 10, 20)];
+        jt.image=[UIImage imageNamed:@"right.png"];
+        [cell1.contentView addSubview:jt];
+        
+        UIView * view=[[UIView alloc]initWithFrame:CGRectMake(10, 43, kU-10, 1)];
+        view.backgroundColor=[UIColor myColorWithString:@"f4f4f4"];
+        [cell1.contentView addSubview:view];
+        return cell1;
+        
+    }
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row==0) {
+        return 120;
+    }else
+    {
+        return 44;
+    }
+    
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row==1) {
+        My_pocket_Hongbao_ViewController *hb=[[My_pocket_Hongbao_ViewController alloc]init];
+        [self.navigationController pushViewController:hb animated:YES];
+    }else if(indexPath.row==2)
+    {
+        if ([_account.type isEqualToString:@"78"]) {
+            My_pocket_tixian_ViewController *hb=[[My_pocket_tixian_ViewController alloc]init];
+            [self.navigationController pushViewController:hb animated:YES];
+        }else{
+            My_pocket_recharge_Controller *recharge = [[My_pocket_recharge_Controller alloc]init];
+            [self.navigationController pushViewController:recharge animated:YES];
+        }
+        
+        //        NSLog(@"充值");
+    }else if(indexPath.row==3)
+    {
+        if ([_account.type isEqualToString:@"78"]) {
+            My_pocket_jiaoyijilu_ViewController * hb=[My_pocket_jiaoyijilu_ViewController new];
+            [self.navigationController pushViewController:hb animated:YES];
+        }else{
+            My_pocket_tixian_ViewController *hb=[[My_pocket_tixian_ViewController alloc]init];
+            [self.navigationController pushViewController:hb animated:YES];
+        }
+        
+    }else
+    {
+        My_pocket_jiaoyijilu_ViewController * hb=[My_pocket_jiaoyijilu_ViewController new];
+        [self.navigationController pushViewController:hb animated:YES];
+    }
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
+//钱包
+
+
+
+@end

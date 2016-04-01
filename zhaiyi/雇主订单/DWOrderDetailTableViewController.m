@@ -1,0 +1,531 @@
+//
+//  DWOrderDetailTableViewController.m
+//  zhaiyi
+//
+//  Created by Apple on 15/12/4.
+//  Copyright © 2015年 apple. All rights reserved.
+//
+
+#import "DWOrderDetailTableViewController.h"
+#import "DWOrderDetailCell.h"
+#import "DWEmployerDetailController.h"
+#import "DWevaluateListViewController.h"
+#import "DWConfirmCheckViewController.h"
+#import "EvaluateViewController.h"
+#import "MJExtension.h"
+#import "PureLayout.h"
+//人数没招满提示框
+#import "FriendPrompt.h"
+//支付凭证提示框
+#import "CertificatePayView.h"
+//支付页面
+#import "My_pocket_Controller.h"
+
+//标志按钮状态
+typedef NS_ENUM(NSUInteger, CellBtnState) {
+    PAY,//支付
+    DISCHARGE,//辞退
+    EVALUATE//评价
+};
+
+@interface DWOrderDetailTableViewController ()
+
+@property (strong, nonatomic) IBOutlet UIView *DWOrderHeaderView;
+
+@property (weak, nonatomic) IBOutlet UILabel *HeaderDate;
+
+@property (weak, nonatomic) IBOutlet UILabel *HeaderAdress;
+
+@property (weak, nonatomic) IBOutlet UILabel *HeaderGongzuoneirong;
+
+@property (weak, nonatomic) IBOutlet UILabel *gongzhong;
+@property (weak, nonatomic) IBOutlet UILabel *HeaderRenshu;
+@property (weak, nonatomic) IBOutlet UILabel *danRiGongzi;
+
+@property (weak, nonatomic) IBOutlet UILabel *headerBaoxian;
+@property (weak, nonatomic) IBOutlet UILabel *headerDingdan;
+
+//标志按钮状态
+@property (nonatomic ,assign) CellBtnState btnState;
+
+
+@property (strong, nonatomic) UIButton *rightButton;
+
+@property (nonatomic ,strong) NSMutableArray *UsersdataSource;
+
+//底部弹出透明View
+@property (nonatomic, strong) UIView *bg;
+//友情提示框
+@property (nonatomic, strong) UIView *firendPopView;
+//凭证提示框
+@property(nonatomic, strong) CertificatePayView *certificatePayView;
+
+//遮盖
+@property (nonatomic, strong) UIView *BackView;
+@end
+
+@implementation DWOrderDetailTableViewController
+
+
+-(NSMutableArray *)UsersdataSource
+{
+    if (_UsersdataSource == nil) {
+        _UsersdataSource = [NSMutableArray array];
+    }
+    return _UsersdataSource;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.tableView.tableHeaderView = self.DWOrderHeaderView;
+    [self.navigationItem setTitle:@"订单详情"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"DWOrderDetailCell" bundle:nil] forCellReuseIdentifier:@"DWOrderDetailCell"];
+    [self configueRightBtn];
+    
+    //请求评价列表
+    //[self netWork];
+    //查询已抢单用户
+    [self QiangDanYonghu];
+    [self creatOrderUi];
+    
+}
+
+
+//订单数据赋值
+-(void)creatOrderUi
+{
+    self.HeaderDate.text = [NSString stringWithFormat:@"%@",[NSString dateString:_OrderModel.startDate]];
+    
+    self.headerDingdan.text = self.OrderModel.ddh;
+    
+    self.HeaderAdress.text = self.OrderModel.address;
+    
+    self.HeaderGongzuoneirong.text = [NSString stringWithFormat:@"工作内容:%@",self.OrderModel.txt];
+    
+    if([_OrderModel.gztypeid isEqualToString:@"1"])
+    {
+        self.gongzhong.text = @"工种:泥工";
+    }else if ([_OrderModel.gztypeid isEqualToString:@"2"])
+    {
+        self.gongzhong.text = @"工种:油工";
+    }else if ([_OrderModel.gztypeid isEqualToString:@"3"])
+    {
+        self.gongzhong.text = @"工种:水工";
+    }else if ([_OrderModel.gztypeid isEqualToString:@"4"])
+    {
+        self.gongzhong.text = @"工种:电工";
+    }else if ([_OrderModel.gztypeid isEqualToString:@"5"])
+    {
+        self.gongzhong.text = @"工种:木工";
+    }else if ([_OrderModel.gztypeid isEqualToString:@"6"])
+    {
+        self.gongzhong.text = @"工种:小工";
+    }
+    
+    self.danRiGongzi.text = [NSString stringWithFormat:@"单日工资:%d",[self.OrderModel.money intValue]];
+    self.HeaderRenshu.text = [NSString stringWithFormat:@"人数:%@",self.OrderModel.num];
+    if (_OrderModel.safe_money) {
+        self.headerBaoxian.text = [NSString stringWithFormat:@"保险费额:%@",[NSString stringWithFormat:@"%@",_OrderModel.safe_money]];
+    }else
+    {
+        self.headerBaoxian.text = @"";
+    }
+
+}
+
+- (void)configueRightBtn{
+    UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0,0, 80, 26)];
+    self.rightButton = rightBtn;
+    [rightBtn addTarget:self action:@selector(confirmCheck) forControlEvents:UIControlEventTouchUpInside];
+    
+    //发布中
+    if (self.type == 1)
+    {
+         rightBtn.titleLabel.font = [UIFont systemFontOfSize:13];
+       [rightBtn setBackgroundImage:[UIImage imageNamed:@"确认开工.png"] forState:UIControlStateNormal];
+       [rightBtn setTitle:@"确认开工" forState:UIControlStateNormal];
+       [rightBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    }
+    //施工中
+    if (self.type == 2) {
+       [rightBtn setTitle:@"确认验收" forState:UIControlStateNormal];
+        rightBtn.alpha = 0;
+    }
+    //已竣工
+    else if(self.type == 3)
+    {
+       [rightBtn setTitle:@"评价" forState:UIControlStateNormal];
+    }
+    
+    UIBarButtonItem *rightBarBtnItem = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
+    self.navigationItem.rightBarButtonItem = rightBarBtnItem;
+}
+
+- (void)confirmCheck{
+    
+    if (self.type == 3) {
+        // 评价
+        EvaluateViewController *vc = [[EvaluateViewController alloc] initWithNibName:@"EvaluateViewController" bundle:nil];
+        [self.navigationController pushViewController:vc animated:YES];
+        
+    }else if (self.type == 1){
+        // 确认开工／招用
+        [self queRenZhaoYong];
+
+    }else if(self.type == 2){
+        //确认验收
+        //[self queRenYanShou];
+        [self ifQueRenYanShou];
+    }else{
+        
+    }
+
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return self.UsersdataSource.count;
+    
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    DWOrderDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWOrderDetailCell"];
+    
+    if (self.type == 3) {
+        
+        [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+        [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [cell.cellBtn addTarget:self action:@selector(evaluate) forControlEvents:UIControlEventTouchUpInside];
+        
+    }else if (self.type == 1){
+        //发布中
+        [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
+        cell.cellBtn.userInteractionEnabled = NO;
+
+    }else if(self.type == 2){
+        //施工中
+       // cell.cellBtn.hidden = YES;
+        self.btnState = PAY;
+       [cell.cellBtn setTitle:@"去支付" forState:UIControlStateNormal];
+       [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+       [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
+    }
+    cell.cellBtn.tag = 100+indexPath.row;
+    [cell.cellBtn addTarget:self action:@selector(cellBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+    
+    ADAccount *acount =self.UsersdataSource[indexPath.row];
+    cell.namelb.text = acount.nickname;
+    
+    NSLog(@"%@",acount.gztypeid);
+    
+    if ([acount.gztypeid isEqualToString:@"1"]) {
+        cell.typelb.text = @"泥工";
+    }else if ([acount.gztypeid isEqualToString:@"2"])
+    {
+        cell.typelb.text = @"油工";
+    }else if ([acount.gztypeid isEqualToString:@"3"])
+    {
+        cell.typelb.text = @"水工";
+    }else if ([acount.gztypeid isEqualToString:@"4"])
+    {
+        cell.typelb.text = @"电工";
+    }else if ([acount.gztypeid isEqualToString:@"5"])
+    {
+        cell.typelb.text = @"木工";
+    }else if ([acount.gztypeid isEqualToString:@"6"])
+    {
+        cell.typelb.text = @"小工";
+    }else
+    {
+        cell.typelb.text = @"";
+    }
+    cell.jieshao.text = acount.user_desc;
+    return cell;
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 72;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self checkGongRenInfo:indexPath];
+}
+
+
+//cell上的btn按钮
+-(void)cellBtnClicked:(id)sender
+{
+    switch (self.type) {
+        //发布中
+        case 1:
+            
+            break;
+        //施工中
+        case 2:
+            //选择去支付还是辞退等
+            [self selectFunctionForbtnClicked:sender];
+            break;
+        //已竣工
+        case 3:
+            break;
+            
+        default:
+            break;
+    }
+}
+
+//按钮响应选择
+-(void)selectFunctionForbtnClicked:(id)sender
+{
+    //支付
+    if (self.btnState ==PAY) {
+        
+        NSLog(@"123");
+        self.BackView = [Function createBackView:self action:@selector(BackViewClicked)];
+        
+        self.certificatePayView = [CertificatePayView loadView];
+        //添加点击事件
+        [self.certificatePayView addTargetWithCancleBtnClicked:self action:@selector(CertificateCnclebtnClicked) forControlEvents:UIControlEventTouchUpInside];
+        [self.certificatePayView addTargetWithMakeSureBtnClicked:self action:@selector(CertificateMakeSureClicked) forControlEvents:UIControlEventTouchUpInside];
+        
+        [[UIApplication sharedApplication].keyWindow addSubview:self.BackView];
+        [[UIApplication sharedApplication].keyWindow addSubview:self.certificatePayView];
+        
+        //设置大小
+        [self.certificatePayView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [self.certificatePayView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [self.certificatePayView autoSetDimension:ALDimensionWidth toSize:300];
+        [self.certificatePayView autoSetDimension:ALDimensionHeight toSize:300];
+    }
+    
+}
+
+//遮盖背景置灰
+-(void)BackViewClicked
+{
+    [self.BackView removeFromSuperview];
+    [self.certificatePayView removeFromSuperview];
+}
+//支付凭证取消按钮点击事件
+-(void)CertificateCnclebtnClicked
+{
+    [self BackViewClicked];
+
+}
+//支付凭证确认点击事件
+-(void)CertificateMakeSureClicked
+{
+    [self BackViewClicked];
+    My_pocket_Controller *zhifu = [[My_pocket_Controller alloc]init];
+    [self.navigationController pushViewController:zhifu animated:YES];
+    
+}
+
+//点击cell跳到工人详情页
+-(void)checkGongRenInfo:(NSIndexPath *)indexpath
+{
+        
+        //工人信息
+        DWEmployerDetailController *vc = [[DWEmployerDetailController alloc] initWithNibName:@"DWEmployerDetailController" bundle:nil];
+        
+        vc.type = self.type;
+        vc.acount = self.UsersdataSource[indexpath.row];
+        vc.orderModel  =self.OrderModel;
+        
+        [self.navigationController pushViewController:vc animated:YES];
+
+}
+//评价按钮
+-(void)evaluate
+{
+    EvaluateViewController *evaluate = [[EvaluateViewController alloc]init];
+    [self.navigationController pushViewController:evaluate animated:YES];
+
+}
+
+//评价列表
+-(void)netWork
+{
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:@"个人中心_评价列表" forKey:@"functionName"];
+    [parm setObject:@"[1]" forKey:@"jsonParams"];
+    
+    [NetWork post:ZhaoGongRen params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
+//确认招用 查询已经抢单用户列表
+-(void)QiangDanYonghu
+{
+    
+    NSLog(@"%@",self.OrderModel.ID);
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    
+    [parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:self.OrderModel.ID forKey:@"order_id"];
+    [parm setObject:@"1" forKey:@"pageindex"];
+    
+    __weak typeof (self)WeakSelf =self;
+    [NetWork postNoParm:QrzyQdlb params:parm success:^(id responseObj) {
+        
+      //  NSLog(@"%@",responseObj);
+        WeakSelf.UsersdataSource = [ADAccount mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"user_info"]];
+    
+        // 判断是否可被招用/验收/
+        if (WeakSelf.UsersdataSource.count<=0 && self.type == 1) {
+            
+            self.rightButton.userInteractionEnabled = NO;
+        }else
+        {
+            self.rightButton.userInteractionEnabled = YES;
+        }
+        
+        
+        [self.tableView reloadData];
+        
+        
+    } failure:^(NSError *error) {
+        
+        NSLog(@"%@",error);
+        
+    }];
+    
+}
+
+#pragma mark 确认招用／开工
+-(void)queRenZhaoYong
+{
+    //如果订单为招满，弹出友情提示框
+    if ([self.OrderModel.num intValue]>self.UsersdataSource.count) {
+        
+        //友情提示框
+        FriendPrompt *firendView = [FriendPrompt FirendLoadView];
+        self.firendPopView =firendView;
+        firendView.frame = CGRectMake(30, SCREEN_WIDTH/2, SCREEN_WIDTH - 60, 200);
+        //底部大的透明View
+        self.bg = [Function createBackView:self action:@selector(bgViewClicked)];
+        //no按钮添加事件
+        [firendView NoBtnAddTarget:self action:@selector(bgViewClicked) forControlEvents:UIControlEventTouchUpInside];
+        
+        [firendView YesBtnAddTarget:self action:@selector(continueFaBu) forControlEvents:UIControlEventTouchUpInside];
+        
+        [[UIApplication sharedApplication].keyWindow addSubview:self.bg];
+        [[UIApplication sharedApplication].keyWindow addSubview:firendView];
+        
+        return;
+    }
+    
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:self.OrderModel.ID forKey:@"order_id"];
+    
+    [NetWork postNoParm:guzhuzhaoyong params:parm success:^(id responseObj) {
+        
+        if ([[responseObj objectForKey:@"status"]isEqualToString:@"1000"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            
+            [self.navigationController popViewControllerAnimated:YES];
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+        NSLog(@"%@",responseObj);
+    } failure:^(NSError *error) {
+        NSLog(@"%@",error);
+    }];
+    
+}
+
+#pragma mark  是否可以确认y
+-(void)ifQueRenYanShou
+{
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:self.OrderModel.ID  forKey:@"send_id"];
+    [NetWork postNoParm:IfQueRenZhaoYong params:parm success:^(id responseObj) {
+        
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+            [self queRenYanShou];
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+
+}
+
+#pragma mark 确认验收
+-(void)queRenYanShou
+{
+    
+    
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:self.OrderModel.ID forKey:@"order_id"];
+    
+    //评价
+    DWConfirmCheckViewController *vc = [[DWConfirmCheckViewController alloc] initWithNibName:@"DWConfirmCheckViewController" bundle:nil];
+    vc.UserDataSource = self.UsersdataSource;
+    vc.Ordermodel = self.OrderModel;
+    vc.TypeFrom = 1;
+    //[self.navigationController pushViewController:vc animated:YES];
+    
+    __weak  typeof(self) WeakSelf = self;
+    
+    [NetWork postNoParm:guzhuyanShou params:parm success:^(id responseObj) {
+        
+                NSLog(@"%@",responseObj);
+        
+        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+            
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            // 确认验收
+            
+            [WeakSelf.navigationController pushViewController:vc animated:YES];
+            
+        }else
+        {
+//            [WeakSelf.navigationController pushViewController:vc animated:YES];
+//            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+    } failure:^(NSError *error) {
+        //NSLog(@"%@",error);
+    }];
+    
+}
+
+#pragma mark jixu发布订单
+-(void)continueFaBu
+{
+    [self bgViewClicked];
+}
+
+//删除遮盖
+-(void)bgViewClicked
+{
+    //底层遮盖点击事件
+    [self.firendPopView removeFromSuperview];
+    [self.bg removeFromSuperview];
+    
+    
+}
+
+@end

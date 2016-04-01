@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="Select_ID">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="547"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="请选择您的身份" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bqf-cO-knf">
+                    <rect key="frame" x="85" y="150" width="203" height="35"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="29"/>
+                    <color key="textColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="T39-3B-J4k">
+                    <rect key="frame" x="52" y="229" width="120" height="120"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="120" id="TUp-ae-fdV"/>
+                        <constraint firstAttribute="height" constant="120" id="qqC-vR-xS4"/>
+                    </constraints>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jUg-Hv-nOu">
+                    <rect key="frame" x="202" y="229" width="120" height="120"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="120" id="WDo-AU-djg"/>
+                        <constraint firstAttribute="height" constant="120" id="giw-KC-pcY"/>
+                    </constraints>
+                </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ATq-5Y-LMW">
+                    <rect key="frame" x="52" y="391" width="120" height="30"/>
+                    <color key="backgroundColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <state key="normal" title="我想找活">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="findWorkClicked:" destination="iN0-l3-epB" eventType="touchUpInside" id="KmN-Zy-MY6"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K3O-fi-xOS">
+                    <rect key="frame" x="202" y="391" width="120" height="30"/>
+                    <color key="backgroundColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <state key="normal" title="我想找工人">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="findPeopleClicked:" destination="iN0-l3-epB" eventType="touchUpInside" id="pw6-E1-QpH"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="jUg-Hv-nOu" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" multiplier="1.4" id="1S4-dm-Ep8"/>
+                <constraint firstItem="T39-3B-J4k" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" multiplier="0.6" id="A0i-vA-SCU"/>
+                <constraint firstItem="K3O-fi-xOS" firstAttribute="width" secondItem="ATq-5Y-LMW" secondAttribute="width" id="Jad-fp-z4X"/>
+                <constraint firstItem="ATq-5Y-LMW" firstAttribute="centerX" secondItem="T39-3B-J4k" secondAttribute="centerX" id="LDI-Ms-Rye"/>
+                <constraint firstItem="Bqf-cO-knf" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="150" id="MeJ-of-adI"/>
+                <constraint firstItem="K3O-fi-xOS" firstAttribute="centerY" secondItem="ATq-5Y-LMW" secondAttribute="centerY" id="N2N-wp-kcz"/>
+                <constraint firstItem="Bqf-cO-knf" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="PDH-VH-KAT"/>
+                <constraint firstItem="ATq-5Y-LMW" firstAttribute="top" secondItem="T39-3B-J4k" secondAttribute="bottom" constant="42" id="RNF-kV-zWo"/>
+                <constraint firstItem="K3O-fi-xOS" firstAttribute="height" secondItem="ATq-5Y-LMW" secondAttribute="height" id="TCM-hO-PKs"/>
+                <constraint firstItem="K3O-fi-xOS" firstAttribute="centerX" secondItem="jUg-Hv-nOu" secondAttribute="centerX" id="amd-cN-yP8"/>
+                <constraint firstItem="T39-3B-J4k" firstAttribute="top" secondItem="Bqf-cO-knf" secondAttribute="bottom" constant="44" id="cXE-QM-Lc0"/>
+                <constraint firstItem="ATq-5Y-LMW" firstAttribute="width" secondItem="T39-3B-J4k" secondAttribute="width" id="kFq-FV-hBr"/>
+                <constraint firstItem="jUg-Hv-nOu" firstAttribute="top" secondItem="T39-3B-J4k" secondAttribute="top" id="nW7-CR-ByD"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="findPeopleBtn" destination="K3O-fi-xOS" id="76R-kC-2lj"/>
+                <outlet property="findwork" destination="ATq-5Y-LMW" id="V2e-rh-zSf"/>
+                <outlet property="grImageV" destination="T39-3B-J4k" id="VUb-Ay-Rsg"/>
+                <outlet property="gzImageV" destination="jUg-Hv-nOu" id="pkO-6q-GVb"/>
+            </connections>
+            <point key="canvasLocation" x="345.5" y="256.5"/>
+        </view>
+    </objects>
+</document>

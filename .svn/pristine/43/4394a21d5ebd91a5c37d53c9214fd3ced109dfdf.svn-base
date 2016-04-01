@@ -1,0 +1,615 @@
+//
+//  employersInMyViewController.m
+//  zhaiyi
+//
+//  Created by apple on 15/12/4.
+//  Copyright © 2015年 apple. All rights reserved.
+//
+
+#import "employersInMyViewController.h"
+#import "My_Login_UserInfo_Cell.h"
+#import "My_NoLogin_UserInfo_Cell.h"
+#import <objc/message.h>
+#import "My_pocket_index_ViewController.h"
+#import "My_pocket_index_ContactController.h"
+#import "My_pocket_tixian_ShareController.h"
+#import "My_pocket_tixian_FeedbackController.h"
+#import "My_pocket_qiehuan_View.h"
+#import "My_Login_In_ViewController.h"
+#import "My_jidanshezhi_Controller.h"
+#import "PersonalGongRenController.h"
+#import "PersonalGuZhuController.h"
+#import "UIImageView+WebCache.h"
+#import "AFNetworking.h"
+#import "AFNetFirst.h"
+
+
+#define BASE_URL_STR @"http://zhaiyi.bjqttd.com"
+#define GONGREN_PHOTO @"http://zhaiyi.bjqttd.com/api/personal/save_image"
+#define GUZHU_PHOTO @"http://zhaiyi.bjqttd.com/api/personal/save_em_image"
+@interface employersInMyViewController ()
+<
+UITableViewDataSource,
+UITableViewDelegate,
+UIActionSheetDelegate,
+UINavigationControllerDelegate,
+UIImagePickerControllerDelegate,
+UIAlertViewDelegate
+>
+{
+    UITableView * tb;
+    NSString * userid;
+    NSString * passwords;
+    NSString * leixing;
+    NSArray * actions;
+    My_pocket_qiehuan_View * qh;
+    UIButton * btn;
+    //头像保存
+    NSString *_imageFilePath;
+    NSString *_em_imageFilePath;
+
+    NSString *_imageUrl;
+    NSString *  _id;
+    NSData *_imageData;
+    //相机
+    UIImagePickerController *_picker;
+    //
+//    NSDictionary *userInfoDict;
+    ADAccount *_account;
+    //版本更新
+    NSString *updateUrl;
+    
+    //记住选择的登录状态
+    NSUserDefaults *userDefaults;
+}
+@end
+
+@implementation employersInMyViewController
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+    //获取用户信息
+    [self getUserInfo];
+    _account = [ADAccountTool account];
+    //默认不显示切换
+    [qh removeFromSuperview];
+    _changeIdentityBtn.selected = NO;
+
+    //获取登录信息
+    userDefaults = [NSUserDefaults standardUserDefaults];
+    _imageUrl = _account.picture;
+    _id = _account.userid;
+    
+    userid=[userDefaults objectForKey:U];
+    passwords=[userDefaults objectForKey:P];
+    if ([_account.type isEqualToString:@"78"]) {
+        actions = @[@{@"action":@"pushPersonalDetails"},
+                    @{@"action":@"pushWalletVc"},
+                    @{@"action":@"pushSettingVc"},
+                    @{@"action":@"pushShareVc"},
+                    @{@"action":@"pushFeedbackVc"},
+                    @{@"action":@"pushTelVc"},
+                    @{@"action":@"pushUpdateAlert"},
+                    @{@"action":@"pushLogoutVc"}];
+    }else
+    {
+        actions = @[@{@"action":@"pushPersonalDetails"},
+                    @{@"action":@"pushWalletVc"},
+                    @{@"action":@"pushShareVc"},
+                    @{@"action":@"pushFeedbackVc"},
+                    @{@"action":@"pushTelVc"},
+                    @{@"action":@"pushUpdateAlert"},
+                    @{@"action":@"pushLogoutVc"}];
+    }
+    if (userid.length == 0) {
+        _changeIdentityBtn.hidden = YES;
+    } else {
+        _changeIdentityBtn.hidden = NO;
+    }
+//
+    [tb reloadData];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self MakeUI];
+    // Do any additional setup after loading the view.
+}
+-(void)MakeUI
+{
+    self.view.backgroundColor=[UIColor whiteColor];
+    _imageFilePath = nil;
+    _em_imageFilePath = nil;
+    tb=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, kU, Ga)];
+    tb.delegate=self;
+    tb.dataSource=self;
+    tb.bounces=NO;
+    [self.view addSubview:tb];
+
+}
+
+-(void)getUserInfo{
+//    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+//    userInfoDict = (NSDictionary *)[userDefaults objectForKey:@"enter_user_info"];
+    
+    NSLog(@"用户信息:%@",[ADAccountTool backWitDictionary]);
+    
+    
+}
+
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    NSLog(@"计算分组数");
+    return 1;
+}
+
+#pragma mark 返回每组行数
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    if ([_account.type isEqualToString:@"78"]) {
+        return 8;
+    }else
+    {
+        return 7;
+    }
+}
+
+#pragma mark返回每行的单元格
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    tb.separatorStyle=UITableViewCellSeparatorStyleNone;
+    if (indexPath.row==0) {
+        if (userid.length==0) {
+            //未登录
+            My_NoLogin_UserInfo_Cell * cell;
+            if (!cell) {
+                cell =[[[NSBundle mainBundle]loadNibNamed:@"My_NoLogin_UserInfo_Cell" owner:self options:nil]lastObject];
+                cell.selectionStyle=UITableViewCellSelectionStyleNone;
+            }
+            [cell.login addTarget:self action:@selector(clickedLogin:) forControlEvents:UIControlEventTouchUpInside];
+            return cell;
+        }
+        else
+        {
+            My_Login_UserInfo_Cell * cell;
+            if (!cell) {
+                cell =[[[NSBundle mainBundle]loadNibNamed:@"My_Login_UserInfo_Cell" owner:self options:nil]lastObject];
+                cell.selectionStyle=UITableViewCellSelectionStyleNone;
+            }
+            //
+            if ([_account.type isEqualToString:@"78"]) {
+                //工人姓名
+                if ([_account.username isEqualToString:@""]) {
+                    
+                    cell.userNameLb.text = _account.nickname;
+                } else {
+                    cell.userNameLb.text = _account.username;
+                }
+                
+                
+                
+                
+                //工人头像
+                if (_imageFilePath) {
+                    cell.userImgV.image = [UIImage imageWithContentsOfFile:_imageFilePath];
+                } else {
+                    NSString *pic_url = [NSString stringWithFormat:@"%@%@",BASE_URL_STR,_account.picture];
+                    [cell.userImgV sd_setImageWithURL:[NSURL URLWithString:pic_url] placeholderImage:[UIImage imageNamed:@"我的3"]];
+                }
+                
+            } else {
+                
+                //雇主姓名
+                
+                if ([_account.em_name isEqualToString:@""]) {
+                    
+                    cell.userNameLb.text = _account.em_nickname;
+                } else {
+                    cell.userNameLb.text = _account.em_name;
+                }
+                
+                //雇主头像
+                if (_em_imageFilePath) {
+                    cell.userImgV.image = [UIImage imageWithContentsOfFile:_em_imageFilePath];
+                } else {
+                    NSString *pic_url = [NSString stringWithFormat:@"%@%@",BASE_URL_STR,_account.em_image];
+                    [cell.userImgV sd_setImageWithURL:[NSURL URLWithString:pic_url] placeholderImage:[UIImage imageNamed:@"我的3"]];
+                }
+                
+            }
+            
+            NSString *userAddress = _account.address;
+            //
+            if ([userAddress isEqualToString:@""]) {
+                cell.userAddressLb.text = @"地址";
+            } else {
+                cell.userAddressLb.text = userAddress;
+            }
+            
+            
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changePhoto:)];
+            [cell.userImgV addGestureRecognizer:tap];
+            
+            return cell;
+        }
+    }else
+    {
+        UITableViewCell *cell1=[tableView dequeueReusableCellWithIdentifier:@"cell1"];
+        if (!cell1) {
+            cell1=[[UITableViewCell alloc]init];
+        }
+        UIImageView * img=[[UIImageView alloc]initWithFrame:CGRectMake(8, 20, 20, 20)];
+        [cell1.contentView addSubview:img];
+        UILabel * title=[[UILabel alloc]initWithFrame:CGRectMake(40, 20, 100, 20)];
+        title.font=[UIFont systemFontOfSize:16];
+        [cell1.contentView addSubview:title];
+        //箭头
+        
+        UIImageView *arrowsImgV = [[UIImageView alloc]initWithFrame:CGRectMake(kU - 38, 21, 10, 18)];
+        arrowsImgV.image = [UIImage imageNamed:@"钱包3"];
+        [cell1.contentView addSubview:arrowsImgV];
+        
+        NSArray *picArr = [[NSArray alloc]init];
+        if ([_account.type isEqualToString:@"78"]) {
+            picArr=@[@"我的_03.png",@"我的_07.png",@"我的_10.png",@"我的_12.png",@"我的_14.png",@"我的_16",@"我的_19.png"];
+            NSArray * name=@[@"钱包",@"接单设置",@"分享有礼",@"意见反馈",@"服务电话",@"版本更新",@"退出"];
+            NSLog(@"%ld",(long)indexPath.row);
+            img.image=[UIImage imageNamed:picArr[indexPath.row-1]];
+            title.text=name[indexPath.row-1];
+        }else{
+            picArr=@[@"我的_03.png",@"我的_10.png",@"我的_12.png",@"我的_14.png",@"我的_16",@"我的_19.png"];
+            NSArray * name=@[@"钱包",@"分享有礼",@"意见反馈",@"服务电话",@"版本更新",@"退出"];
+            img.image=[UIImage imageNamed:picArr[indexPath.row-1]];
+            title.text=name[indexPath.row-1];
+        }
+        
+        if (indexPath.row == picArr.count - 1) {
+            arrowsImgV.hidden = YES;
+            UILabel * updateLb =[[UILabel alloc]initWithFrame:CGRectMake(kU - 130, 20, 120, 20)];
+            updateLb.font = [UIFont systemFontOfSize:14];
+            updateLb.textAlignment = NSTextAlignmentRight;
+            updateLb.text = [NSString stringWithFormat:@"当前版本:%@",CURRENT_VERSION ];
+            [cell1.contentView addSubview:updateLb];
+        }
+        if (indexPath.row == picArr.count) {
+            arrowsImgV.hidden = YES;
+        }
+        
+        
+        UIView * view=[[UIView alloc]initWithFrame:CGRectMake(10, 59, kU-10, 1)];
+        view.backgroundColor=[UIColor myColorWithString:@"f4f4f4"];
+        [cell1.contentView addSubview:view];
+        return cell1;
+    }
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row==0) {
+        return 130;
+    }else
+    {
+        return 60;
+    }
+}
+
+-(void)clickedLogin:(UIButton *)sender{
+    
+    My_Login_In_ViewController *my_login = [[My_Login_In_ViewController alloc]init];
+    [self.navigationController pushViewController:my_login animated:YES];
+}
+
+
+#pragma mark -------UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (userid.length != 0) {
+        NSDictionary *actionDict = actions[indexPath.row];
+        if (actionDict[@"action"]) {
+            SEL sel = NSSelectorFromString(actionDict[@"action"]);
+            if ([self respondsToSelector:sel]) {
+                objc_msgSend(self,sel);
+            }
+        }
+    }else {
+        NSLog(@"请登录");
+    }
+}
+//个人详细信息
+- (void)pushPersonalDetails {
+    
+    if ([_account.type isEqualToString:@"78"]) {
+        
+        PersonalGongRenController *personalGR = [[PersonalGongRenController alloc]init];
+        personalGR.title = @"个人资料";
+        [self.navigationController pushViewController:personalGR animated:YES];
+    } else {
+        PersonalGuZhuController *personalGZ = [[PersonalGuZhuController alloc]init];
+        personalGZ.title = @"个人资料";
+        [self.navigationController pushViewController:personalGZ animated:YES];
+    }
+}
+//钱包
+- (void)pushWalletVc {
+    NSLog(@"-----2钱包------");
+    My_pocket_index_ViewController * pocket=[[My_pocket_index_ViewController alloc]init];
+    [self.navigationController pushViewController:pocket animated:YES];
+}
+//跳转到接单设置
+- (void)pushSettingVc {
+    NSLog(@"-----3------");
+    My_jidanshezhi_Controller * jd=[My_jidanshezhi_Controller new];
+    [self.navigationController pushViewController:jd animated:YES];
+}
+//跳转到分享有礼
+- (void)pushShareVc {
+    My_pocket_tixian_ShareController *vc = [My_pocket_tixian_ShareController new];
+    vc.title = @"分享有礼";
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+//跳转到意见反馈
+- (void)pushFeedbackVc {
+    UIStoryboard *story = [UIStoryboard storyboardWithName:@"My_pocket_tixian_FeedbackController" bundle:nil];
+    My_pocket_tixian_FeedbackController *vc = [story instantiateInitialViewController];
+    [self.navigationController pushViewController:vc animated:YES];
+    
+}
+
+//跳转到服务电话
+- (void)pushTelVc{
+    
+    My_pocket_index_ContactController * vc = [My_pocket_index_ContactController new];
+    vc.title = @"联系我们";
+    [self.navigationController pushViewController:vc animated:YES];
+    
+}
+//版本更新
+-(void)pushUpdateAlert{
+//    NSLog(@"最新版本");
+    [self getNewVersion];
+}
+
+
+//退出
+- (void)pushLogoutVc {
+    NSLog(@"-----7------");
+    NSUserDefaults * defaults=[NSUserDefaults standardUserDefaults];
+    [defaults setObject:@"" forKey:U];
+    [defaults setObject:@"" forKey:P];
+    [defaults setObject:@"" forKey:L];
+    [defaults synchronize];
+    
+    [self viewWillAppear:YES];
+}
+
+#pragma mark 版本更新
+
+-(void)getNewVersion{
+    
+    NSMutableDictionary *paramater = [NSMutableDictionary dictionary];
+    [paramater setObject:_account.userid forKey:@"user_id"];
+    
+    [NetWork postNoParm:POST_UPDATE_VERSION params:paramater success:^(id responseObj) {
+        NSLog(@"版本 %@",CURRENT_VERSION);
+        
+        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+            NSDictionary *dict = [responseObj objectForKey:@"data"];
+            NSLog(@"dict %@",dict);
+            NSString *number = [dict objectForKey:@"view_number"];
+             if ([number floatValue]>[CURRENT_VERSION floatValue]) {
+                NSString *time = [dict objectForKey:@"updatetime"];
+                NSString *message = [NSString stringWithFormat:@"有新版本了!\n更新于%@",[time substringToIndex:10]];
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"前去更新", nil];
+                updateUrl = [dict objectForKey:@"ios_url"];
+                [alert show];
+                
+            } else {
+                
+                [ITTPromptView showMessage:@"暂时没有新版本更新"];
+            }
+            
+            
+        }
+        
+        
+    } failure:^(NSError *error) {
+        
+    }];
+    
+    
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    switch (buttonIndex) {
+        case 0:
+        {
+            
+        }
+            break;
+        case 1:
+        {
+            NSLog(@"前去更新版本");
+            if (updateUrl != nil|updateUrl.length !=0) {
+                [[UIApplication sharedApplication]openURL:[NSURL URLWithString:updateUrl]];
+            }
+        }
+            break;
+        default:
+            break;
+    }
+    
+    
+}
+
+#pragma mark 切换身份按钮
+- (IBAction)QH:(id)sender {
+    _changeIdentityBtn.selected = !_changeIdentityBtn.selected;
+    
+    if (_changeIdentityBtn.selected) {
+        [_changeIdentityBtn setTitle:@"取消切换" forState:UIControlStateSelected];
+        qh=[My_pocket_qiehuan_View initViewWithXib];
+        qh.frame=CGRectMake(0, 64, kU, 130);
+        qh.LX=_account.type;
+        [qh.goren addTarget:self action:@selector(gongren) forControlEvents:UIControlEventTouchUpInside];
+        [qh.guzhu addTarget:self action:@selector(guzhu) forControlEvents:UIControlEventTouchUpInside];
+    
+        [self.view addSubview:qh];
+    } else {
+        [qh removeFromSuperview];
+        NSLog(@"qiehuan");
+    }
+}
+
+//工人雇主切换
+-(void)gongren
+{
+    My_Login_In_ViewController * login=[My_Login_In_ViewController new];
+
+    [userDefaults setObject:@"78" forKey:@"qiehuan_id"];
+    [userDefaults synchronize];
+    [self.navigationController pushViewController:login animated:YES];
+}
+-(void)guzhu
+{
+    My_Login_In_ViewController * login=[My_Login_In_ViewController new];
+    [userDefaults setObject:@"79" forKey:@"qiehuan_id"];
+    [userDefaults synchronize];
+    [self.navigationController pushViewController:login animated:YES];
+}
+
+-(void)changePhoto:(UITapGestureRecognizer *)sender
+{
+    UIActionSheet *myAction = [[UIActionSheet alloc]initWithTitle:@"更换头像" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"拍照",@"从相册选择", nil];
+    [myAction showInView:self.view];
+}
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    switch (buttonIndex) {
+        case 0:{
+            //相机
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                _picker = [[UIImagePickerController alloc]init];
+                _picker.delegate = self;
+                _picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                _picker.allowsEditing = YES;
+                [self presentViewController:_picker animated:YES completion:^{
+                    
+                }];
+            } else {
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"相机不可用" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alert show];
+            }
+        }
+            break;
+        case 1:{
+            //相册
+            _picker = [[UIImagePickerController alloc]init];
+            _picker.delegate = self;
+            _picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            [self presentViewController:_picker animated:YES completion:^{
+                
+            }];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+#pragma Delegate method UIImagePickerControllerDelegate
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
+    
+    if (picker.sourceType == UIImagePickerControllerSourceTypePhotoLibrary) {
+        
+        UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+        _imageData = UIImageJPEGRepresentation(image, 0.3);
+//        _userImage = image;
+        //保存图片
+        [self saveImage:image];
+        [self changeImage];
+        [self dismissViewControllerAnimated:YES completion:^{
+            NSLog(@"来自相册");
+        }];
+    } else if (_picker.sourceType == UIImagePickerControllerSourceTypeCamera){
+        UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];
+        _imageData = UIImageJPEGRepresentation(image, 0.3);
+//        _userImage = image;
+        //保存图片
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+        [self saveImage:image];
+        [self changeImage];
+        [self dismissViewControllerAnimated:YES completion:^{
+            NSLog(@"来自相机");
+        }];
+    }
+}
+
+//上传头像
+-(void)changeImage{
+ 
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:_id forKey:@"user_id"];
+ 
+    //判断
+    if ([_account.type isEqualToString:@"78"]) {
+        //工人端
+        [AFNetFirst typePicturePOST:GONGREN_PHOTO parameters:params withPicureData:_imageData withKey:@"picture" finish:^(NSData *data, NSError *error) {
+            NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+            NSLog(@"%@",dic);
+            if ([[dic objectForKey:@"code"] isEqualToString:@"1000"]) {
+                [ITTPromptView showMessage:@"头像修改成功"];
+                [tb reloadData];
+            }
+        }];
+     }else {
+         //雇主端
+         [AFNetFirst typePicturePOST:GUZHU_PHOTO parameters:params withPicureData:_imageData withKey:@"em_image" finish:^(NSData *data, NSError *error) {
+             NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+             NSLog(@"%@",dic);
+             if ([[dic objectForKey:@"code"] isEqualToString:@"1000"]) {
+                 [tb reloadData];
+                 [ITTPromptView showMessage:@"头像修改成功"];
+             }
+         }];
+     }
+    
+}
+//保存图片
+-(void)saveImage:(UIImage *)image{
+    BOOL success;
+    NSError *error;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docunmentsDirectory = [paths objectAtIndex:0];
+    NSString *imageFilePath = [docunmentsDirectory stringByAppendingPathComponent:@"myPhoto_xiaomujiang.jpg"];
+    success = [fileManager fileExistsAtPath:imageFilePath];
+    if (success) {
+        success = [fileManager removeItemAtPath:imageFilePath error:&error];
+        
+        //判断保存
+        if ([_account.type isEqualToString:@"78"]) {
+            _imageFilePath = imageFilePath;
+        } else {
+            _em_imageFilePath = imageFilePath;
+        }
+    }
+    //写入
+    [UIImageJPEGRepresentation(image, 0.3f) writeToFile:imageFilePath atomically:YES];
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+    
+    
+}
+@end
+
+
+
+

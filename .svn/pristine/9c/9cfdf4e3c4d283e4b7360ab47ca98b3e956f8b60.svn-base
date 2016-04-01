@@ -1,0 +1,841 @@
+//
+//  MainViewController.m
+//  zhaiyi
+//
+//  Created by apple on 15/12/4.
+//  Copyright © 2015年 apple. All rights reserved.
+//
+
+#import "MainViewController.h"
+#import "workerOrderViewController.h"
+
+#import "DWOrderViewController.h"
+#import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
+
+#import "MySearch.h"
+#import "APService.h"
+
+#import "SSAnnotation.h"
+#import "HMAnnotationView.h"
+
+#import <iflyMSC/IFlySpeechRecognizer.h>
+#import <iflyMSC/IFlySpeechRecognizerDelegate.h>
+#import "iflyMSC/IFlyMSC.h"
+#import "ISRDataHelper.h"
+#import "IATConfig.h"
+
+
+@interface MainViewController ()<UIAlertViewDelegate,CLLocationManagerDelegate,MKMapViewDelegate,IFlySpeechRecognizerDelegate>
+
+{
+    MySearch *searchView;
+    IFlySpeechRecognizer *iFlySpeechRecognizer;
+    BOOL YuYinShibie;
+}
+
+@property (nonatomic,strong)NSString * userStatus;
+@property (strong, nonatomic) IBOutlet UIButton *myBtn;
+@property (strong, nonatomic) IBOutlet UIButton *orderBtn;
+@property (strong, nonatomic) IBOutlet UIButton *firstBtn;
+
+@property (strong, nonatomic) IBOutlet MKMapView *map;
+@property (nonatomic,strong) CLLocationManager *manger;
+
+// 大头针数组
+@property (nonatomic,strong) NSMutableArray *anncoationArray;
+
+/**
+ *  地理编码对象
+ */
+@property (nonatomic ,strong) CLGeocoder *geocoder;
+
+//coreLocation
+//@property (nonatomic, strong) CLLocationManager *lm;
+
+
+@end
+
+@implementation MainViewController
+
+-(NSMutableArray *)anncoationArray
+{
+    if (_anncoationArray == nil) {
+        _anncoationArray = [NSMutableArray array];
+    }
+    return _anncoationArray;
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    
+   NSUserDefaults * status = [NSUserDefaults standardUserDefaults];
+    self.userStatus = [status objectForKey:L];
+    
+    ADAccount *acount = [ADAccountTool account];
+    //NSLog(@"%@",acount.type);
+    
+    if ([acount.type isEqualToString:@"79"]) {
+        [self.firstBtn setTitle:@"找工人" forState:(UIControlStateNormal)];
+        [self.myBtn setTitle:@"我的" forState:(UIControlStateNormal)];
+        [self.orderBtn setTitle:@"订单" forState:(UIControlStateNormal)];
+    }else{
+        [self.firstBtn setTitle:@"抢单" forState:(UIControlStateNormal)];
+        [self.orderBtn setTitle:@"订单" forState:(UIControlStateNormal)];
+        [self.myBtn setTitle:@"我的" forState:(UIControlStateNormal)];
+    }
+    //极光推送
+    [self jiGuangTuiSong];
+    
+    YuYinShibie = NO;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    //导航栏
+    [self updateNav];
+    //地图
+    [self createMap];
+    //添加搜索框
+    [self addSearchView];
+    
+    [self YuYinResign];
+
+    //实时定位
+    //[self GPS];
+}
+
+// 初始化
+-(void)YuYinResign
+{
+    NSString *initString = [[NSString alloc] initWithFormat:@"appid=%@",@"569e5130"];
+    [IFlySpeechUtility createUtility:initString];
+}
+
+-(void)jiGuangTuiSong
+{
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+    [defaultCenter addObserver:self
+                      selector:@selector(networkDidSetup:)
+                          name:kJPFNetworkDidSetupNotification
+                        object:nil];
+    [defaultCenter addObserver:self
+                      selector:@selector(networkDidClose:)
+                          name:kJPFNetworkDidCloseNotification
+                        object:nil];
+    [defaultCenter addObserver:self
+                      selector:@selector(networkDidRegister:)
+                          name:kJPFNetworkDidRegisterNotification
+                        object:nil];
+    [defaultCenter addObserver:self
+                      selector:@selector(networkDidLogin:)
+                          name:kJPFNetworkDidLoginNotification
+                        object:nil];
+    [defaultCenter addObserver:self
+                      selector:@selector(networkDidReceiveMessage:)
+                          name:kJPFNetworkDidReceiveMessageNotification
+                        object:nil];
+    [defaultCenter addObserver:self
+                      selector:@selector(serviceError:)
+                          name:kJPFServiceErrorNotification
+                        object:nil];
+}
+
+#pragma mark 添加搜索框
+-(void)addSearchView
+{
+    searchView = [MySearch item];
+    searchView.x = 0;
+    searchView.y = 44;
+    searchView.width = kU;
+    searchView.height = 44;
+    
+    [searchView SearchAddTarget:self action:@selector(Search)];
+    [searchView YuYinAddTarget:self action:@selector(YuYin)];
+    
+    //searchView.height = 10;
+    
+    //searchView.frame = CGRectMake(0, 0, 320, 100);
+    [self.map addSubview:searchView];
+    
+}
+#pragma mark 导航栏
+-(void)updateNav
+{
+//    UILabel * lab = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 100, 80)];
+//    lab.text = @"小木匠";
+//    lab.textColor = [UIColor blueColor];
+//    lab.font = [UIFont fontWithName:@"Arial-BoldItalicMT" size:16];
+//    lab.textAlignment = NSTextAlignmentCenter;
+    
+    UIImageView *imageV = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 100, 40)];
+    imageV.image = [UIImage imageNamed:@"ic_title"];
+    
+    self.navigationItem.titleView = imageV;
+}
+
+
+#pragma mark 地图
+-(void)createMap
+{
+    if ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0) {
+        // 主动请求权限
+        self.manger = [[CLLocationManager alloc] init];
+
+        [self.manger requestAlwaysAuthorization];
+    }
+    //     创建对象
+    self.manger.delegate = self;
+    // 设置偏移多少定位
+  //  self.manger.distanceFilter = 2;
+    // 设置定位精准度
+    self.manger.desiredAccuracy = kCLLocationAccuracyBest;
+    // 授权
+    [self.manger requestWhenInUseAuthorization];
+    // 开始定位
+    [self.manger startUpdatingLocation];
+    //
+    self.map.showsUserLocation = YES;
+    
+    
+    // 设置不允许地图旋转
+    self.map.rotateEnabled = NO;
+    self.map.delegate = self;
+    self.map.userTrackingMode =  MKUserTrackingModeFollow;
+    
+    
+    
+    // 设置定位模式;
+//    CLLocationCoordinate2D center = CLLocationCoordinate2DMake(39.921, 116.3883);
+//    //    MKCoordinateSpan span = MKCoordinateSpanMake(0.021321, 0.019366);
+//    self.map.userTrackingMode = MKUserTrackingModeFollow;
+//    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(center,50000, 50000);
+//    MKCoordinateRegion adjustedRegion = [self.map regionThatFits:viewRegion];
+//    
+//    [self.map setRegion:adjustedRegion animated:YES];
+    
+}
+
+//地图代理
+#pragma mark mapViewDelegate
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    
+    if ([annotation isKindOfClass:[SSAnnotation class]] == NO) {
+        return nil;
+    }
+    
+    // 1.创建大头针
+    HMAnnotationView *annoView = [HMAnnotationView annotationViewWithMap:mapView];
+    // 2.设置模型
+    annoView.annotation = annotation;
+    
+    // 3.返回大头针
+    return annoView;
+}
+
+
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
+    
+        //坐标
+   CLLocationCoordinate2D coord2D = userLocation.location.coordinate;
+    
+    [self.map setCenterCoordinate:userLocation.location.coordinate animated:YES];
+//        NSLog(@"------纬度：%f  经度：%f",userLocation.location.coordinate.latitude,userLocation.location.coordinate.longitude);
+    
+    
+     NSString *lon = [NSString stringWithFormat:@"%f",userLocation.location.coordinate.longitude];
+     NSString *lat = [NSString stringWithFormat:@"%f",userLocation.location.coordinate.latitude];
+    
+    
+    [[NSUserDefaults standardUserDefaults]setObject:lon forKey:@"lon"];
+    [[NSUserDefaults standardUserDefaults]setObject:lat forKey:@"lat"];
+    
+    // 设置定位模式;
+        CLLocationCoordinate2D center = CLLocationCoordinate2DMake([lat doubleValue], [lon doubleValue]);
+        //    MKCoordinateSpan span = MKCoordinateSpanMake(0.021321, 0.019366);
+        self.map.userTrackingMode = MKUserTrackingModeFollow;
+        MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(center,500, 500);
+        MKCoordinateRegion adjustedRegion = [self.map regionThatFits:viewRegion];
+    
+        [self.map setRegion:adjustedRegion animated:YES];
+    
+    
+    //地理编码
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:[lat doubleValue]  longitude:[lon doubleValue]];
+    
+    // 3.根据CLLocation对象获取对应的地标信息
+    [self.geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        for (CLPlacemark *placemark in placemarks) {
+            
+           // NSLog(@"%@ %@ %f %f", placemark.name, placemark.addressDictionary, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude);
+            
+           // NSLog(@"%@",placemark.name);
+            //定位本地保存
+            [[NSUserDefaults standardUserDefaults]setObject:placemark.name forKey:@"placemark"];
+            
+           // self.reverseDetailAddressLabel.text = placemark.locality;
+        }
+    }];
+    
+    //先更新工人位置在查看附近工人
+    ADAccount *acount  =[ADAccountTool account];
+    NSLog(@"%@",acount.type);
+    
+    if ([acount.type isEqualToString:@"79"]) {
+        
+        [self updayeWorkerPlace:[[NSUserDefaults standardUserDefaults] objectForKey:@"lon"] lat:[[NSUserDefaults standardUserDefaults] objectForKey:@"lat"]];
+    }else
+    {
+        [self fujinDingDan:[[NSUserDefaults standardUserDefaults] objectForKey:@"lon"] lat:[[NSUserDefaults standardUserDefaults] objectForKey:@"lat"]];
+    }
+
+   //[self fujin:lon lat:lat];
+    
+    
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+
+// 抢单
+//1属于工人,0属于雇主
+
+- (IBAction)grabASingle:(UIButton *)sender {
+    //雇主找工人
+    if ([self.userStatus isEqualToString:@"0"]) {
+        UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"employersLooking" bundle:nil];
+        UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"employersLooking"];
+        [self.navigationController pushViewController:test2obj animated:YES];
+        
+    //工人抢单
+    }else{
+        
+        UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"workerRob" bundle:nil];
+        UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"workerRob"];
+        [self.navigationController pushViewController:test2obj animated:YES];
+    }
+}
+
+// 订单
+- (IBAction)theOrder:(UIButton *)sender {
+    
+    if ([self.userStatus isEqualToString:@"0"]) {
+        DWOrderViewController *dwOrderVc = [[DWOrderViewController alloc] initWithNibName:@"DWOrderViewController" bundle:nil];
+        [self.navigationController pushViewController:dwOrderVc animated:YES];
+        
+    }else
+    {
+        
+        UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"workerOrder" bundle:nil];
+        UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"workerOrder"];
+        [self.navigationController pushViewController:test2obj animated:YES];
+}
+   
+}
+// 我的
+- (IBAction)myList:(UIButton *)sender {
+    
+    UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"employersInMy" bundle:nil];
+    UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"employersInMy"];
+    [self.navigationController pushViewController:test2obj animated:YES];
+}
+
+//推送相关
+- (void)networkDidSetup:(NSNotification *)notification {
+    NSLog(@"已连接");
+}
+
+- (void)networkDidClose:(NSNotification *)notification {
+
+    NSLog(@"未连接");
+
+}
+
+- (void)networkDidRegister:(NSNotification *)notification {
+    NSLog(@"%@", [notification userInfo]);
+
+    NSLog(@"已注册");
+}
+
+- (void)networkDidLogin:(NSNotification *)notification {
+    NSLog(@"已登录");
+    
+    if ([APService registrationID]) {
+        NSLog(@"get RegistrationID");
+    }
+}
+
+- (void)networkDidReceiveMessage:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    NSString *title = [userInfo valueForKey:@"title"];
+    NSString *content = [userInfo valueForKey:@"content"];
+    NSDictionary *extra = [userInfo valueForKey:@"extras"];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    
+    NSString *currentContent = [NSString
+                                stringWithFormat:
+                                @"收到自定义消息:%@\ntitle:%@\ncontent:%@\nextra:%@\n",
+                                [NSDateFormatter localizedStringFromDate:[NSDate date]
+                                                               dateStyle:NSDateFormatterNoStyle
+                                                               timeStyle:NSDateFormatterMediumStyle],
+                                title, content, [self logDic:extra]];
+    NSLog(@"%@", currentContent);
+    
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message: content delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+    
+    [alert show];
+    
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    //NSLog(@"%d",buttonIndex);
+    if (buttonIndex == 0 ) {
+        NSLog(@"123");
+        
+    }else if (buttonIndex == 1 )
+    {
+        NSLog(@"456");
+    }
+    
+}
+
+// log NSSet with UTF8
+// if not ,log will be \Uxxx
+- (NSString *)logDic:(NSDictionary *)dic {
+    if (![dic count]) {
+        return nil;
+    }
+    NSString *tempStr1 =
+    [[dic description] stringByReplacingOccurrencesOfString:@"\\u"
+                                                 withString:@"\\U"];
+    NSString *tempStr2 =
+    [tempStr1 stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+    NSString *tempStr3 =
+    [[@"\"" stringByAppendingString:tempStr2] stringByAppendingString:@"\""];
+    NSData *tempData = [tempStr3 dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *str =
+    [NSPropertyListSerialization propertyListFromData:tempData
+                                     mutabilityOption:NSPropertyListImmutable
+                                               format:NULL
+                                     errorDescription:NULL];
+    return str;
+}
+
+//实时定位
+#pragma mark 实时定位
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray *)locations
+{
+    CLLocation *cl = locations[0];
+    NSString *lon = [NSString stringWithFormat:@"%f",cl.coordinate.longitude];
+     NSString *lat = [NSString stringWithFormat:@"%f",cl.coordinate.latitude];
+    
+    //NSLog(@"lng:%f,lat:%f",cl.coordinate.longitude,cl.coordinate.latitude);
+    
+    [[NSUserDefaults standardUserDefaults]setObject:lon forKey:@"lon"];
+    [[NSUserDefaults standardUserDefaults]setObject:lat forKey:@"lat"];
+    
+}
+
+#pragma mark 创建大头针模型
+-(void)Search:(NSArray *)array
+{
+    for (int i = 0; i<self.anncoationArray.count; i++)
+    {
+        [self.map removeAnnotation:self.anncoationArray[i]];
+    }
+    
+    for (int i = 0; i<array.count; i++) {
+        NSDictionary *personDic = [NSDictionary dictionary];
+        
+        personDic = array[i];
+
+        // 创建大头针模型
+        SSAnnotation *anno = [[SSAnnotation alloc] init];
+        anno.title = [personDic objectForKey:@"em_nickname"];
+        anno.subtitle = [personDic objectForKey:@"typeName"];
+        
+        CGFloat latitude = [[personDic objectForKey:@"a_lat"]floatValue];
+        CGFloat longitude = [[personDic objectForKey:@"a_lng"]floatValue];
+        
+//        NSLog(@"---%lf",latitude);
+//        NSLog(@"---%lf",longitude);
+        anno.coordinate = CLLocationCoordinate2DMake(latitude , longitude);
+        anno.icon = @"datuzhen2";
+        
+        // 添加大头针
+        [self.map addAnnotation:anno];
+        [self.anncoationArray addObject:anno];
+    }
+    
+}
+
+ // 语音按钮
+-(void)YuYin
+{
+    YuYinShibie = !YuYinShibie;
+    
+    if (YuYinShibie == YES) {
+        
+        [searchView.YuYin setImage:[UIImage imageNamed:@"讲话"] forState:UIControlStateNormal];
+        
+        if(iFlySpeechRecognizer == nil)
+        {
+            [self initRecognizer];
+        }
+        
+        [iFlySpeechRecognizer cancel];
+        
+        //设置音频来源为麦克风
+        [iFlySpeechRecognizer setParameter:IFLY_AUDIO_SOURCE_MIC forKey:@"audio_source"];
+        
+        //设置听写结果格式为json
+        [iFlySpeechRecognizer setParameter:@"json" forKey:[IFlySpeechConstant RESULT_TYPE]];
+        //保存录音文件，保存在sdk工作路径中，如未设置工作路径，则默认保存在library/cache下
+        [iFlySpeechRecognizer setParameter:@"asr.pcm" forKey:[IFlySpeechConstant ASR_AUDIO_PATH]];
+        
+        [iFlySpeechRecognizer setDelegate:self];
+        
+        BOOL ret = [iFlySpeechRecognizer startListening];
+        
+        if (ret) {
+            NSLog(@"－－－－－－－－－－－－识别中---------");
+        }else{
+            NSLog(@"－－－－－－－－－－－－识别错误---------");
+            //[popUpView showText: @"启动识别服务失败，请稍后重试"];//可能是上次请求未结束，暂不支持多路并发
+        }
+
+    }else
+    {
+       [searchView.YuYin setImage:[UIImage imageNamed:@"yuyin"] forState:UIControlStateNormal];
+       [iFlySpeechRecognizer stopListening];
+       [self Search];
+    }
+    
+    
+    
+}
+
+//
+-(void)initRecognizer
+{
+    if (iFlySpeechRecognizer == nil) {
+        iFlySpeechRecognizer = [IFlySpeechRecognizer sharedInstance];
+        
+        [iFlySpeechRecognizer setParameter:@"" forKey:[IFlySpeechConstant PARAMS]];
+        
+        //设置听写模式
+        [iFlySpeechRecognizer setParameter:@"iat" forKey:[IFlySpeechConstant IFLY_DOMAIN]];
+    }
+    iFlySpeechRecognizer.delegate = self;
+    
+    if (iFlySpeechRecognizer != nil) {
+
+        IATConfig *instance = [IATConfig sharedInstance];
+        //设置最长录音时间
+        [iFlySpeechRecognizer setParameter:instance.speechTimeout forKey:[IFlySpeechConstant SPEECH_TIMEOUT]];
+        //设置后端点
+        [iFlySpeechRecognizer setParameter:instance.vadEos forKey:[IFlySpeechConstant VAD_EOS]];
+        //设置前端点
+        [iFlySpeechRecognizer setParameter:instance.vadBos forKey:[IFlySpeechConstant VAD_BOS]];
+        //网络等待时间
+        [iFlySpeechRecognizer setParameter:@"20000" forKey:[IFlySpeechConstant NET_TIMEOUT]];
+        
+        //设置采样率，推荐使用16K
+        [iFlySpeechRecognizer setParameter:instance.sampleRate forKey:[IFlySpeechConstant SAMPLE_RATE]];
+    
+        if ([instance.language isEqualToString:[IATConfig chinese]]) {
+            //设置语言
+            [iFlySpeechRecognizer setParameter:instance.language forKey:[IFlySpeechConstant LANGUAGE]];
+            //设置方言
+            [iFlySpeechRecognizer setParameter:instance.accent forKey:[IFlySpeechConstant ACCENT]];
+        }else if ([instance.language isEqualToString:[IATConfig english]]) {
+            [iFlySpeechRecognizer setParameter:instance.language forKey:[IFlySpeechConstant LANGUAGE]];
+        }
+        //设置是否返回标点符号
+        [iFlySpeechRecognizer setParameter:instance.dot forKey:[IFlySpeechConstant ASR_PTT_NODOT]];
+
+    }
+
+}
+
+/**
+// 停止录音
+// *****/
+//- (IBAction)stopBtnHandler:(id)sender {
+//    
+//    [iFlySpeechRecognizer stopListening];
+//   // [textView resignFirstResponder];
+//}
+//
+///**
+// 取消听写
+// *****/
+//- (IBAction)cancelBtnHandler:(id)sender {
+//    //self.isCanceled = YES;
+//    
+//    [iFlySpeechRecognizer cancel];
+//    
+//    //[popUpView removeFromSuperview];
+//    //[_textView resignFirstResponder];
+//}
+
+#pragma mark - IFlySpeechRecognizerDelegate
+
+/**
+ 音量回调函数
+ volume 0－30
+ ****/
+- (void) onVolumeChanged: (int)volume
+{
+    
+    NSString * vol = [NSString stringWithFormat:@"音量：%d",volume];
+
+}
+
+
+
+/**
+ 开始识别回调
+ ****/
+- (void) onBeginOfSpeech
+{
+    NSLog(@"onBeginOfSpeech");
+   // [_popUpView showText: @"正在录音"];
+}
+
+/**
+ 停止录音回调
+ ****/
+- (void) onEndOfSpeech
+{
+    NSLog(@"onEndOfSpeech");
+    
+    //[_popUpView showText: @"停止录音"];
+}
+
+
+/**
+ 听写结束回调（注：无论听写是否正确都会回调）
+ error.errorCode =
+ 0     听写正确
+ other 听写出错
+ ****/
+- (void) onError:(IFlySpeechError *) error
+{
+    NSLog(@"%@",error);
+    
+    
+}
+
+/**
+ 无界面，听写结果回调
+ results：听写结果
+ isLast：表示最后一次
+ ****/
+- (void) onResults:(NSArray *) results isLast:(BOOL)isLast
+{
+    
+    NSMutableString *resultString = [[NSMutableString alloc] init];
+    NSDictionary *dic = results[0];
+    for (NSString *key in dic) {
+        [resultString appendFormat:@"%@",key];
+    }
+    NSLog(@"%@",results);
+    
+    //_result =[NSString stringWithFormat:@"%@%@", _textView.text,resultString];
+    NSString * resultFromJson =  [ISRDataHelper stringFromJson:resultString];
+    
+    if (isLast){
+        
+        NSLog(@"听写结果(json)：%@测试", resultFromJson);
+        
+    }else
+    {
+        NSLog(@"resultFromJson=%@",resultFromJson);
+        searchView.textFiled.text = resultFromJson;
+        [searchView.YuYin setImage:[UIImage imageNamed:@"yuyin"] forState:UIControlStateNormal];
+        [iFlySpeechRecognizer stopListening];
+        [self Search];
+    }
+}
+/**
+ 听写取消回调
+ ****/
+- (void) onCancel
+{
+    NSLog(@"识别取消");
+}
+
+-(void) showPopup
+{
+   // [_popUpView showText: @"正在上传..."];
+}
+
+#pragma mark 定位按钮
+-(void)Search
+{
+    // 0.获取用户输入的位置
+    NSString *addressStr = searchView.textFiled.text;
+    if (addressStr == nil || addressStr.length == 0) {
+        
+        [ITTPromptView showMessage:@"请输入地址"];
+        
+        return;
+    }
+    
+    [[NSUserDefaults standardUserDefaults]setObject:addressStr forKey:@"placemark"];
+    // 1.创建地理编码对象
+    // 2.利用地理编码对象编码
+    // 根据传入的地址获取该地址对应的经纬度信息
+    [self.geocoder geocodeAddressString:addressStr completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        if (placemarks.count == 0 || error != nil) {
+            return ;
+        }
+        // placemarks地标数组, 地标数组中存放着地标, 每一个地标包含了该位置的经纬度以及城市/区域/国家代码/邮编等等...
+        // 获取数组中的第一个地标
+        CLPlacemark *placemark = [placemarks firstObject];
+        //        for (CLPlacemark  *placemark in placemarks) {
+        //            NSLog(@"%@ %@ %f %f", placemark.name, placemark.addressDictionary, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude);
+        NSString *latitude = [NSString stringWithFormat:@"%f", placemark.location.coordinate.latitude];
+        NSString *longitude = [NSString stringWithFormat:@"%f", placemark.location.coordinate.longitude];
+        NSArray *address = placemark.addressDictionary[@"FormattedAddressLines"];
+        NSMutableString *strM = [NSMutableString string];
+        
+        for (NSString *str in address) {
+            [strM appendString:str];
+        }
+        
+//        NSLog(@"%@",latitude);
+//        NSLog(@"%@",longitude);
+        
+        [[NSUserDefaults standardUserDefaults]setObject:longitude forKey:@"lon"];
+        [[NSUserDefaults standardUserDefaults]setObject:latitude forKey:@"lat"];
+        
+        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
+      //  NSLog(@"%@",coordinate);
+        SSAnnotation *annotation = [[SSAnnotation alloc] init];
+        annotation.coordinate = coordinate;
+        annotation.title = @"设备当前的位置";
+        annotation.icon = @"datuzhen2";
+        [self.map addAnnotation:annotation];
+        [self.map setRegion:MKCoordinateRegionMakeWithDistance(coordinate, 2000, 2000)];
+        [self.manger stopUpdatingLocation];
+        self.map.showsUserLocation = NO;
+        
+        
+        //查询附近工人
+        //先更新工人位置在查看附近工人
+        [self updayeWorkerPlace:longitude lat:latitude];
+        
+    }];
+}
+
+
+
+
+-(void)geocoderForPlace
+{
+    
+}
+
+
+- (CLGeocoder *)geocoder
+{
+    if (!_geocoder) {
+        _geocoder = [[CLGeocoder alloc] init];
+    }
+    return _geocoder;
+}
+
+//附近工人的位置信息
+-(void)fujin:(NSString *)lng lat:(NSString *)lat
+{
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:lng forKey:@"a_lng"];
+    [parm setObject:lat forKey:@"a_lat"];
+    
+    NSLog(@"%@",parm);
+    [NetWork postNoParmForMap:fujinGongRen params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        
+        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+            NSArray *array = [responseObj objectForKey:@"data"];
+           //添加大头针
+            [self Search:array];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
+
+//附近订单的位置信息
+-(void)fujinDingDan:(NSString *)lng lat:(NSString *)lat
+{
+    ADAccount *acount = [ADAccountTool account];
+    
+     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    //[parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:lng forKey:@"a_lng"];
+    [parm setObject:lat forKey:@"a_lat"];
+     NSLog(@"%@",parm);
+    
+    [NetWork postNoParmForMap:fujinDingdan params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        
+        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+            NSArray *array = [responseObj objectForKey:@"data"];
+            
+            //添加大头针
+            [self Search:array];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
+
+//更新位置
+-(void)updayeWorkerPlace :(NSString *)lng lat:(NSString *)lat
+{
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:lng forKey:@"a_lng"];
+    [parm setObject:lat forKey:@"a_lat"];
+    
+    [NetWork postNoParmForMap:gengXinGongRenWeizhi params:parm success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+            // 查找附近人
+            [self fujin:lng lat:lat];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+
+}
+
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [searchView.textFiled resignFirstResponder];
+}
+
+@end

@@ -1,0 +1,167 @@
+//
+//  EvaluateViewController.m
+//  zhaiyi
+//
+//  Created by Apple on 15/12/7.
+//  Copyright © 2015年 apple. All rights reserved.
+//
+
+#import "EvaluateViewController.h"
+#import "EvaluateCell.h"
+#import "MJExtension.h"
+
+@interface EvaluateViewController ()<CellDelete>
+@property (nonatomic, weak) UIButton *rightBtn;
+@end
+
+@implementation EvaluateViewController
+
+-(NSMutableArray *)UserDataSource
+{
+    if (_UserDataSource == nil) {
+        _UserDataSource = [NSMutableArray array];
+    }
+    return _UserDataSource;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self.navigationItem setTitle:@"评价"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"EvaluateCell" bundle:nil] forCellReuseIdentifier:@"EvaluateCell"];
+    [self configueRightBarItem];
+    
+    //评价工人列表
+    [self netWork];
+    
+    [self AddTap];
+    
+    UIView *V = [[UIView alloc]initWithFrame:CGRectZero];
+    [self.tableView  setTableFooterView:V];
+
+}
+- (void)configueRightBarItem{
+    UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80, 26)];
+    self.rightBtn = rightBtn;
+    [rightBtn setTitle:@"一键好评" forState:UIControlStateNormal];
+    [rightBtn addTarget:self action:@selector(goodEvaluate) forControlEvents:UIControlEventTouchUpInside];
+    [rightBtn setBackgroundImage:[UIImage imageNamed:@"订单详情1.png"] forState:UIControlStateNormal];
+    UIBarButtonItem *barBtnItem = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
+    self.navigationItem.rightBarButtonItem = barBtnItem;
+}
+
+
+//一键好评
+- (void)goodEvaluate{
+
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:self.OrderModel.ID forKey:@"send_id"];
+    [parm setObject:@"5" forKey:@"degree"];
+    [parm setObject:self.OrderModel.ddh forKey:@"order_number"];
+    [parm setObject:@"好好好" forKey:@"content"];
+    
+   // NSLog(@"%@",yiJianPingjia);
+    [NetWork postNoParm:yiJianPingjia params:parm success:^(id responseObj) {
+        
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+            [ITTPromptView showMessage:@"评价成功"];
+        }
+        
+    } failure:^(NSError *error) {
+        NSLog(@"%@",error);
+    }];
+    
+    
+    [self.rightBtn setBackgroundImage:[UIImage imageNamed:@"一键好评.png"] forState:UIControlStateNormal];
+    self.rightBtn.userInteractionEnabled = NO;
+    
+    
+    
+}
+
+-(void)YiJianHaoPing
+{
+    NSLog(@"123");
+    
+}
+
+#pragma mark - Table view data source
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+
+    return self.UserDataSource.count;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    EvaluateCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EvaluateCell" forIndexPath:indexPath];
+    
+    cell.delegate =self;
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.UserAcount = self.UserDataSource[indexPath.row];
+    cell.OrderModel = self.OrderModel;
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 200;
+}
+
+//评价工人列表
+-(void)netWork
+{
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary  dictionary];
+    
+    [parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:self.OrderModel.ID forKey:@"send_id"];
+    
+     NSLog(@"%@",self.OrderModel.ID );
+    [NetWork postNoParm:yijungongGongRenLb params:parm success:^(id responseObj) {
+        
+        NSLog(@"%@",responseObj);
+        self.UserDataSource = [ADAccount mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
+        NSLog(@"%ld",self.UserDataSource.count);
+        
+        [self.tableView reloadData];
+        
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    NSLog(@"123");
+    [self.view endEditing:YES];
+}
+
+//添加手势
+-(void)AddTap
+{
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismissKeyBoard)];
+    
+    [self.tableView addGestureRecognizer:tapGesture];
+}
+
+//收回键盘
+-(void)dismissKeyBoard
+{
+    [self.view endEditing:YES];
+
+}
+
+#pragma mark cellDelegte  删除
+ -(void)cellDeleteClicked:(id)Target
+{
+    [ITTPromptView showMessage:@"现在不能删除"];
+}
+
+
+@end
