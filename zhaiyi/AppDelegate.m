@@ -22,7 +22,6 @@
 <
 WXApiDelegate
 >
-
 @end
 
 @implementation AppDelegate

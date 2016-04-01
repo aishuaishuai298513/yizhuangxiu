@@ -19,5 +19,6 @@
         [self addSubview:_dateLabel];
     }
     return _dateLabel;
+    
 }
 @end

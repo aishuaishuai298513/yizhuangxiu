@@ -27,7 +27,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *endTimeLabel;
 @property (weak, nonatomic) IBOutlet UIView *sureView;
 
-
 //保险
 @property (weak, nonatomic) IBOutlet UILabel *BaoXIanMoney;
 //开工日期

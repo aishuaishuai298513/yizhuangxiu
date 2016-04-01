@@ -20,8 +20,6 @@ NSString *const SZCalendarCellIdentifier = @"cell";
 @property (weak, nonatomic) IBOutlet UILabel *monthLabelTure;
 
 
-
-
 @property (nonatomic , weak) IBOutlet UIButton *nextButton;
 @property (nonatomic , strong) NSArray *weekDayArray;
 @property (nonatomic, strong)NSArray *weekArray;

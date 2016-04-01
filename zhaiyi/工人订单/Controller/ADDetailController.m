@@ -20,7 +20,6 @@
 //一键拨号
 - (IBAction)callPhone:(id)sender;
 
-
 @property (weak, nonatomic) IBOutlet UIView *CancleView;
 
 - (IBAction)quxiaoDingDan:(id)sender;

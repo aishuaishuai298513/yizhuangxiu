@@ -26,7 +26,6 @@
 @property (weak, nonatomic) IBOutlet UIView *tanchuKuangView;
 @property (weak, nonatomic) IBOutlet UIView *beijingView;
 
-
 - (IBAction)quxiaoOrder:(id)sender;
 
 - (IBAction)quedingOrder:(id)sender;

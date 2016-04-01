@@ -38,7 +38,6 @@
     [btn setTitle:@"提交" forState:UIControlStateNormal];
     [btn setBackgroundImage:[ UIImage imageNamed:@"提交"]forState:UIControlStateNormal];
     btn.frame = CGRectMake(10, self.view.frame.size.height/2 + 20, ScreenW-20, 50);
-    
     //取消订单
     [btn addTarget:self action:@selector(TiJiao) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn];
