@@ -67,8 +67,8 @@
         if (!detailcell) {
             detailcell = [ADDeatiCell detailCell];
         }
-        detailcell.starDateLb.text = [NSString date2String:_OrderModel.startDate];
-        detailcell.endDateLb.text = [NSString date2String:_OrderModel.endDate];
+//        detailcell.starDateLb.text = [NSString date2String:_OrderModel.startDate];
+//        detailcell.endDateLb.text = [NSString date2String:_OrderModel.endDate];
         
 //        NSLog(@"%@",detailcell.starDateLb.text);
 //        NSLog(@"%@",detailcell.endDateLb.text);
@@ -87,47 +87,47 @@
         if (!cell) {
         cell = [ADDetailViewCell cell];
     }
-        switch (indexPath.row) {
-            case 0:
-                cell.leftLabel.text = @"工程地点";
-                cell.midLabel.text = _OrderModel.address;
-                cell.rightLable.text = @"";
-                break;
-            case 1:
-                cell.leftLabel.text = @"工作内容";
-                cell.midLabel.text = _OrderModel.txt;
-                cell.rightLable.text = @"";
-                break;
-            case 2:
-                cell.leftLabel.text = @"需求人数";
-                cell.midLabel.text = _OrderModel.num;
-                cell.rightLable.text = @"";
-                break;
-            case 4:
-                cell.leftLabel.text = @"价格";
-                cell.midLabel.text = [NSString stringWithFormat:@"%d",[_OrderModel.money intValue]];
-                cell.midLabel.textColor = [UIColor redColor];
-                cell.rightLable.text = @"元/天";
-                break;
-            case 5:
-                cell.leftLabel.text = @"联系人";
-                cell.midLabel.text = _OrderModel.name;
-                cell.rightLable.text = @"";
-                break;
-            case 6:
-                cell.leftLabel.text = @"订单号";
-                cell.midLabel.text = _OrderModel.ddh;
-                cell.rightLable.text = @"";
-                break;
-            case 7:
-                cell.leftLabel.text = @"备注";
-                cell.midLabel.text = _OrderModel.txt1;
-                cell.rightLable.text = @"";
-                break;
-
-            default:
-                break;
-        }
+//        switch (indexPath.row) {
+//            case 0:
+//                cell.leftLabel.text = @"工程地点";
+//                cell.midLabel.text = _OrderModel.address;
+//                cell.rightLable.text = @"";
+//                break;
+//            case 1:
+//                cell.leftLabel.text = @"工作内容";
+//                cell.midLabel.text = _OrderModel.txt;
+//                cell.rightLable.text = @"";
+//                break;
+//            case 2:
+//                cell.leftLabel.text = @"需求人数";
+//                cell.midLabel.text = _OrderModel.num;
+//                cell.rightLable.text = @"";
+//                break;
+//            case 4:
+//                cell.leftLabel.text = @"价格";
+//                cell.midLabel.text = [NSString stringWithFormat:@"%d",[_OrderModel.money intValue]];
+//                cell.midLabel.textColor = [UIColor redColor];
+//                cell.rightLable.text = @"元/天";
+//                break;
+//            case 5:
+//                cell.leftLabel.text = @"联系人";
+//                cell.midLabel.text = _OrderModel.name;
+//                cell.rightLable.text = @"";
+//                break;
+//            case 6:
+//                cell.leftLabel.text = @"订单号";
+//                cell.midLabel.text = _OrderModel.ddh;
+//                cell.rightLable.text = @"";
+//                break;
+//            case 7:
+//                cell.leftLabel.text = @"备注";
+//                cell.midLabel.text = _OrderModel.txt1;
+//                cell.rightLable.text = @"";
+//                break;
+//
+//            default:
+//                break;
+//        }
          return cell;
     }
 }
@@ -184,7 +184,7 @@
     
    // NSLog(@"123");
     //拨号
-    [ADAccountTool CallPhone:self.OrderModel.tel];
+    //[ADAccountTool CallPhone:self.OrderModel.tel];
     
 }
 

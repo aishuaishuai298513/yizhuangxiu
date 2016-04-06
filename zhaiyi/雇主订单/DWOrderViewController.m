@@ -82,9 +82,10 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    [self MJRefreshPullRefresh];
-    [self MJRefreshLoadMore];
-    [self.tableView.mj_header beginRefreshing];
+//    [self MJRefreshPullRefresh];
+//    [self MJRefreshLoadMore];
+//    [self.tableView.mj_header beginRefreshing];
+    [self netWork];
 }
 
 
@@ -126,83 +127,58 @@
     NSLog(@"%@",acount.userid);
     
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
     
-    //84：发布中。85.施工中，86.已竣工
+    //4：发布中。5.施工中，6.已竣工
     if (self.type == 2 ) {
-        [parm setObject:@"85" forKey:@"status"];
+        [parm setObject:@"5" forKey:@"status"];
     }else if (self.type == 3)
     {
-        [parm setObject:@"86" forKey:@"status"];
+        [parm setObject:@"6" forKey:@"status"];
     }else
     {
-        [parm setObject:@"84" forKey:@"status"];
+        [parm setObject:@"4" forKey:@"status"];
     }
     
-    NSString *pageIndexStr = [NSString stringWithFormat:@"%d",_pageIndex];
-    NSLog(@"页码 %d",_pageIndex);
-    [parm setObject:pageIndexStr forKey:@"pageindex"];
-    
-    [NetWork postNoParmForMap:FaBuDeDingDan params:parm success:^(id responseObj) {
-        NSLog(@"%@",responseObj);
-        
-        if ([[responseObj objectForKey:@"code"] isEqualToString:@"1000"]) {
-        NSMutableArray *array = [NSMutableArray array];
-        array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
-            [self.dataSource addObjectsFromArray:array];
-            NSLog(@"%@",self.dataSource);
-//            NSLog(@"%ld",self.dataSource.count);
-            [self netWork2];
-            [self.tableView reloadData];
-
-        }
-        [self MJEndRefresh];
-
-    } failure:^(NSError *error) {
-        [self netWork2];
-        NSLog(@"%@",error);
-        [self MJEndRefresh];
-        
-    }];
-    
-}
-
-//雇主端订单数量
--(void)netWork2
-{
-    
-    ADAccount *acount = [ADAccountTool account];
-    
-    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:acount.userid forKey:@"user_id"];
+//    NSString *pageIndexStr = [NSString stringWithFormat:@"%d",_pageIndex];
+//    NSLog(@"页码 %d",_pageIndex);
+//    [parm setObject:pageIndexStr forKey:@"pageindex"];
     
     __weak typeof (self)weakSelf = self;
     
-    [NetWork postNoParmForMap:guzhuDingDanshuliang params:parm success:^(id responseObj) {
+    [NetWork postNoParmForMap:YZX_dingdanlist params:parm success:^(id responseObj) {
         
         [SVProgressHUD dismiss];
-        
         NSLog(@"%@",responseObj);
         
-        if([[responseObj objectForKey:@"code"]isEqualToString:@"1000"])
-        {
-            NSLog(@"%@",[responseObj objectForKey:@"work"]);
+        if ([[responseObj objectForKey:@"result"] isEqualToString:@"1"]) {
+        NSMutableArray *array = [NSMutableArray array];
+        array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[[responseObj objectForKey:@"data"] objectForKey:@"list"]];
             
-            weakSelf.view1Num.text = [NSString stringWithFormat:@"%@",[responseObj objectForKey:@"send"]];;
+            [self.dataSource addObjectsFromArray:array];
+            NSLog(@"%@",self.dataSource);
+//            NSLog(@"%ld",self.dataSource.count);
+    
+            //订单数量
+            weakSelf.view1Num.text = [NSString stringWithFormat:@"%@",[[responseObj objectForKey:@"data"] objectForKey:@"fabuzhong"]];;
             
-            weakSelf.view2num.text = [NSString stringWithFormat:@"%@",[responseObj objectForKey:@"work"]];
+            weakSelf.view2num.text = [NSString stringWithFormat:@"%@",[[responseObj objectForKey:@"data"]objectForKey:@"shigongzhong"]];
             
-            weakSelf.viewNum3.text = [NSString stringWithFormat:@"%@",[responseObj objectForKey:@"finish"]];
+            weakSelf.viewNum3.text = [NSString stringWithFormat:@"%@",[[responseObj objectForKey:@"data"] objectForKey:@"yijungong"]];
+            
+            [self.tableView reloadData];
+
         }
-        
-        
+        //[self MJEndRefresh];
+
     } failure:^(NSError *error) {
-        [SVProgressHUD dismiss];
         
-       // [self netWork];
-
+        NSLog(@"%@",error);
+       // [self MJEndRefresh];
+        
     }];
-
+    
 }
 
 //发布中按钮
@@ -318,9 +294,12 @@
     if (indexPath.row >0) {
         
         DWOrderModel *MOdel = self.dataSource[indexPath.row];
-        cell.date.text = [NSString stringWithFormat:@"%@-%@",[NSString dateString:MOdel.startDate],[NSString dateString:MOdel.endDate]];
-        cell.Adress.text = MOdel.address;
-        cell.dingDanhao.text = MOdel.ID;
+//        cell.date.text = [NSString stringWithFormat:@"%@-%@",[NSString dateString:MOdel.createtime],[NSString dateString:MOdel.endDate]];
+        cell.date.text = MOdel.createtime;
+        cell.Adress.text = MOdel.adr;
+        cell.dingDanhao.text = MOdel.ordercode;
+        cell.yujitianshu.text = [NSString stringWithFormat:@"%@天",MOdel.yuji];
+        cell.gongzhong.text = MOdel.gzname;
     }
     
     return cell;
@@ -340,13 +319,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     DWOrderModel *MOdel = self.dataSource[indexPath.row];
     
-    NSLog(@"%@",MOdel.ID);
-    NSLog(@"%@",MOdel.content);
-    
     DWOrderDetailTableViewController *vc = [[DWOrderDetailTableViewController alloc] initWithNibName:@"DWOrderDetailTableViewController" bundle:nil];
     vc.type = self.type;
     NSLog(@"%d",self.type);
-    vc.OrderModel = MOdel;
+    vc.OrderID = MOdel.ID;
+    //vc.OrderModel = MOdel;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -379,23 +356,21 @@
 }
 
 #pragma mark 点击确认招用或者确认验收跳转到已经抢单的用户列表
--(void)queRenZhaoYong:(id)sender
-{
-    UIButton *btn = (UIButton *)sender;
-    int tag  = (int)btn.tag;
-    NSLog(@"%d",tag);
-    
-    DWOrderModel *MOdel = self.dataSource[tag];
-    
-    NSLog(@"%@",MOdel.ID);
-    NSLog(@"%@",MOdel.content);
-    
-    DWOrderDetailTableViewController *vc = [[DWOrderDetailTableViewController alloc] initWithNibName:@"DWOrderDetailTableViewController" bundle:nil];
-    vc.type = self.type;
-    NSLog(@"%d",self.type);
-    vc.OrderModel = MOdel;
-    [self.navigationController pushViewController:vc animated:YES];
-}
+//-(void)queRenZhaoYong:(id)sender
+//{
+//    UIButton *btn = (UIButton *)sender;
+//    int tag  = (int)btn.tag;
+//    NSLog(@"%d",tag);
+//    
+//    DWOrderModel *MOdel = self.dataSource[tag];
+//    
+//    
+//    DWOrderDetailTableViewController *vc = [[DWOrderDetailTableViewController alloc] initWithNibName:@"DWOrderDetailTableViewController" bundle:nil];
+//    vc.type = self.type;
+//    NSLog(@"%d",self.type);
+//    vc.OrderModel = MOdel;
+//    [self.navigationController pushViewController:vc animated:YES];
+//}
 
 
 @end

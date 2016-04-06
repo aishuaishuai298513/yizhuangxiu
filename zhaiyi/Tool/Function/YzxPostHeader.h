@@ -49,17 +49,24 @@
 #define YZX_baozhengjinjilu @"/api/index/baozhengjinjilu"
 //红包
 #define YZX_hongbao @"/api/index/hongbao"
-
-//
-
-//
-
-//
-
-//
-
-//
-
+//找工人页面（雇主端
+#define YZX_zhaogongren @"/api/index/zhaogongren"
+//通过发布人数获取应缴质保金（雇主端）
+#define YZX_returnzhibaojin @"/api/index/returnzhibaojin"
+//提交订单接口（雇主端）
+#define YZX_tijiaodingdan @"/api/index/tijiaodingdan"
+//订单列表（雇主端）
+#define YZX_dingdanlist @"/api/index/dingdanlist"
+//订单详情（雇主端）
+#define YZX_dingdanxiangqing @"/api/index/dingdanxiangqing"
+//辞退
+#define YZX_citui @"/api/index/citui"
+//地图搜索工人端
+#define YZX_search_gr @"/api/index/search_gr"
+//订单列表（工人端)
+#define YZX_orderlist @"/api/index/orderlist"
+//抢单详情（工人段）
+#define YZX_qiangdanxiangqing @"/api/index/qiangdanxiangqing"
 
 
 

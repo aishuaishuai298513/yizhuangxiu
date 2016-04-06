@@ -12,6 +12,7 @@
 @interface DWOrderDetailTableViewController : UITableViewController
 @property (nonatomic, assign) int type;
 @property (nonatomic, strong) DWOrderModel *OrderModel;
+@property (nonatomic, strong) NSString *OrderID;
 
 
 @end

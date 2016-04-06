@@ -22,5 +22,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *zhuangTai;
 @property (weak, nonatomic) IBOutlet UILabel *dingDanhao;
 @property (weak, nonatomic) IBOutlet UILabel *Adress;
+@property (weak, nonatomic) IBOutlet UILabel *gongzhong;
+@property (weak, nonatomic) IBOutlet UILabel *yujitianshu;
 
 @end

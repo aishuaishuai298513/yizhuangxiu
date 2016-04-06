@@ -20,6 +20,8 @@
 #import "CertificatePayView.h"
 //支付页面
 #import "My_pocket_Controller.h"
+//模型
+#import "DetialUserInfoM.h"
 
 //标志按钮状态
 typedef NS_ENUM(NSUInteger, CellBtnState) {
@@ -31,6 +33,9 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 @interface DWOrderDetailTableViewController ()
 
 @property (strong, nonatomic) IBOutlet UIView *DWOrderHeaderView;
+@property (weak, nonatomic) IBOutlet UILabel *HeaderZhuangTai;
+
+@property (weak, nonatomic) IBOutlet UIButton *HeaderGongZhong;
 
 @property (weak, nonatomic) IBOutlet UILabel *HeaderDate;
 
@@ -44,6 +49,8 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 
 @property (weak, nonatomic) IBOutlet UILabel *headerBaoxian;
 @property (weak, nonatomic) IBOutlet UILabel *headerDingdan;
+
+@property (weak, nonatomic) IBOutlet UIButton *HeaderImageBtn;
 
 //标志按钮状态
 @property (nonatomic ,assign) CellBtnState btnState;
@@ -82,11 +89,9 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     [self.tableView registerNib:[UINib nibWithNibName:@"DWOrderDetailCell" bundle:nil] forCellReuseIdentifier:@"DWOrderDetailCell"];
     [self configueRightBtn];
     
-    //请求评价列表
-    //[self netWork];
-    //查询已抢单用户
+    //查询订单详情
     [self QiangDanYonghu];
-    [self creatOrderUi];
+   //[self creatOrderUi];
     
 }
 
@@ -94,45 +99,28 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 //订单数据赋值
 -(void)creatOrderUi
 {
-    self.HeaderDate.text = [NSString stringWithFormat:@"%@",[NSString dateString:_OrderModel.startDate]];
+    self.HeaderDate.text = self.OrderModel.createtime;
     
-    self.headerDingdan.text = self.OrderModel.ddh;
+    self.headerDingdan.text = self.OrderModel.ordercode;
     
-    self.HeaderAdress.text = self.OrderModel.address;
+    self.HeaderAdress.text = self.OrderModel.adr;
     
-    self.HeaderGongzuoneirong.text = [NSString stringWithFormat:@"工作内容:%@",self.OrderModel.txt];
+    self.HeaderGongzuoneirong.text = self.OrderModel.gongzuoneirong;
     
-    if([_OrderModel.gztypeid isEqualToString:@"1"])
-    {
-        self.gongzhong.text = @"工种:泥工";
-    }else if ([_OrderModel.gztypeid isEqualToString:@"2"])
-    {
-        self.gongzhong.text = @"工种:油工";
-    }else if ([_OrderModel.gztypeid isEqualToString:@"3"])
-    {
-        self.gongzhong.text = @"工种:水工";
-    }else if ([_OrderModel.gztypeid isEqualToString:@"4"])
-    {
-        self.gongzhong.text = @"工种:电工";
-    }else if ([_OrderModel.gztypeid isEqualToString:@"5"])
-    {
-        self.gongzhong.text = @"工种:木工";
-    }else if ([_OrderModel.gztypeid isEqualToString:@"6"])
-    {
-        self.gongzhong.text = @"工种:小工";
-    }
+    self.gongzhong.text = self.OrderModel.gzname;
     
-    self.danRiGongzi.text = [NSString stringWithFormat:@"单日工资:%d",[self.OrderModel.money intValue]];
-    self.HeaderRenshu.text = [NSString stringWithFormat:@"人数:%@",self.OrderModel.num];
-    if (_OrderModel.safe_money) {
-        self.headerBaoxian.text = [NSString stringWithFormat:@"保险费额:%@",[NSString stringWithFormat:@"%@",_OrderModel.safe_money]];
+    
+    self.danRiGongzi.text = [NSString stringWithFormat:@"单日工资:%d",[self.OrderModel.price intValue]];
+    self.HeaderRenshu.text = [NSString stringWithFormat:@"人数:%@",self.OrderModel.n];
+    
+    if ([self.OrderModel.baozhengjin intValue]>0) {
+        [self.HeaderImageBtn setBackgroundImage:[UIImage imageNamed:@"保"] forState:UIControlStateNormal];
     }else
     {
-        self.headerBaoxian.text = @"";
+        self.HeaderImageBtn.hidden = YES;
     }
-
 }
-
+#pragma mark 设置右上角按钮状态
 - (void)configueRightBtn{
     UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0,0, 80, 26)];
     self.rightButton = rightBtn;
@@ -141,6 +129,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     //发布中
     if (self.type == 1)
     {
+        rightBtn.hidden = NO;
          rightBtn.titleLabel.font = [UIFont systemFontOfSize:13];
        [rightBtn setBackgroundImage:[UIImage imageNamed:@"确认开工.png"] forState:UIControlStateNormal];
        [rightBtn setTitle:@"确认开工" forState:UIControlStateNormal];
@@ -148,13 +137,14 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     }
     //施工中
     if (self.type == 2) {
-       [rightBtn setTitle:@"确认验收" forState:UIControlStateNormal];
-        rightBtn.alpha = 0;
+        rightBtn.hidden = YES;
+
     }
     //已竣工
     else if(self.type == 3)
     {
-       [rightBtn setTitle:@"评价" forState:UIControlStateNormal];
+        rightBtn.hidden = YES;
+
     }
     
     UIBarButtonItem *rightBarBtnItem = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
@@ -162,24 +152,9 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 }
 
 - (void)confirmCheck{
-    
-    if (self.type == 3) {
-        // 评价
-        EvaluateViewController *vc = [[EvaluateViewController alloc] initWithNibName:@"EvaluateViewController" bundle:nil];
-        [self.navigationController pushViewController:vc animated:YES];
-        
-    }else if (self.type == 1){
-        // 确认开工／招用
-        [self queRenZhaoYong];
 
-    }else if(self.type == 2){
-        //确认验收
-        //[self queRenYanShou];
-        [self ifQueRenYanShou];
-    }else{
-        
-    }
-
+    // 确认开工／招用
+    [self queRenZhaoYong];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -191,56 +166,83 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
+//    未开工
+//    8
+//    工作中
+//    9
+//    已辞退
+//    10
+//    待结算
+//    11
+//    已结算
+//    12
+//    已确认收款
+//    13
+    
+    DetialUserInfoM *userInfoM = self.UsersdataSource[indexPath.row];
+    
     DWOrderDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWOrderDetailCell"];
     
+    //已竣工
     if (self.type == 3) {
         
         [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
         [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        [cell.cellBtn addTarget:self action:@selector(evaluate) forControlEvents:UIControlEventTouchUpInside];
+        [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
         
     }else if (self.type == 1){
         //发布中
-        [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
-        cell.cellBtn.userInteractionEnabled = NO;
+        if ([userInfoM.status isEqualToString:@"8"]) {
+            
+            [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
+            [cell.cellBtn addTarget:self action:@selector(ciTui:) forControlEvents:UIControlEventTouchUpInside];
+        }
 
     }else if(self.type == 2){
         //施工中
        // cell.cellBtn.hidden = YES;
-        self.btnState = PAY;
-       [cell.cellBtn setTitle:@"去支付" forState:UIControlStateNormal];
-       [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-       [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
+        
+        switch ([userInfoM.status intValue]) {
+            //工作中
+            case 9:
+                [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
+                [cell.cellBtn addTarget:self action:@selector(ciTui:) forControlEvents:UIControlEventTouchUpInside];
+                break;
+                //已辞退
+            case 10:
+                [cell.cellBtn setTitle:@"已辞退" forState:UIControlStateNormal];
+                cell.cellBtn.userInteractionEnabled = NO;
+                break;
+                //带结算
+            case 11:
+                
+                self.btnState = PAY;
+                [cell.cellBtn setTitle:@"去支付" forState:UIControlStateNormal];
+                [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+                [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
+                [cell.cellBtn addTarget:self action:@selector(goPay:) forControlEvents:UIControlEventTouchUpInside];
+                break;
+                //已结算
+            case 12:
+                
+                [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+                [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+                [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
+                break;
+                
+            default:
+                break;
+        }
+        
     }
-    cell.cellBtn.tag = 100+indexPath.row;
+     cell.cellBtn.tag = 100+indexPath.row;
     [cell.cellBtn addTarget:self action:@selector(cellBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
     
     ADAccount *acount =self.UsersdataSource[indexPath.row];
     cell.namelb.text = acount.nickname;
+
     
-    NSLog(@"%@",acount.gztypeid);
-    
-    if ([acount.gztypeid isEqualToString:@"1"]) {
-        cell.typelb.text = @"泥工";
-    }else if ([acount.gztypeid isEqualToString:@"2"])
-    {
-        cell.typelb.text = @"油工";
-    }else if ([acount.gztypeid isEqualToString:@"3"])
-    {
-        cell.typelb.text = @"水工";
-    }else if ([acount.gztypeid isEqualToString:@"4"])
-    {
-        cell.typelb.text = @"电工";
-    }else if ([acount.gztypeid isEqualToString:@"5"])
-    {
-        cell.typelb.text = @"木工";
-    }else if ([acount.gztypeid isEqualToString:@"6"])
-    {
-        cell.typelb.text = @"小工";
-    }else
-    {
-        cell.typelb.text = @"";
-    }
+    cell.typelb.text = @"泥工";
     cell.jieshao.text = acount.user_desc;
     return cell;
 }
@@ -256,33 +258,36 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 }
 
 
-//cell上的btn按钮
--(void)cellBtnClicked:(id)sender
+#pragma mark 辞退
+-(void)ciTui:(id)sender
 {
-    switch (self.type) {
-        //发布中
-        case 1:
+    UIButton *btn = (UIButton *)sender;
+    DetialUserInfoM *model = self.UsersdataSource[btn.tag-100];
+    
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:model.ID forKey:@"userid2"];
+    [parm setObject:self.OrderModel.ID forKey:@"id"];
+    
+    [NetWork postNoParm:YZX_citui params:parm success:^(id responseObj) {
+        
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
             
-            break;
-        //施工中
-        case 2:
-            //选择去支付还是辞退等
-            [self selectFunctionForbtnClicked:sender];
-            break;
-        //已竣工
-        case 3:
-            break;
-            
-        default:
-            break;
-    }
+            [self.UsersdataSource removeObjectAtIndex:btn.tag-100];
+            [self.tableView reloadData];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
 }
-
-//按钮响应选择
--(void)selectFunctionForbtnClicked:(id)sender
+#pragma mark 去支付
+-(void)goPay:(id)sender
 {
     //支付
-    if (self.btnState ==PAY) {
         
         NSLog(@"123");
         self.BackView = [Function createBackView:self action:@selector(BackViewClicked)];
@@ -300,23 +305,22 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
         [self.certificatePayView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [self.certificatePayView autoSetDimension:ALDimensionWidth toSize:300];
         [self.certificatePayView autoSetDimension:ALDimensionHeight toSize:300];
-    }
     
 }
 
-//遮盖背景置灰
+#pragma mark 遮盖背景置灰
 -(void)BackViewClicked
 {
     [self.BackView removeFromSuperview];
     [self.certificatePayView removeFromSuperview];
 }
-//支付凭证取消按钮点击事件
+#pragma mark 支付凭证取消按钮点击事件
 -(void)CertificateCnclebtnClicked
 {
     [self BackViewClicked];
 
 }
-//支付凭证确认点击事件
+#pragma mark 支付凭证确认点击事件
 -(void)CertificateMakeSureClicked
 {
     [self BackViewClicked];
@@ -325,7 +329,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     
 }
 
-//点击cell跳到工人详情页
+#pragma mark 点击cell跳到工人详情页
 -(void)checkGongRenInfo:(NSIndexPath *)indexpath
 {
         
@@ -339,8 +343,8 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
         [self.navigationController pushViewController:vc animated:YES];
 
 }
-//评价按钮
--(void)evaluate
+#pragma mark 评价
+-(void)evaluate:(id)sender
 {
     EvaluateViewController *evaluate = [[EvaluateViewController alloc]init];
     [self.navigationController pushViewController:evaluate animated:YES];
@@ -362,7 +366,8 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     }];
 }
 
-//确认招用 查询已经抢单用户列表
+#pragma mark 查询订单详情
+//确认招用 查询已经抢单用户列表/
 -(void)QiangDanYonghu
 {
     
@@ -370,27 +375,23 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     ADAccount *acount = [ADAccountTool account];
     
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    
-    [parm setObject:acount.userid forKey:@"user_id"];
-    [parm setObject:self.OrderModel.ID forKey:@"order_id"];
-    [parm setObject:@"1" forKey:@"pageindex"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
     
     __weak typeof (self)WeakSelf =self;
-    [NetWork postNoParm:QrzyQdlb params:parm success:^(id responseObj) {
+    [NetWork postNoParm:YZX_dingdanxiangqing params:parm success:^(id responseObj) {
         
-      //  NSLog(@"%@",responseObj);
-        WeakSelf.UsersdataSource = [ADAccount mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"user_info"]];
+        WeakSelf.OrderModel =[DWOrderModel mj_objectWithKeyValues:[responseObj objectForKey:@"data"]];
+        
+        WeakSelf.UsersdataSource = [DetialUserInfoM mj_objectArrayWithKeyValuesArray:[[responseObj objectForKey:@"data"] objectForKey:@"list"]];
     
-        // 判断是否可被招用/验收/
+        // 判断是否可开工
         if (WeakSelf.UsersdataSource.count<=0 && self.type == 1) {
             
             self.rightButton.userInteractionEnabled = NO;
-        }else
-        {
-            self.rightButton.userInteractionEnabled = YES;
         }
         
-        
+        [self creatOrderUi];
         [self.tableView reloadData];
         
         
@@ -406,7 +407,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 -(void)queRenZhaoYong
 {
     //如果订单为招满，弹出友情提示框
-    if ([self.OrderModel.num intValue]>self.UsersdataSource.count) {
+    if ([self.OrderModel.n intValue]>self.UsersdataSource.count) {
         
         //友情提示框
         FriendPrompt *firendView = [FriendPrompt FirendLoadView];
@@ -424,6 +425,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
         
         return;
     }
+    
     
     ADAccount *acount = [ADAccountTool account];
     

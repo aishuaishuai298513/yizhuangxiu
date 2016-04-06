@@ -352,12 +352,13 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="21" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IOY-w3-gwu" userLabel="减">
-                                                <rect key="frame" x="189" y="372" width="20" height="20"/>
+                                                <rect key="frame" x="189" y="379" width="20" height="5"/>
+                                                <rect key="contentStretch" x="0.0" y="1" width="1" height="0.55000000000000004"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="20" id="Lpf-ib-SMA"/>
+                                                    <constraint firstAttribute="height" constant="5" id="Lpf-ib-SMA"/>
                                                     <constraint firstAttribute="width" constant="20" id="ODA-O7-inq"/>
                                                 </constraints>
-                                                <state key="normal" backgroundImage="加"/>
+                                                <state key="normal" backgroundImage="减"/>
                                                 <connections>
                                                     <action selector="addOrSubMoney:" destination="jlY-4s-XkC" eventType="touchUpInside" id="M6v-1Z-WzX"/>
                                                 </connections>
@@ -379,7 +380,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="100" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xPG-cv-eKC" userLabel="保险费">
-                                                <rect key="frame" x="71" y="-58" width="40" height="21"/>
+                                                <rect key="frame" x="-28" y="-72" width="40" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="21" id="6YA-AA-6E3"/>
                                                     <constraint firstAttribute="width" constant="40" id="fP5-aX-jTr"/>
@@ -657,9 +658,9 @@
                                 </constraints>
                             </scrollView>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JR5-jw-eFB">
-                                <rect key="frame" x="30" y="133.5" width="315" height="400"/>
+                                <rect key="frame" x="30" y="133" width="315" height="400"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2015年9月1日" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BL1-VS-uSL">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2015年9月1日" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BL1-VS-uSL" userLabel="KaiGongRi Qi">
                                         <rect key="frame" x="106" y="67" width="189" height="21"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="21" id="S24-TI-rBS"/>
@@ -668,7 +669,7 @@
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="30天" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rIG-Ni-MNP" userLabel="Top Yu Ji Tian Shu">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="30天" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rIG-Ni-MNP" userLabel="TianShu">
                                         <rect key="frame" x="106" y="96" width="189" height="21"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="21" id="kaG-tQ-fBG"/>
@@ -687,18 +688,6 @@
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8kN-Tc-85Z">
-                                        <rect key="frame" x="20" y="345" width="128" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="P5n-JZ-Abg"/>
-                                        </constraints>
-                                        <state key="normal" title="返回修改" backgroundImage="红色圆形button">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="TopBack:" destination="jlY-4s-XkC" eventType="touchUpInside" id="UCm-Gm-4bb"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fn6-d6-VtA">
                                         <rect key="frame" x="0.0" y="0.0" width="315" height="30"/>
                                         <color key="backgroundColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -709,12 +698,6 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
-                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hyL-3a-h65">
-                                        <rect key="frame" x="0.0" y="30" width="315" height="60"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="60" id="onk-42-vq8"/>
-                                        </constraints>
-                                    </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="北京市中关村大街" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yx9-wa-svE">
                                         <rect key="frame" x="106" y="38" width="189" height="21"/>
                                         <constraints>
@@ -874,16 +857,19 @@
                                         </variation>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dHt-Un-3XS">
-                                        <rect key="frame" x="167" y="345" width="127.5" height="30"/>
+                                        <rect key="frame" x="167.5" y="345" width="127.5" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="dQn-fa-Q6j"/>
                                         </constraints>
                                         <state key="normal" title="确定" backgroundImage="红色圆形button">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="queDingChongZhi:" destination="jlY-4s-XkC" eventType="touchUpInside" id="i0X-XS-xse"/>
+                                        </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="中午提供午餐一份" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zls-Kz-uJ8">
-                                        <rect key="frame" x="106" y="298" width="189" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="中午提供午餐一份" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zls-Kz-uJ8">
+                                        <rect key="frame" x="106" y="299" width="189" height="21"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="21" id="tFN-pI-DM5"/>
                                         </constraints>
@@ -891,6 +877,24 @@
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hyL-3a-h65">
+                                        <rect key="frame" x="0.0" y="30" width="315" height="60"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="60" id="onk-42-vq8"/>
+                                        </constraints>
+                                    </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8kN-Tc-85Z">
+                                        <rect key="frame" x="20" y="345" width="128" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="P5n-JZ-Abg"/>
+                                        </constraints>
+                                        <state key="normal" title="返回修改" backgroundImage="红色圆形button">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="TopBack:" destination="jlY-4s-XkC" eventType="touchUpInside" id="UCm-Gm-4bb"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -1034,15 +1038,21 @@
                         <outlet property="TopYongGongTianShu" destination="rIG-Ni-MNP" id="EZr-jy-3bA"/>
                         <outlet property="XuQiuRenShu" destination="Znq-bs-ugs" id="izE-g5-SAf"/>
                         <outlet property="baoxianFei" destination="xPG-cv-eKC" id="7c7-Gp-gil"/>
+                        <outlet property="beizhu" destination="zls-Kz-uJ8" id="gf8-AJ-N92"/>
                         <outlet property="dayNum" destination="KKN-FY-99w" id="TrB-g1-Oma"/>
                         <outlet property="employerIdentityView" destination="aiE-Ur-im0" id="Nca-Rk-V77"/>
                         <outlet property="endTimeLabel" destination="tYt-2P-rLu" id="6SK-X5-Vfn"/>
+                        <outlet property="gongzhong" destination="G87-Z3-xu0" id="f2Q-mb-d88"/>
+                        <outlet property="lianxidianhua" destination="EtA-xM-2tU" id="EZm-nI-X4J"/>
+                        <outlet property="lianxiren" destination="wHY-gJ-Pv2" id="O5C-vM-SWw"/>
                         <outlet property="moenyLabel" destination="nbF-z9-Unt" id="YmI-Kf-gsy"/>
                         <outlet property="queDingOrChongZhi" destination="dHt-Un-3XS" id="eLG-s8-53f"/>
                         <outlet property="starTimeLabel" destination="5iO-ju-13J" id="UBc-zS-6GM"/>
                         <outlet property="sureView" destination="JR5-jw-eFB" id="Ys5-zW-eHL"/>
+                        <outlet property="tianshu" destination="oXC-Xs-Lk4" id="Rmd-8I-KAC"/>
                         <outlet property="topGongZuoDiDian" destination="yx9-wa-svE" id="Zz1-1i-2YH"/>
                         <outlet property="topKaiGongRiQi" destination="BL1-VS-uSL" id="Rl8-W4-1Xl"/>
+                        <outlet property="zhiabaojin" destination="1kL-ne-SjM" id="cyk-L0-fUJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pIh-qO-vcE" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1070,6 +1080,7 @@
     </scenes>
     <resources>
         <image name="riqi.png" width="28" height="28"/>
+        <image name="减" width="23" height="4"/>
         <image name="加" width="24" height="25"/>
         <image name="红色圆形button" width="30" height="31"/>
     </resources>

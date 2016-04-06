@@ -151,6 +151,8 @@
                 <outlet property="deleteBtn" destination="atl-g8-D3B" id="6Xg-AH-NNF"/>
                 <outlet property="dingDanhao" destination="FWm-H6-5dY" id="LVS-bd-YAI"/>
                 <outlet property="evaluateBtn" destination="U8b-hB-EIk" id="TGe-qt-j08"/>
+                <outlet property="gongzhong" destination="dCJ-Vi-FQm" id="J1e-Oq-yS2"/>
+                <outlet property="yujitianshu" destination="hw1-dD-M9D" id="LBm-Mm-994"/>
                 <outlet property="zhuangTai" destination="xeY-gz-38d" id="CSC-9V-juD"/>
             </connections>
             <point key="canvasLocation" x="112.5" y="235"/>

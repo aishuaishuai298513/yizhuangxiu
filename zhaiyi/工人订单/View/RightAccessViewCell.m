@@ -41,42 +41,42 @@
     
     _OrderModel = orderModel;
     
-    NSString *datestr1=[NSString dateString:_OrderModel.startDate];
-    NSString *datestr2=[NSString dateString:_OrderModel.endDate];
-    
-    self.Timelabel.text = [NSString stringWithFormat:@"%@-%@",datestr1,datestr2];
-    
-    NSLog(@"%@",_OrderModel.startDate);
-    self.orderNumlb.text = _OrderModel.ID;
-    self.AdressLb.text = _OrderModel.address;
-    self.workNumLb.text = [NSString stringWithFormat:@"工作人数:%@人",_OrderModel.in_num];
-    self.priceLb.text = [NSString stringWithFormat:@"价格:%d元／天",[_OrderModel.money intValue]];
-    
-    if([_OrderModel.gztypeid isEqualToString:@"1"])
-    {
-        [self.gongZhongLb setTitle:@"泥工" forState:
-         UIControlStateNormal];
-    }else if ([_OrderModel.gztypeid isEqualToString:@"2"])
-    {
-        [self.gongZhongLb setTitle:@"油工" forState:
-         UIControlStateNormal];
-    }else if ([_OrderModel.gztypeid isEqualToString:@"3"])
-    {
-        [self.gongZhongLb setTitle:@"水工" forState:
-         UIControlStateNormal];
-    }else if ([_OrderModel.gztypeid isEqualToString:@"4"])
-    {
-        [self.gongZhongLb setTitle:@"电工" forState:
-         UIControlStateNormal];
-    }else if ([_OrderModel.gztypeid isEqualToString:@"5"])
-    {
-        [self.gongZhongLb setTitle:@"木工" forState:
-         UIControlStateNormal];
-    }else if ([_OrderModel.gztypeid isEqualToString:@"6"])
-    {
-        [self.gongZhongLb setTitle:@"小工" forState:
-         UIControlStateNormal];
-    }
+//    NSString *datestr1=[NSString dateString:_OrderModel.startDate];
+//    NSString *datestr2=[NSString dateString:_OrderModel.endDate];
+//    
+//    self.Timelabel.text = [NSString stringWithFormat:@"%@-%@",datestr1,datestr2];
+//    
+//    NSLog(@"%@",_OrderModel.startDate);
+//    self.orderNumlb.text = _OrderModel.ID;
+//    self.AdressLb.text = _OrderModel.address;
+//    self.workNumLb.text = [NSString stringWithFormat:@"工作人数:%@人",_OrderModel.in_num];
+//    self.priceLb.text = [NSString stringWithFormat:@"价格:%d元／天",[_OrderModel.money intValue]];
+//    
+//    if([_OrderModel.gztypeid isEqualToString:@"1"])
+//    {
+//        [self.gongZhongLb setTitle:@"泥工" forState:
+//         UIControlStateNormal];
+//    }else if ([_OrderModel.gztypeid isEqualToString:@"2"])
+//    {
+//        [self.gongZhongLb setTitle:@"油工" forState:
+//         UIControlStateNormal];
+//    }else if ([_OrderModel.gztypeid isEqualToString:@"3"])
+//    {
+//        [self.gongZhongLb setTitle:@"水工" forState:
+//         UIControlStateNormal];
+//    }else if ([_OrderModel.gztypeid isEqualToString:@"4"])
+//    {
+//        [self.gongZhongLb setTitle:@"电工" forState:
+//         UIControlStateNormal];
+//    }else if ([_OrderModel.gztypeid isEqualToString:@"5"])
+//    {
+//        [self.gongZhongLb setTitle:@"木工" forState:
+//         UIControlStateNormal];
+//    }else if ([_OrderModel.gztypeid isEqualToString:@"6"])
+//    {
+//        [self.gongZhongLb setTitle:@"小工" forState:
+//         UIControlStateNormal];
+//    }
 
     
 //    [self.gongZhongLb setTitle:[NSString stringWithFormat:@"%@",_OrderModel.gztypeid] forState:UIControlStateNormal];

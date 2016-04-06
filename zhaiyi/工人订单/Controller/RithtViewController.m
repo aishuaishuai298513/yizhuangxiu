@@ -67,8 +67,8 @@
             detailcell = [ADDeatiCell detailCell];
         }
         
-        detailcell.starDateLb.text =[NSString date2String:_Ordermodel.startDate];
-        detailcell.endDateLb.text =[NSString date2String:_Ordermodel.endDate];
+//        detailcell.starDateLb.text =[NSString date2String:_Ordermodel.startDate];
+//        detailcell.endDateLb.text =[NSString date2String:_Ordermodel.endDate];
         
         NSString *day= [NSString numberOfDays1:detailcell.starDateLb.text numberOfDays2:detailcell.endDateLb.text timeStringFormat:@"yyyy-MM-dd"];
         //detailcell.dayCountNum.text =[NSString stringWithFormat:@"共%@天",@"30"];
@@ -82,45 +82,45 @@
             cell = [ADDetailViewCell cell];
         }
         switch (indexPath.row) {
-            case 0:
-                cell.leftLabel.text = @"工程地点";
-                cell.midLabel.text = _Ordermodel.address;
-                cell.rightLable.text = @"";
-                break;
-            case 1:
-                cell.leftLabel.text = @"工作内容";
-                cell.midLabel.text = _Ordermodel.txt;
-                cell.rightLable.text = @"";
-                break;
-            case 2:
-                cell.leftLabel.text = @"需求人数";
-                cell.midLabel.text = [NSString stringWithFormat:@"%@人",_Ordermodel.num];
-                cell.rightLable.text = @"";
-                break;
-            case 4:
-                cell.leftLabel.text = @"价格";
-                cell.midLabel.text = [NSString stringWithFormat:@"%d",[_Ordermodel.money intValue]];
-                cell.midLabel.textColor = [UIColor redColor];
-                cell.rightLable.text = @"元/天";
-                break;
-            case 5:
-                cell.leftLabel.text = @"联系人";
-                cell.midLabel.text = _Ordermodel.name;
-                cell.rightLable.text = @"";
-                break;
-            case 6:
-                cell.leftLabel.text = @"订单号";
-                cell.midLabel.text = _Ordermodel.ddh;
-                cell.rightLable.text = @"";
-                break;
-            case 7:
-                cell.leftLabel.text = @"备注";
-                cell.midLabel.text = _Ordermodel.txt1;
-                cell.rightLable.text = @"";
-                break;
-                
-            default:
-                break;
+//            case 0:
+//                cell.leftLabel.text = @"工程地点";
+//                cell.midLabel.text = _Ordermodel.address;
+//                cell.rightLable.text = @"";
+//                break;
+//            case 1:
+//                cell.leftLabel.text = @"工作内容";
+//                cell.midLabel.text = _Ordermodel.txt;
+//                cell.rightLable.text = @"";
+//                break;
+//            case 2:
+//                cell.leftLabel.text = @"需求人数";
+//                cell.midLabel.text = [NSString stringWithFormat:@"%@人",_Ordermodel.num];
+//                cell.rightLable.text = @"";
+//                break;
+//            case 4:
+//                cell.leftLabel.text = @"价格";
+//                cell.midLabel.text = [NSString stringWithFormat:@"%d",[_Ordermodel.money intValue]];
+//                cell.midLabel.textColor = [UIColor redColor];
+//                cell.rightLable.text = @"元/天";
+//                break;
+//            case 5:
+//                cell.leftLabel.text = @"联系人";
+//                cell.midLabel.text = _Ordermodel.name;
+//                cell.rightLable.text = @"";
+//                break;
+//            case 6:
+//                cell.leftLabel.text = @"订单号";
+//                cell.midLabel.text = _Ordermodel.ddh;
+//                cell.rightLable.text = @"";
+//                break;
+//            case 7:
+//                cell.leftLabel.text = @"备注";
+//                cell.midLabel.text = _Ordermodel.txt1;
+//                cell.rightLable.text = @"";
+//                break;
+//                
+//            default:
+//                break;
         }
         return cell;
     }
@@ -191,7 +191,7 @@
 
 - (IBAction)callPhone:(id)sender {
     
-    [ADAccountTool CallPhone:self.Ordermodel.tel];
+   // [ADAccountTool CallPhone:self.Ordermodel.tel];
     
 }
 

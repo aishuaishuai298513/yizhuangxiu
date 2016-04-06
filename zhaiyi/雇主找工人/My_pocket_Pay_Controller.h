@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface My_pocket_recharge_Controller : UIViewController
+@interface My_pocket_Pay_Controller : UIViewController
 @property (weak, nonatomic) IBOutlet UIButton *ylBtn;
 @property (weak, nonatomic) IBOutlet UIButton *alipayBtn;
 @property (weak, nonatomic) IBOutlet UIButton *wxBtn;
+@property (weak, nonatomic) IBOutlet UIButton *yeBtn;
+
 
 @property (weak, nonatomic) IBOutlet UITextField *moneyTF;
 - (IBAction)nextBtn:(UIButton *)sender;
@@ -20,5 +22,10 @@
 - (IBAction)alipayBtn:(UIButton *)sender;
 @property (weak, nonatomic) IBOutlet UIView *moneyView;
 
+//余额
+@property (strong, nonatomic)NSString *Yue;
+//支付金额
+@property (strong, nonatomic)NSString *ZhiFuJinE;
 
+@property (strong, nonatomic)NSMutableDictionary *parm;
 @end

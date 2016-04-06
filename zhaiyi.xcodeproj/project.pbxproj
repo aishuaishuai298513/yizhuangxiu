@@ -70,6 +70,9 @@
 		0A4D46B01C3E4CA900FE8DD4 /* ITTPromptView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A4D46AC1C3E4CA900FE8DD4 /* ITTPromptView.xib */; };
 		0A4D46B11C3E4CA900FE8DD4 /* PoppingBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A4D46AE1C3E4CA900FE8DD4 /* PoppingBaseView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		0A4D46B41C3E4CFA00FE8DD4 /* UIView+ITTAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A4D46B31C3E4CFA00FE8DD4 /* UIView+ITTAdditions.m */; };
+		0A7B05631CB35A6200C7429F /* My_pocket_Pay_Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A7B05611CB35A6200C7429F /* My_pocket_Pay_Controller.m */; };
+		0A7B05641CB35A6200C7429F /* My_pocket_Pay_Controller.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A7B05621CB35A6200C7429F /* My_pocket_Pay_Controller.xib */; };
+		0A7B05671CB3994400C7429F /* DetialUserInfoM.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A7B05661CB3994400C7429F /* DetialUserInfoM.m */; };
 		0A8139FF1CA3FA6300733248 /* CardTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8139FD1CA3FA6300733248 /* CardTableViewCell.m */; };
 		0A813A001CA3FA6300733248 /* CardTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A8139FE1CA3FA6300733248 /* CardTableViewCell.xib */; };
 		0A813A121CA4DBEB00733248 /* CardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A813A101CA4DBEB00733248 /* CardViewController.m */; };
@@ -495,6 +498,11 @@
 		0A4D46AE1C3E4CA900FE8DD4 /* PoppingBaseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PoppingBaseView.m; sourceTree = "<group>"; };
 		0A4D46B21C3E4CFA00FE8DD4 /* UIView+ITTAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ITTAdditions.h"; sourceTree = "<group>"; };
 		0A4D46B31C3E4CFA00FE8DD4 /* UIView+ITTAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ITTAdditions.m"; sourceTree = "<group>"; };
+		0A7B05601CB35A6200C7429F /* My_pocket_Pay_Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = My_pocket_Pay_Controller.h; sourceTree = "<group>"; };
+		0A7B05611CB35A6200C7429F /* My_pocket_Pay_Controller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = My_pocket_Pay_Controller.m; sourceTree = "<group>"; };
+		0A7B05621CB35A6200C7429F /* My_pocket_Pay_Controller.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = My_pocket_Pay_Controller.xib; sourceTree = "<group>"; };
+		0A7B05651CB3994400C7429F /* DetialUserInfoM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetialUserInfoM.h; sourceTree = "<group>"; };
+		0A7B05661CB3994400C7429F /* DetialUserInfoM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetialUserInfoM.m; sourceTree = "<group>"; };
 		0A8139FC1CA3FA6300733248 /* CardTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardTableViewCell.h; sourceTree = "<group>"; };
 		0A8139FD1CA3FA6300733248 /* CardTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardTableViewCell.m; sourceTree = "<group>"; };
 		0A8139FE1CA3FA6300733248 /* CardTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CardTableViewCell.xib; sourceTree = "<group>"; };
@@ -1578,6 +1586,16 @@
 			name = md5;
 			sourceTree = "<group>";
 		};
+		0A7B055F1CB35A5000C7429F /* 支付页 */ = {
+			isa = PBXGroup;
+			children = (
+				0A7B05601CB35A6200C7429F /* My_pocket_Pay_Controller.h */,
+				0A7B05611CB35A6200C7429F /* My_pocket_Pay_Controller.m */,
+				0A7B05621CB35A6200C7429F /* My_pocket_Pay_Controller.xib */,
+			);
+			name = "支付页";
+			sourceTree = "<group>";
+		};
 		0A8139F01CA3F73A00733248 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -1603,6 +1621,8 @@
 		0A8BC1E51CA0F04E004FA429 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				0A7B05651CB3994400C7429F /* DetialUserInfoM.h */,
+				0A7B05661CB3994400C7429F /* DetialUserInfoM.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -2744,6 +2764,7 @@
 		18FAAC391C119B2500728BD6 /* 雇主找工人 */ = {
 			isa = PBXGroup;
 			children = (
+				0A7B055F1CB35A5000C7429F /* 支付页 */,
 				0AE1A9781C97F1DF00400889 /* 招工人 */,
 				184513051C141BEE001C6082 /* 日历 */,
 			);
@@ -3279,6 +3300,7 @@
 				04E4A8D21C152EFE0069E4F4 /* My_pocket_tixian_FeedbackController.storyboard in Resources */,
 				F6E7F6531C473C0400C91232 /* UMSocialLocalizable.strings in Resources */,
 				0A9C7B281C9FFF8900A0786E /* CertificatePayView.xib in Resources */,
+				0A7B05641CB35A6200C7429F /* My_pocket_Pay_Controller.xib in Resources */,
 				F6E7F6571C473C0400C91232 /* UMSCommentInputControlleriPad.xib in Resources */,
 				0AF8025B1C3D1C880003B989 /* new_feature_4-568h@2x.png in Resources */,
 				18FAAC511C11A1F000728BD6 /* employersInMy.storyboard in Resources */,
@@ -3487,6 +3509,7 @@
 				F6F756211C12EC5400AD835E /* ADDetailController.m in Sources */,
 				F6EC894A1C48DDF2008F24A2 /* Function.m in Sources */,
 				0AFAEE931C3F8D5F00C7C728 /* NSString+MJExtension.m in Sources */,
+				0A7B05671CB3994400C7429F /* DetialUserInfoM.m in Sources */,
 				F6E3D97B1C43E04300256E9B /* base64.m in Sources */,
 				0A8FF8131C4CEC34009771BF /* UIScrollView+MJRefresh.m in Sources */,
 				0A4D46A91C3E4A3500FE8DD4 /* NSString+MD5Addition.m in Sources */,
@@ -3524,6 +3547,7 @@
 				0AFAEE8F1C3F8D5F00C7C728 /* NSObject+MJClass.m in Sources */,
 				0AF55EA81CACFCAA00C9F2A0 /* BaoZhengJinViewController.m in Sources */,
 				0AFAEE901C3F8D5F00C7C728 /* NSObject+MJCoding.m in Sources */,
+				0A7B05631CB35A6200C7429F /* My_pocket_Pay_Controller.m in Sources */,
 				0AFAEEC01C3F8D8400C7C728 /* UIImage+GIF.m in Sources */,
 				0AFAEE8D1C3F8D5F00C7C728 /* MJPropertyKey.m in Sources */,
 				0AE771F91C883673008B277D /* CusAnnotationView.m in Sources */,

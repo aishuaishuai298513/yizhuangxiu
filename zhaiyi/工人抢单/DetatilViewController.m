@@ -51,12 +51,12 @@
 //更新UI
 -(void)UpdateUI
 {
-     self.adresslb.text = self.Model.address;
-    self.gongzuoneirong.text = self.Model.txt;
-    self.renshu.text = [NSString stringWithFormat:@"%@",self.Model.num];
-    self.startdate.text =[NSString date2String:_Model.startDate];
-    self.jiage.text = [NSString stringWithFormat:@"%d元/天",[_Model.money intValue]];
-    self.beizhu.text = self.Model.content;
+//     self.adresslb.text = self.Model.address;
+//    self.gongzuoneirong.text = self.Model.txt;
+//    self.renshu.text = [NSString stringWithFormat:@"%@",self.Model.num];
+//    self.startdate.text =[NSString date2String:_Model.startDate];
+//    self.jiage.text = [NSString stringWithFormat:@"%d元/天",[_Model.money intValue]];
+//    self.beizhu.text = self.Model.content;
     
 //    self.tianshu.text = [NSString numberOfDays1:self.startdate.text numberOfDays2:self.endDate.text timeStringFormat:@"yyyy-MM-dd"];
     

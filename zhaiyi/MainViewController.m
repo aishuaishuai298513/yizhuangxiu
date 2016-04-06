@@ -31,7 +31,7 @@
 #import "ReGeocodeAnnotation.h"
 #import "MANaviAnnotationView.h"
 
-typedef NS_ENUM(int,daTouZhenType)
+typedef NS_ENUM(NSInteger,daTouZhenType)
 {
     GongRentype,
     GuZhutype
@@ -82,6 +82,9 @@ typedef NS_ENUM(int,daTouZhenType)
 //大头针类型
 @property (nonatomic, assign) daTouZhenType *datouzhenType;
 
+//纪录当前工人类型
+@property (nonatomic, strong) NSString *gongRenLeiXing;
+
 #define kCalloutViewMargin          -8
 
 @end
@@ -125,6 +128,7 @@ typedef NS_ENUM(int,daTouZhenType)
         [self.firstBtn setTitle:@"抢单" forState:(UIControlStateNormal)];
         [self.myBtn setTitle:@"我的" forState:(UIControlStateNormal)];
         [self.orderBtn setTitle:@"订单" forState:(UIControlStateNormal)];
+        
     }else
     {
         [self.firstBtn setTitle:@"找工人" forState:(UIControlStateNormal)];
@@ -132,16 +136,35 @@ typedef NS_ENUM(int,daTouZhenType)
         [self.orderBtn setTitle:@"订单" forState:(UIControlStateNormal)];
     }
     
-    //极光推送
-    [self jiGuangTuiSong];
+    //刷新地图
+    if (self.mapView) {
+        if (GetUserDefaultsGR) {
+            
+            if ([self.gongRenLeiXing isEqualToString: @"79"]) {
+                _mapView.showsUserLocation = YES;
+            }
+            self.gongRenLeiXing = @"78";
+            
+        }else
+        {
+            if ([self.gongRenLeiXing isEqualToString: @"78"]) {
+                _mapView.showsUserLocation = YES;
+            }
+            self.gongRenLeiXing = @"79";
+        }
+        
+    }
     
-    YuYinShibie = NO;
-
-    self.datouzhenType = GongRentype;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //极光推送
+    [self jiGuangTuiSong];
+    
+    YuYinShibie = NO;
+    
     //导航栏  菜单按钮view
     [self updateNav];
     //添加搜索框
@@ -213,7 +236,6 @@ typedef NS_ENUM(int,daTouZhenType)
         {
             annotationView.datouzhentype = 2;
         }
-        
         // must set to NO, so we can show the custom callout view.
         annotationView.canShowCallout   = NO;
         annotationView.TypeGongRen = @"油工";
@@ -268,8 +290,10 @@ typedef NS_ENUM(int,daTouZhenType)
     [[NSUserDefaults standardUserDefaults]setObject:lon forKey:@"lon"];
     [[NSUserDefaults standardUserDefaults]setObject:lat forKey:@"lat"];
     
+    
     //标注我的位置
     [self.mapView setCenterCoordinate:coord2D];
+    
     ReGeocodeAnnotation *reGeocodeAnnotation = [[ReGeocodeAnnotation alloc]init];
     reGeocodeAnnotation.coordinate = coord2D;
     reGeocodeAnnotation.title = @"我的位置";
@@ -278,11 +302,16 @@ typedef NS_ENUM(int,daTouZhenType)
     //上传经纬度
     [self uploadLocation:lat lon:lon];
     
-    
+    //显示大头针
+    if (GetUserDefaultsGZ) {
     self.datouzhenType = GuZhutype;
-    
-    for (int i = 0; i<3; i++) {
-        [self addAction];
+        [self searchGonRen_gz:lat lon:lon];
+        
+    }else if(GetUserDefaultsGR)
+    {
+        
+      self.datouzhenType = GongRentype;
+        [self searchGuZhu_gr:lat lon:lon];
     }
 
     _mapView.showsUserLocation = NO;
@@ -518,7 +547,7 @@ typedef NS_ENUM(int,daTouZhenType)
     
     return cell;
 }
-
+#pragma mark 点击搜索地点
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AMapTip *tip = self.tips[indexPath.row];
@@ -570,10 +599,17 @@ typedef NS_ENUM(int,daTouZhenType)
        // self.mapView.zoomLevel = 10;
         [self.mapView setZoomLevel:15 animated:YES];
         
-        //雇主端搜索工人
-        [self searchGonRen_gz:[NSString stringWithFormat:@"%f",tip.location.latitude] lon:[NSString stringWithFormat:@"%f",tip.location.longitude]];
         
-        [self addAction];
+        //雇主端搜索工人/
+        if (GetUserDefaultsGZ) {
+            
+            [self searchGonRen_gz:[NSString stringWithFormat:@"%f",tip.location.latitude] lon:[NSString stringWithFormat:@"%f",tip.location.longitude]];
+        }else if(GetUserDefaultsGR)
+        {
+            [self searchGuZhu_gr:[NSString stringWithFormat:@"%f",tip.location.latitude] lon:[NSString stringWithFormat:@"%f",tip.location.longitude]];
+        }
+        
+        //[self addAction];
         //反地理编码
         //[self searchReGeocodeWithCoordinate:coordinate];
 
@@ -629,7 +665,6 @@ typedef NS_ENUM(int,daTouZhenType)
 //1属于工人,0属于雇主
 #pragma mark招工人 抢单
 - (IBAction)grabASingle:(UIButton *)sender {
-    
     
     ADAccount *acount = [ADAccountTool account];
     //雇主找工人
@@ -786,11 +821,49 @@ typedef NS_ENUM(int,daTouZhenType)
     
     NSLog(@"%@",parms);
     [NetWork postNoParmForMap:YZX_search_gz params:parms success:^(id responseObj) {
+        
         NSLog(@"%@",responseObj);
+        
+        for (int i = 0; i<3; i++) {
+            [self addAction];
+        }
+        
     } failure:^(NSError *error) {
         
     }];
 }
+
+#pragma mark 工人端搜索雇主
+-(void)searchGuZhu_gr:(NSString *)lat lon:(NSString *)lon
+{
+    
+    ADAccount *account = [ADAccountTool account];
+    if (!account) {
+        return;
+    }
+    
+    NSMutableDictionary *parms = [NSMutableDictionary dictionary];
+    
+    [parms setObject:account.userid forKey:@"userid"];
+    [parms setObject:account.token forKey:@"token"];
+    [parms setObject:lat forKey:@"lat"];
+    [parms setObject:lon forKey:@"lng"];
+    
+    NSLog(@"%@",parms);
+    [NetWork postNoParmForMap:YZX_search_gr params:parms success:^(id responseObj) {
+        
+        NSLog(@"%@",responseObj);
+        
+        for (int i = 0; i<3; i++) {
+            [self addAction];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
+
 #pragma mark 推送相关
 //******************************************推送相关******************************************
 //极光推送
@@ -1088,6 +1161,7 @@ typedef NS_ENUM(int,daTouZhenType)
 {
     // [_popUpView showText: @"正在上传..."];
 }
+
 
 
 @end

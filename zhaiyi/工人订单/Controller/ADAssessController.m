@@ -62,7 +62,7 @@
     [parm setObject:acount.userid forKey:@"user_id"];
     [parm setObject:acount.nickname forKey:@"nickname"];
     //[parm setObject: forKey:@"degree"];
-    [parm setObject:self.OrderModel.ddh forKey:@"order_number"];
+    //[parm setObject:self.OrderModel.ddh forKey:@"order_number"];
     [parm setObject:textView.text forKey:@"content"];
     [parm setObject:acount.type forKey:@"type"];
     [parm setObject:self.OrderModel.ID forKey:@"send_id"];

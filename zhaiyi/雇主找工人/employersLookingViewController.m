@@ -9,7 +9,7 @@
 #import "employersLookingViewController.h"
 #import "SZCalendarPicker.h"
 #import <CoreLocation/CoreLocation.h>
-#import "My_pocket_recharge_Controller.h"
+#import "My_pocket_Pay_Controller.h"
 #import "NSDate+ITTAdditions.h"
 
 //#define ZhaoGongRen @"http://drf.unioncloud.com:10094/drf/datagateway/drfrestservice/ExecuteFunction"
@@ -19,20 +19,13 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *moenyLabel;
 @property (assign,nonatomic)NSInteger isInsure;
-@property (weak, nonatomic) IBOutlet UIButton *noButton;
-@property (weak, nonatomic) IBOutlet UIButton *yesButton;
+
 @property (strong,nonatomic)SZCalendarPicker *calendarPicker;
 
 @property (weak, nonatomic) IBOutlet UILabel *starTimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *endTimeLabel;
 @property (weak, nonatomic) IBOutlet UIView *sureView;
 
-//保险
-@property (weak, nonatomic) IBOutlet UILabel *BaoXIanMoney;
-//开工日期
-@property (weak, nonatomic) IBOutlet UILabel *StarTimeLb;
-//竣工日期
-@property (weak, nonatomic) IBOutlet UILabel *EndTimeLb;
 //工程地点
 @property (weak, nonatomic) IBOutlet UITextField *GongChengDiDian;
 //工程内容
@@ -70,28 +63,43 @@
 
 @property (strong, nonatomic) IBOutlet UIView *FatherView;
 
+
 //总费用
 @property (assign, nonatomic) float amountCost;
 //需要钱数
 @property (assign, nonatomic) float needCost;
-
-
+//质保金额
+@property (weak, nonatomic) IBOutlet UILabel *zhiabaojin;
+//联系电话
+@property (weak, nonatomic) IBOutlet UILabel *lianxidianhua;
+//联系人
+@property (weak, nonatomic) IBOutlet UILabel *lianxiren;
+//工种
+@property (weak, nonatomic) IBOutlet UILabel *gongzhong;
+//备注
+@property (weak, nonatomic) IBOutlet UILabel *beizhu;
+//天数
+@property (weak, nonatomic) IBOutlet UITextField *tianshu;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *ScrrolView;
 
 
 @property (nonatomic, strong)UITextField *TextFiled;
 
+//余额
+@property (nonatomic, strong) NSString *Yue;
+//支付金额／保证金
+@property (nonatomic, strong) NSString *ZhiFuJinE;
+//工人Id
+@property (nonatomic, strong) NSString *Id;
+
+
 
 /////////////////////////确认订单信息界面///////
-@property (weak, nonatomic) IBOutlet UILabel *TopGongzhong;
 
-@property (weak, nonatomic) IBOutlet UILabel *topRenShu;
 @property (weak, nonatomic) IBOutlet UILabel *topKaiGongRiQi;
-@property (weak, nonatomic) IBOutlet UILabel *topJunGongRiqi;
 @property (weak, nonatomic) IBOutlet UILabel *TopYongGongTianShu;
 @property (weak, nonatomic) IBOutlet UILabel *TopDanRiGongzi;
-@property (weak, nonatomic) IBOutlet UILabel *TopBaoXianFeie;
 @property (weak, nonatomic) IBOutlet UILabel *TopGongZuoNeiRong;
 @property (weak, nonatomic) IBOutlet UILabel *topGongZuoDiDian;
 
@@ -105,10 +113,9 @@
 //确定或者充值按钮
 @property (weak, nonatomic) IBOutlet UIButton *queDingOrChongZhi;
 
+- (IBAction)queDingChongZhi:(id)sender;
+
 - (IBAction)TopBack:(id)sender;
-
-- (IBAction)TopQueDing:(id)sender;
-
 
 - (IBAction)TouchUp:(id)sender;
 
@@ -251,58 +258,40 @@
     
 }
 
-#pragma mark 是否购买保险
-- (IBAction)isOrNoAction:(id)sender {
-    
-     UIButton *button = sender;
-    if (30 == button.tag) {
-        
-        self.isNeedBaoXian=@"1";
-        
-        [_yesButton setImage:[UIImage imageNamed:@"找工人5"] forState:(UIControlStateNormal)];
-        [_noButton setImage:nil forState:(UIControlStateNormal)];
-        
-        self.baoxianFei.text = @"100";
-        
-    }else{
-        
-        self.isNeedBaoXian=@"0";
-        
-        [_noButton setImage:[[UIImage imageNamed:@"找工人5"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:(UIControlStateNormal)];
-        [_yesButton setImage:nil forState:(UIControlStateNormal)];
-        self.baoxianFei.text = @"0";
-    }
-}
 
-
-//发布
+#pragma mark 发布
 - (IBAction)commintAction:(id)sender {
     
     self.sureView.hidden = NO;
     //判断按钮状态
-    [self SelectBtn:_queDingOrChongZhi];
+    //[self SelectBtn:_queDingOrChongZhi];
     //余额不足提示
-    self.TopGongzhong.text = [NSString stringWithFormat:@"工种:%@",_SelectLabel.text];
-    self.topRenShu.text = [NSString stringWithFormat:@"人数:%@人",_XuQiuRenShu.text];
-    self.topKaiGongRiQi.text = [NSString stringWithFormat:@"开工日期:%@",_starTimeLabel.text];
-        
-    self.topJunGongRiqi.text = [NSString stringWithFormat:@"竣工日期:%@",_endTimeLabel.text];
-        
-    self.TopYongGongTianShu.text = [NSString stringWithFormat:@"用工天数:%@天",self.dayNum.titleLabel.text];
-        
+    
+    //工种
+    self.gongzhong.text = [NSString stringWithFormat:@"%@",_SelectLabel.text];
+    //开工日期
+    self.topKaiGongRiQi.text = [NSString stringWithFormat:@"%@",_starTimeLabel.text];
+    //天数
+    self.TopYongGongTianShu.text = [NSString stringWithFormat:@"%@天",self.tianshu.text];
+    //单日工资
     self.TopDanRiGongzi.text = self.moenyLabel.text;
-        
-        //self.TopBaoXianFeie.text = self.BaoXIanMoney.text;
-        
-    self.TopBaoXianFeie.text = @"0";
-        
-    self.TopGongZuoNeiRong.text = [NSString stringWithFormat:@"工作内容:%@",self.GongZuoNeiRong.text];
-        
+    //工作内容
+    self.TopGongZuoNeiRong.text = [NSString stringWithFormat:@"%@",self.GongZuoNeiRong.text];
+    //工作地点
     self.topGongZuoDiDian.text = self.GongChengDiDian.text;
+    //联系人
+    self.lianxiren.text = self.LianXIRen.text;
+    //联系电话
+    self.lianxidianhua.text = self.LianXiDianHua.text;
+    //备注
+    self.beizhu.text = self.BeiZhu.text;
+    
+    //获取保证金数
+    [self netWorkgetBaoZhengJinForNumber];
     
 }
 
-#pragma mark 判断充值还是确定
+#pragma mark 判断充值还是确定/Users/ass/Desktop/宅易/zhaiyi/雇主找工人/employersLookingViewController.m
 -(void)SelectBtn:(id)sender
 {
     UIButton *button = (UIButton *)sender;
@@ -340,8 +329,15 @@
     
 }
 
-#pragma mark 点击确定 发布
+#pragma mark 点击确定 到支付也面
 //提示框返回
+- (IBAction)queDingChongZhi:(id)sender {
+    
+    
+    [self toVC:nil];
+    
+}
+
 - (IBAction)TopBack:(id)sender {
     
     _sureView.hidden = YES;
@@ -351,10 +347,6 @@
 //提示框确认 发布
 - (void)TopQueDing:(id)sender {
     
-    //发布
-    [self netWorkFaBu];
-    
-    //_sureView.hidden = YES;
 }
 
 
@@ -420,13 +412,34 @@
  
 }
 
+#pragma mark 跳转支付页
 - (void)toVC:(UIButton *)button{
     
-//    UIView *view2 = [button superview];
-//    [view2 removeFromSuperview];
     _sureView.hidden = YES;
     
-    My_pocket_recharge_Controller *rechargeController = [[My_pocket_recharge_Controller alloc]init];
+    ADAccount *account = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:account.userid forKey:@"userid"];
+    [parm setObject:account.token forKey:@"token"];
+    [parm setObject:self.Id forKey:@"gongzhongid"];
+    [parm setObject:self.GongChengDiDian.text forKey:@"adr"];
+    [parm setObject:self.tianshu.text forKey:@"n"];
+    [parm setObject:self.starTimeLabel.text forKey:@"kaigongriqi"];
+    [parm setObject:self.tianshu.text forKey:@"yuji"];
+    [parm setObject:self.moenyLabel.text forKey:@"price"];
+    [parm setObject:self.LianXIRen.text forKey:@"lianxiren"];
+    [parm setObject:self.LianXiDianHua.text forKey:@"lianxidianhua"];
+    [parm setObject:self.BeiZhu.text forKey:@"beizhu"];
+    [parm setObject:self.zhiabaojin.text forKey:@"baozhengjin"];
+    
+    
+    My_pocket_Pay_Controller *rechargeController = [[My_pocket_Pay_Controller alloc]init];
+    rechargeController.parm  = parm;
+    
+    NSLog(@"%@",rechargeController.parm);
+    rechargeController.Yue = self.Yue;
+    rechargeController.ZhiFuJinE = self.ZhiFuJinE;
     [self.navigationController pushViewController:rechargeController animated:YES];
     
     
@@ -443,28 +456,6 @@
         }
     }
     
-//    switch (choosenBut.tag) {
-//        case 10:
-//            self.moenyLabel.text = @"260";
-//            break;
-//        case 11:
-//            self.moenyLabel.text = @"300";
-//            break;
-//        case 12:
-//            self.moenyLabel.text = @"320";
-//            break;
-//        case 13:
-//            self.moenyLabel.text = @"330";
-//            break;
-//        case 14:
-//            self.moenyLabel.text = @"400";
-//            break;
-//        case 15:
-//            self.moenyLabel.text = @"420";
-//            break;
-//        default:
-//            break;
-//    }
 }
 
 -(void)UpdateFenLei
@@ -510,7 +501,7 @@
         // NSString *str = [self.titleArr[i] objectForKey:@"title"];
         // NSLog(@"%@",str);
     
-        squareLab.text = [self.dataSourceFenLei[i] objectForKey:@"typeName"];
+        squareLab.text = [self.dataSourceFenLei[i] objectForKey:@"gzname"];
 
         //添加手势
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(HeaderClicked:)];
@@ -518,9 +509,11 @@
         [squareLab addGestureRecognizer:tap];
         [self.FenLeiSuperView addSubview:squareLab];
         
-        //报销费额赋值
-        NSInteger money = [[self.dataSourceFenLei[0] objectForKey:@"money"] integerValue];
-        self.baoxianFei.text =[NSString stringWithFormat:@"%ld",money];
+        //保险费额赋值
+        NSInteger money = [[self.dataSourceFenLei[0] objectForKey:@"price"] integerValue];
+        self.moenyLabel.text =[NSString stringWithFormat:@"%ld",money];
+        
+        self.Id = [self.dataSourceFenLei[0] objectForKey:@"id"];
     }
 
 
@@ -538,9 +531,11 @@
     self.classId = [NSString stringWithFormat:@"%ld",_SelectLabel.tag];
     self.GongZhongType = _SelectLabel.text;
     
-    NSInteger money = [[self.dataSourceFenLei[_SelectLabel.tag -1] objectForKey:@"money"] integerValue];
+    NSInteger money = [[self.dataSourceFenLei[_SelectLabel.tag -1] objectForKey:@"price"] integerValue];
    //self.baoxianFei.text =[NSString stringWithFormat:@"%ld",money];
     self.moenyLabel.text =[NSString stringWithFormat:@"%ld",money];
+    
+    self.Id =[self.dataSourceFenLei[_SelectLabel.tag -1] objectForKey:@"id"];
 
 }
 
@@ -551,18 +546,19 @@
     
     ADAccount *acount = [ADAccountTool account];
     
-    [parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
     
     NSLog(@"%@",parm);
     
-    [NetWork postNoParm:GongZhongFenLei params:parm success:^(id responseObj) {
+    [NetWork postNoParm:YZX_zhaogongren params:parm success:^(id responseObj) {
         
         NSLog(@"%@",responseObj);
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
         
      //   NSLog(@"%@",[responseObj objectForKey:@"data"] );
         
-        self.dataSourceFenLei = [responseObj objectForKey:@"data"];
+        self.dataSourceFenLei = [[responseObj objectForKey:@"data"]objectForKey:@"gongzhong"];
         
         NSLog(@"%@",self.dataSourceFenLei);
         
@@ -574,128 +570,32 @@
         NSLog(@"%@",error);
         
     }];
-    
-//    [NetWork post:ZhaoGongRen params:parm success:^(id responseObj) {
-//        NSLog(@"%@",responseObj);
-//        if ([responseObj objectForKey:@"IsSuccess"]) {
-//            
-//            NSLog(@"%@",[responseObj objectForKey:@"Data"] );
-//            
-//            self.dataSourceFenLei = [[responseObj objectForKey:@"Data"] objectForKey:@"table0"];
-//            
-//            NSLog(@"%@",self.dataSourceFenLei);
-//            
-//            //更新分类界面
-//            [self UpdateFenLei];
-//            
-//        }
-//        
-//    } failure:^(NSError *error) {
-//        NSLog(@"%@",error);
-//    }];
 }
-
-
-#pragma mark 发布接口
--(void)netWorkFaBu
+#pragma mark 通过发布人数获取应缴质保金（雇主端）
+-(void)netWorkgetBaoZhengJinForNumber
 {
-    if([self.LianXIRen.text isEqualToString:@""])
-    {
-        [ITTPromptView showMessage:@"联系人不能为空"];
-        return;
-    }
-    if ([self.LianXiDianHua.text isEqualToString:@""]) {
-        [ITTPromptView showMessage:@"联系电话不能为空"];
-    }
-    if ([self.starTimeLabel.text isEqualToString:@""]) {
-        [ITTPromptView showMessage:@"时间不能为空"];
-    }
-//    if ([self.endTimeLabel.text isEqualToString:@""]) {
-//        [ITTPromptView showMessage:@"时间不能为空"];
-//    }
-    if ([self.XuQiuRenShu.text isEqualToString:@""]) {
-        [ITTPromptView showMessage:@"需求人数不能为空"];
-    }
-    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     ADAccount *acount = [ADAccountTool account];
-    //经纬度
-    NSString *lon =[[NSUserDefaults standardUserDefaults]objectForKey:@"lon"];
-    NSString *lat =[[NSUserDefaults standardUserDefaults]objectForKey:@"lat"];
-    NSLog(@"%@",lon);
-    NSLog(@"%@",lat);
     
-//    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    //[parm setObject:@"发布需求" forKey:@"functionName"];
-    [_params setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.XuQiuRenShu.text forKey:@"n"];
     
-    if ([self.GongZhongType isEqualToString:@"泥工"]) {
-        
-        [_params setObject:@"1" forKey:@"type"];//工种分类
-        
-    }else if ([self.GongZhongType isEqualToString:@"油工"])
-    {
-        [_params setObject:@"2" forKey:@"type"];//工种分类
-    }else if ([self.GongZhongType isEqualToString:@"水工"])
-    {
-        [_params setObject:@"3" forKey:@"type"];//工种分类
-    }else if ([self.GongZhongType isEqualToString:@" 电工"])
-    {
-        [_params setObject:@"4" forKey:@"type"];//工种分类
-    }else if ([self.GongZhongType isEqualToString:@"木工"])
-    {
-        [_params setObject:@"5" forKey:@"type"];//工种分类
-    }else if ([self.GongZhongType isEqualToString:@"小工"])
-    {
-        [_params setObject:@"6" forKey:@"type"];//工种分类
-    }else
-    {
-        [_params setObject:@"1" forKey:@"type"];
-    }
-    
-    [_params setObject:self.GongChengDiDian.text forKey:@"address"];//地址
-    [_params setObject:self.GongZuoNeiRong.text forKey:@"content"];//工作内容
-    [_params setObject:self.starTimeLabel.text forKey:@"startdate"];//开始时间
-    [_params setObject:@"2016-05-01" forKey:@"enddate"];//结束时间
-    [_params setObject:self.moenyLabel.text forKey:@"money"];//价格区间
-    [_params setObject:@"1" forKey:@"is_safe"];//是否需要保险
-    [_params setObject:@"200" forKey:@"safe_money"];//保险金额
-    [_params setObject:self.LianXIRen.text forKey:@"name"];//联系人
-    [_params setObject:self.LianXiDianHua.text forKey:@"phone"];//联系方式
-    [_params setObject:self.BeiZhu.text forKey:@"descript"];//描述
-    
-    if ( lon ) {
-        
-     [_params setObject:lon forKey:@"lng"];//经度
-     NSLog(@"%@",lon);
-    }
-    if (lat)
-    {
-        NSLog(@"%@",lat);
-     [_params setObject:lat forKey:@"lat"];//纬度
-    }
-    
-    [_params setObject:self.XuQiuRenShu.text forKey:@"number"];//需求人数
-   
-    NSLog(@"上传 %@",_params);
-   
-    [NetWork postNoParm:FaBuXuQiu params:_params success:^(id responseObj) {
+    [NetWork postNoParmForMap:YZX_returnzhibaojin params:parm success:^(id responseObj) {
         
         NSLog(@"%@",responseObj);
-        if ([[responseObj objectForKey:@"code"] isEqualToString:@"1000"]) {
-            
-            [ITTPromptView showMessage:@"发布成功"];
-            
-            [self.navigationController popViewControllerAnimated:YES];
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            self.zhiabaojin.text = [[responseObj objectForKey:@"data"]objectForKey:@"zhibaojin"];
+            self.ZhiFuJinE = self.zhiabaojin.text;
+            self.Yue = [[responseObj objectForKey:@"data"]objectForKey:@"yue"];
         }
         
     } failure:^(NSError *error) {
-        [ITTPromptView showMessage:@"失败"];
-
-        NSLog(@"%@",error);
         
     }];
     
 }
+
 //
 - (IBAction)touchs:(id)sender {
     
