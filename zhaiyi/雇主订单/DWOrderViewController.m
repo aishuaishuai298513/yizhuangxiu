@@ -122,6 +122,8 @@
 #pragma mark  我发布的订单
 -(void)netWork
 {
+    [self.dataSource removeAllObjects];
+    
     [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeNone];
     ADAccount *acount = [ADAccountTool account];
     NSLog(@"%@",acount.userid);
@@ -153,18 +155,14 @@
         NSLog(@"%@",responseObj);
         
         if ([[responseObj objectForKey:@"result"] isEqualToString:@"1"]) {
-        NSMutableArray *array = [NSMutableArray array];
-        array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[[responseObj objectForKey:@"data"] objectForKey:@"list"]];
+        //NSMutableArray *array = [NSMutableArray array];
+        self.dataSource = [DWOrderModel mj_objectArrayWithKeyValuesArray:[[responseObj objectForKey:@"data"] objectForKey:@"list"]];
             
-            [self.dataSource addObjectsFromArray:array];
             NSLog(@"%@",self.dataSource);
-//            NSLog(@"%ld",self.dataSource.count);
-    
+            
             //订单数量
             weakSelf.view1Num.text = [NSString stringWithFormat:@"%@",[[responseObj objectForKey:@"data"] objectForKey:@"fabuzhong"]];;
-            
             weakSelf.view2num.text = [NSString stringWithFormat:@"%@",[[responseObj objectForKey:@"data"]objectForKey:@"shigongzhong"]];
-            
             weakSelf.viewNum3.text = [NSString stringWithFormat:@"%@",[[responseObj objectForKey:@"data"] objectForKey:@"yijungong"]];
             
             [self.tableView reloadData];
@@ -291,16 +289,14 @@
         
     }];
     
-    if (indexPath.row >0) {
-        
+    
         DWOrderModel *MOdel = self.dataSource[indexPath.row];
-//        cell.date.text = [NSString stringWithFormat:@"%@-%@",[NSString dateString:MOdel.createtime],[NSString dateString:MOdel.endDate]];
         cell.date.text = MOdel.createtime;
         cell.Adress.text = MOdel.adr;
         cell.dingDanhao.text = MOdel.ordercode;
         cell.yujitianshu.text = [NSString stringWithFormat:@"%@天",MOdel.yuji];
         cell.gongzhong.text = MOdel.gzname;
-    }
+
     
     return cell;
 }
@@ -308,7 +304,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSLog(@"%ld", self.dataSource.count);
     
-    //return 10;
     return self.dataSource.count;
 }
 

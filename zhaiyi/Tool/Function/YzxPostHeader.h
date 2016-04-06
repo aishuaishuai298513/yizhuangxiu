@@ -67,6 +67,8 @@
 #define YZX_orderlist @"/api/index/orderlist"
 //抢单详情（工人段）
 #define YZX_qiangdanxiangqing @"/api/index/qiangdanxiangqing"
+//抢单（工人端）
+#define YZX_qiangdan @"/api/index/qiangdan"
 
 
 

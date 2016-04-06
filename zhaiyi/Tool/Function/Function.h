@@ -25,4 +25,9 @@
 
 +(instancetype)createBackView:(nullable id)Target  action:(SEL)action;
 
+
+//通过tag值设置星级
++(void)xingji:(UIView *)view xingji:(int)xingji startTag:(int)starTag;
+
+
 @end

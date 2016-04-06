@@ -567,13 +567,13 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 - (void)clearAndShowAnnotationWithTip:(AMapTip *)tip
 {
     
-    [[NSUserDefaults standardUserDefaults]setObject:@"78" forKey:@"shenfentype"];
-    
-    [[NSUserDefaults standardUserDefaults]setObject:@"79" forKey:@"shenfentype"];
-    
-    
-    [[[NSUserDefaults standardUserDefaults]objectForKey:@"shenfentype"]isEqualToString:@"78"];
-    [[[NSUserDefaults standardUserDefaults]objectForKey:@"shenfentype"]isEqualToString:@"79"];
+//    [[NSUserDefaults standardUserDefaults]setObject:@"78" forKey:@"shenfentype"];
+//    
+//    [[NSUserDefaults standardUserDefaults]setObject:@"79" forKey:@"shenfentype"];
+//    
+//    
+//    [[[NSUserDefaults standardUserDefaults]objectForKey:@"shenfentype"]isEqualToString:@"78"];
+//    [[[NSUserDefaults standardUserDefaults]objectForKey:@"shenfentype"]isEqualToString:@"79"];
     
     
     /* 清除annotations & overlays */
@@ -602,10 +602,11 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
         
         //雇主端搜索工人/
         if (GetUserDefaultsGZ) {
-            
+            self.datouzhenType = GongRentype;
             [self searchGonRen_gz:[NSString stringWithFormat:@"%f",tip.location.latitude] lon:[NSString stringWithFormat:@"%f",tip.location.longitude]];
         }else if(GetUserDefaultsGR)
         {
+            self.datouzhenType = GuZhutype;
             [self searchGuZhu_gr:[NSString stringWithFormat:@"%f",tip.location.latitude] lon:[NSString stringWithFormat:@"%f",tip.location.longitude]];
         }
         

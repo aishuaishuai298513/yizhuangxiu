@@ -377,10 +377,12 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     [parm setObject:acount.userid forKey:@"userid"];
     [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.OrderID forKey:@"id"];
     
     __weak typeof (self)WeakSelf =self;
     [NetWork postNoParm:YZX_dingdanxiangqing params:parm success:^(id responseObj) {
         
+        NSLog(@"%@",responseObj);
         WeakSelf.OrderModel =[DWOrderModel mj_objectWithKeyValues:[responseObj objectForKey:@"data"]];
         
         WeakSelf.UsersdataSource = [DetialUserInfoM mj_objectArrayWithKeyValuesArray:[[responseObj objectForKey:@"data"] objectForKey:@"list"]];

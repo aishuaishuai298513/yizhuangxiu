@@ -80,7 +80,7 @@
     
     [self.dataSource removeAllObjects];
     
-    [self netWorkQiangDan];
+    [self netWorkQiangDanHeader];
     
     
 }
@@ -118,12 +118,14 @@
         UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"workerRob" bundle:nil];
         DetatilViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"qiangdanxiangqing"];
         
-        test2obj.Model = self.dataSource[indexPath.row];
+        DWOrderModel *OrderModel = self.dataSource[indexPath.row];
+        test2obj.orderId = OrderModel.ID;
         
         [self.navigationController pushViewController:test2obj animated:YES];
         
 
     }];
+    
     if (_dataSource.count != 0) {
         cell.cellModel= self.dataSource[indexPath.row];
     }
@@ -143,25 +145,31 @@
 }
 
 //工人端|工人端查看雇主下单列表  抢单列表
--(void)netWorkQiangDan
+-(void)netWorkQiangDanHeader
 {
     _pageIndex = 1;
-    ADAccount *acount = [ADAccountTool account];
-    NSLog(@"%@",acount.userid);
+    
+
+   ADAccount *acount = [ADAccountTool account];
+   NSString *lon = [[NSUserDefaults standardUserDefaults]objectForKey:@"lon"];
+   NSString *lat =  [[NSUserDefaults standardUserDefaults]objectForKey:@"lat"];
     
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    //[parm setObject:acount.userid forKey:@"user_id"];
     
-    [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"pageindex"];
+    [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"page"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:lon forKey:@"lng"];
+    [parm setObject:lat forKey:@"lat"];
     
     //[parm setObject:@"1" forKey:@"pageindex"];
-     NSLog(@"%@",parm);
+     //NSLog(@"%@",parm);
     
     //84已发布
-    [NetWork postNoParm:qiangDanLieBiao params:parm success:^(id responseObj) {
+    [NetWork postNoParm:YZX_orderlist params:parm success:^(id responseObj) {
         
         NSLog(@"%@",responseObj);
-        if ([[responseObj objectForKey:@"code"] isEqualToString:@"1000"]) {
+        if ([[responseObj objectForKey:@"result"] isEqualToString:@"1"]) {
             
             NSMutableArray *array = [NSMutableArray array];
             
@@ -184,51 +192,6 @@
 
 }
 
--(void)netWorkQiangDanHeader
-{
-    
-    _pageIndex = 1;
-    
-    [self.dataSource removeAllObjects];
-
-    ADAccount *acount = [ADAccountTool account];
-    NSLog(@"%@",acount.userid);
-    
-    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    
-    //[parm setObject:acount.userid forKey:@"user_id"];
-    [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"pageindex"];
-    //84已发布
-    //[parm setObject:@"84" forKey:@"status"];
-    NSLog(@"%d",_pageIndex);
-    
-    [NetWork postNoParm:qiangDanLieBiao params:parm success:^(id responseObj) {
-        
-        NSLog(@"工人抢单: %@",responseObj);
-        
-        if ([[responseObj objectForKey:@"code"] isEqualToString:@"1000"]) {
-            
-            NSMutableArray *array = [NSMutableArray array];
-            array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
-            
-            NSLog(@"%ld",array.count);
-
-            [self.dataSource addObjectsFromArray:array];
-            
-            [self.tableView reloadData];
-            
-            [self.tableView.mj_header endRefreshing];
-        }
-        
-    } failure:^(NSError *error) {
-        NSLog(@"工人抢单: %@",error.localizedDescription);
-       // [self.tableView.mj_footer endRefreshing];
-        [self.tableView.mj_header endRefreshing];
-        
-        NSLog(@"%@",error);
-    }];
-    
-}
 
 -(void)netWorkQiangDanFooter
 {
@@ -237,21 +200,28 @@
     ADAccount *acount = [ADAccountTool account];
     NSLog(@"%@",acount.userid);
     
+    NSString *lon = [[NSUserDefaults standardUserDefaults]objectForKey:@"lon"];
+    NSString *lat =  [[NSUserDefaults standardUserDefaults]objectForKey:@"lat"];
+    
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     
-    //[parm setObject:acount.userid forKey:@"user_id"];
-    [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"pageindex"];
+    [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"page"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:lon forKey:@"lng"];
+    [parm setObject:lat forKey:@"lat"];
+
     
     //84已发布
     //[parm setObject:@"84" forKey:@"status"];
     
     NSLog(@"%d",_pageIndex);
     
-    [NetWork postNoParm:qiangDanLieBiao params:parm success:^(id responseObj) {
+    [NetWork postNoParm:YZX_orderlist params:parm success:^(id responseObj) {
         
         NSLog(@"工人抢单: %@",responseObj);
         
-        if ([[responseObj objectForKey:@"code"] isEqualToString:@"1000"]) {
+        if ([[responseObj objectForKey:@"result"] isEqualToString:@"1"]) {
             
             NSMutableArray *array = [NSMutableArray array];
             array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];

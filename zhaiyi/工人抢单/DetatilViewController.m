@@ -10,8 +10,8 @@
 #import "ADDetailController.h"
 #import "My_jidanshezhi_Controller.h"
 #import "UIImageView+WebCache.h"
-
 #import "grabOrderResult.h"
+
 
 @interface DetatilViewController ()
 //
@@ -20,18 +20,35 @@
     UIView *backView;
 }
 
-@property (weak, nonatomic) IBOutlet UIView *wanringView;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+
+
+@property (weak, nonatomic) IBOutlet UIButton *makeSureBtn;
+
+
 @property (nonatomic, strong) UIView *shawdowView;
 //UI
-@property (weak, nonatomic) IBOutlet UIImageView *iconImage;
-@property (weak, nonatomic) IBOutlet UILabel *adresslb;
-@property (weak, nonatomic) IBOutlet UILabel *gongzuoneirong;
-@property (weak, nonatomic) IBOutlet UILabel *renshu;
+@property (weak, nonatomic) IBOutlet UIImageView *iconImage;//头像
+@property (weak, nonatomic) IBOutlet UILabel *adresslb;//工作地址
+@property (weak, nonatomic) IBOutlet UILabel *gongzuoneirong;//工作内容
+@property (weak, nonatomic) IBOutlet UILabel *renshu;//需求人数
 
-@property (weak, nonatomic) IBOutlet UILabel *startdate;
-@property (weak, nonatomic) IBOutlet UILabel *tianshu;
-@property (weak, nonatomic) IBOutlet UILabel *jiage;
-@property (weak, nonatomic) IBOutlet UILabel *beizhu;
+@property (weak, nonatomic) IBOutlet UILabel *startdate;//开工日期
+
+@property (weak, nonatomic) IBOutlet UILabel *jiage;//价格
+@property (weak, nonatomic) IBOutlet UILabel *beizhu;//备注
+
+@property (weak, nonatomic) IBOutlet UILabel *shengYuRenShu;//剩余人数
+
+@property (weak, nonatomic) IBOutlet UILabel *yuJiTianShu;//预计天数
+@property (weak, nonatomic) IBOutlet UILabel *gongZhong;//工种
+@property (weak, nonatomic) IBOutlet UILabel *lianXiRen;//联系人
+
+@property (weak, nonatomic) IBOutlet UIButton *baozhengjinBtn;
+
+
+@property (nonatomic ,strong) NSString *xingji;//星级
+
 
 @end
 
@@ -45,48 +62,108 @@
     self.orderAction.layer.shouldRasterize = YES;
     self.orderAction.backgroundColor = [UIColor colorWithRed:203.0 / 255.0 green:233.0 / 255.0 blue:243.0 / 255.0 alpha:1];
  
-    [self UpdateUI];
+    [self netWorkInfo];
     self.title = @"详情";
+    self.scrollView.showsHorizontalScrollIndicator = NO;
+    self.scrollView.showsVerticalScrollIndicator = NO;
 }
 //更新UI
--(void)UpdateUI
+-(void)netWorkInfo
 {
-//     self.adresslb.text = self.Model.address;
-//    self.gongzuoneirong.text = self.Model.txt;
-//    self.renshu.text = [NSString stringWithFormat:@"%@",self.Model.num];
-//    self.startdate.text =[NSString date2String:_Model.startDate];
-//    self.jiage.text = [NSString stringWithFormat:@"%d元/天",[_Model.money intValue]];
-//    self.beizhu.text = self.Model.content;
     
-//    self.tianshu.text = [NSString numberOfDays1:self.startdate.text numberOfDays2:self.endDate.text timeStringFormat:@"yyyy-MM-dd"];
+    ADAccount *acount = [ADAccountTool account];
     
-   // [self.iconImage sd_setImageWithURL:[NSURL URLWithString:@"%@%@",XMJ_BASE_URL,]];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.orderId forKey:@"id"];
+    
+    __weak typeof(self) weak= self;
+    
+    [NetWork postNoParm:YZX_qiangdanxiangqing params:parm success:^(id responseObj) {
+        
+        if([[responseObj objectForKey:@"result"]isEqualToString:@"1"])
+        {
+            self.Model = [DWOrderModel mj_objectWithKeyValues:[responseObj objectForKey:@"data"]];
+            [weak makeUI];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+}
+#pragma mark  更新界面
+-(void)makeUI
+{
+    self.adresslb.text = self.Model.adr;
+    self.gongzuoneirong.text = self.Model.gongzuoneirong;
+    self.renshu.text = [NSString stringWithFormat:@"%@",self.Model.n];
+    self.startdate.text =self.Model.kaigongriqi;
+    self.jiage.text = [NSString stringWithFormat:@"%@",_Model.price ];
+    self.beizhu.text = self.Model.beizhu;
+    self.yuJiTianShu.text = self.Model.yuji;
+    self.yuJiTianShu.textColor = [UIColor redColor];
+    
+
+    NSString *shengyu = [NSString stringWithFormat:@"%d人",[_Model.n intValue]-[_Model.yizhaorenshu intValue]];
+    
+    NSMutableAttributedString *attributeStr = [[NSMutableAttributedString alloc]initWithString:shengyu];
+    
+    [attributeStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:13] range:NSMakeRange(0, shengyu.length-1)];
+    [attributeStr addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(0, shengyu.length-1)];
+    
+    self.shengYuRenShu.attributedText = attributeStr;
+    
+    //头像
+     NSString *HeadPicUrl = [NSString stringWithFormat:@"%@%@",YZX_BASY_URL,self.Model.headpic];
+
+    [self.iconImage sd_setImageWithURL:[NSURL URLWithString:HeadPicUrl] placeholderImage:[UIImage imageNamed:@"定位_08"]];
+    
+    self.gongZhong.text = _Model.gzname;
+    self.lianXiRen.text = _Model.lianxiren;
+    //星级
+    self.xingji = _Model.xing;
+    
+    
+}
+//设置星级
+-(void)setXingji:(NSString *)xingji
+{
+    //设置星级
+    [Function xingji:self.view xingji:[xingji intValue] startTag:101];
 }
 
-//订单列表_抢
+#pragma mark 订单列表_抢
 -(void)netWork
 {
-    grabOrderV = [grabOrderResult LoadView];
-    grabOrderV.frame = CGRectMake(50, 200, SCREEN_WIDTH -100, SCREEN_WIDTH -100);
-    [grabOrderV YesBtnAddTarget:self action:@selector(makeSureClicked) forControlEvents:UIControlEventTouchUpInside];
-    
-     backView = [Function createBackView:self action:@selector(backViewClicked)];
-    [[[UIApplication sharedApplication]keyWindow]addSubview:backView];
-    [[[UIApplication sharedApplication]keyWindow]addSubview:grabOrderV];
-    
     ADAccount *acount = [ADAccountTool account];
     DWOrderModel *model = self.Model;
     NSLog(@"%@",model.ID);
     NSLog(@"%@",acount.userid);
     
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:acount.userid forKey:@"user_id"];
-    [parm setObject:model.ID forKey:@"order_id"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.userid forKey:@"token"];
+    [parm setObject:model.ID forKey:@"id"];
     
-    [NetWork postNoParm:qiangDan params:parm success:^(id responseObj) {
+    [NetWork postNoParm:YZX_qianbao params:parm success:^(id responseObj) {
         
-        NSLog(@"%@",responseObj);
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+        //NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            //提示抢单成功
+            grabOrderV = [grabOrderResult LoadView];
+            grabOrderV.frame = CGRectMake(50, 200, SCREEN_WIDTH -100, SCREEN_WIDTH -100);
+            
+           [grabOrderV YesBtnAddTarget:self action:@selector(makeSureClicked) forControlEvents:UIControlEventTouchUpInside];
+            grabOrderV.info.text = [[responseObj objectForKey:@"data"]objectForKey:@"info"];
+            grabOrderV.info2.text = [[responseObj objectForKey:@"data"]objectForKey:@"info2"];
+            
+            
+            backView = [Function createBackView:self action:@selector(backViewClicked)];
+            [[[UIApplication sharedApplication]keyWindow]addSubview:backView];
+            [[[UIApplication sharedApplication]keyWindow]addSubview:grabOrderV];
+            
             
         }else
         {
@@ -110,35 +187,7 @@
     [backView removeFromSuperview];
     [grabOrderV removeFromSuperview];
     
-}
-
-
-//弹窗跳到  订单详情
-- (IBAction)detailVCAction:(id)sender {
-    
-    ADDetailController *detail = [[ADDetailController alloc]init];
-    detail.OrderModel = self.Model;
-    [self.navigationController pushViewController:detail animated:YES];
-    [self.shawdowView removeFromSuperview];
-    self.wanringView.hidden=YES;
-    
-}
-
-//弹窗跳到  接单设置
-- (IBAction)orderSet:(UIButton *)sender {
-    
-    NSLog(@"接单设置   设置");
-    
-    //@"order_status" 状态 0 接单  1 休息  2 忙碌
-    NSUserDefaults *userD = [NSUserDefaults standardUserDefaults];
-    [userD setObject:@"2" forKey:@"order_status"];
-    [userD synchronize];
-    //若接单成功  状态设置为2
-////
-    My_jidanshezhi_Controller * order = [[My_jidanshezhi_Controller alloc]init];
-    [self.navigationController pushViewController:order animated:YES];
-    [self.shawdowView removeFromSuperview];
-    self.wanringView.hidden=YES;
+    self.makeSureBtn.userInteractionEnabled = NO;
     
 }
 
@@ -153,17 +202,5 @@
      [self netWork];
     
 }
-
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

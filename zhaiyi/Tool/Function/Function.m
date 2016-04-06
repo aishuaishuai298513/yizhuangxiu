@@ -134,5 +134,24 @@ UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:str delegate:
     [bgView addGestureRecognizer:tap];
     
     return bgView;
+    
 }
+
+//设置星级
++(void)xingji:(UIView *)view xingji:(int)xingji startTag:(int)starTag
+{
+    for (int i = starTag; i<=starTag+5; i++) {
+        UIImageView *imageV = (UIImageView *)[view viewWithTag:i];
+        imageV.image = [UIImage imageNamed:@"xing3"];
+        
+    }
+    
+    for (int i = starTag; i<=starTag+xingji; i++) {
+        UIImageView *imageV = (UIImageView *)[view viewWithTag:i];
+        
+        imageV.image = [UIImage imageNamed:@"xing"];
+    }
+}
+
 @end
+

@@ -15,5 +15,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *orderAction;
 
 @property (nonatomic, strong) DWOrderModel *Model;
+@property (nonatomic, strong) NSString *orderId;
 
 @end

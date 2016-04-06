@@ -14,4 +14,8 @@
 
 - (void)YesBtnAddTarget:(nullable id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents;
 
+@property (weak, nonatomic) IBOutlet UILabel *info;
+
+@property (weak, nonatomic) IBOutlet UILabel *info2;
+
 @end
