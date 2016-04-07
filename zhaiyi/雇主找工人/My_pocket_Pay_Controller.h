@@ -24,8 +24,11 @@
 
 //余额
 @property (strong, nonatomic)NSString *Yue;
-//支付金额
+//支付金额／保证金
 @property (strong, nonatomic)NSString *ZhiFuJinE;
+//
+@property (strong, nonatomic) NSString *baoZhengJin;
 
 @property (strong, nonatomic)NSMutableDictionary *parm;
+
 @end

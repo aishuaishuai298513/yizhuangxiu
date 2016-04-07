@@ -81,7 +81,7 @@
     __weak typeof(self) weak= self;
     
     [NetWork postNoParm:YZX_qiangdanxiangqing params:parm success:^(id responseObj) {
-        
+        NSLog(@"%@",responseObj);
         if([[responseObj objectForKey:@"result"]isEqualToString:@"1"])
         {
             self.Model = [DWOrderModel mj_objectWithKeyValues:[responseObj objectForKey:@"data"]];
@@ -143,12 +143,12 @@
     
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     [parm setObject:acount.userid forKey:@"userid"];
-    [parm setObject:acount.userid forKey:@"token"];
+    [parm setObject:acount.token forKey:@"token"];
     [parm setObject:model.ID forKey:@"id"];
     
-    [NetWork postNoParm:YZX_qianbao params:parm success:^(id responseObj) {
+    [NetWork postNoParm:YZX_qiangdan params:parm success:^(id responseObj) {
         
-        //NSLog(@"%@",responseObj);
+        NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             
             //提示抢单成功

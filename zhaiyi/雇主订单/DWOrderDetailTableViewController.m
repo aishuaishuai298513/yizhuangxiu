@@ -22,6 +22,8 @@
 #import "My_pocket_Controller.h"
 //模型
 #import "DetialUserInfoM.h"
+//找工人
+#import "employersLookingViewController.h"
 
 //标志按钮状态
 typedef NS_ENUM(NSUInteger, CellBtnState) {
@@ -254,35 +256,17 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self checkGongRenInfo:indexPath];
+    [self checkGongRenInfo:indexPath.row];
 }
 
 
 #pragma mark 辞退
 -(void)ciTui:(id)sender
 {
+    
     UIButton *btn = (UIButton *)sender;
     DetialUserInfoM *model = self.UsersdataSource[btn.tag-100];
-    
-    ADAccount *acount = [ADAccountTool account];
-    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:acount.userid forKey:@"userid"];
-    [parm setObject:acount.token forKey:@"token"];
-    [parm setObject:model.ID forKey:@"userid2"];
-    [parm setObject:self.OrderModel.ID forKey:@"id"];
-    
-    [NetWork postNoParm:YZX_citui params:parm success:^(id responseObj) {
-        
-        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
-            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
-            
-            [self.UsersdataSource removeObjectAtIndex:btn.tag-100];
-            [self.tableView reloadData];
-        }
-        
-    } failure:^(NSError *error) {
-        
-    }];
+    [self checkGongRenInfo:(int)btn.tag-100];
 }
 #pragma mark 去支付
 -(void)goPay:(id)sender
@@ -329,15 +313,14 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     
 }
 
-#pragma mark 点击cell跳到工人详情页
--(void)checkGongRenInfo:(NSIndexPath *)indexpath
+#pragma mark 点击cell跳到工人详情页/或者辞退
+-(void)checkGongRenInfo:(int)indexpathRow
 {
-        
         //工人信息
         DWEmployerDetailController *vc = [[DWEmployerDetailController alloc] initWithNibName:@"DWEmployerDetailController" bundle:nil];
         
         vc.type = self.type;
-        vc.acount = self.UsersdataSource[indexpath.row];
+        vc.acount = self.UsersdataSource[indexpathRow];
         vc.orderModel  =self.OrderModel;
         
         [self.navigationController pushViewController:vc animated:YES];
@@ -393,8 +376,16 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
             self.rightButton.userInteractionEnabled = NO;
         }
         
-        [self creatOrderUi];
-        [self.tableView reloadData];
+        [WeakSelf creatOrderUi];
+        [WeakSelf.tableView reloadData];
+        
+        //判断是否弹出提示框
+        if([[responseObj objectForKey:@"data"]objectForKey:@"tixing"]){
+            NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+            dic = [[responseObj objectForKey:@"data"]objectForKey:@"tixing"];
+            
+            [WeakSelf tiShikuang:dic];
+        }
         
         
     } failure:^(NSError *error) {
@@ -408,26 +399,6 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 #pragma mark 确认招用／开工
 -(void)queRenZhaoYong
 {
-    //如果订单为招满，弹出友情提示框
-    if ([self.OrderModel.n intValue]>self.UsersdataSource.count) {
-        
-        //友情提示框
-        FriendPrompt *firendView = [FriendPrompt FirendLoadView];
-        self.firendPopView =firendView;
-        firendView.frame = CGRectMake(30, SCREEN_WIDTH/2, SCREEN_WIDTH - 60, 200);
-        //底部大的透明View
-        self.bg = [Function createBackView:self action:@selector(bgViewClicked)];
-        //no按钮添加事件
-        [firendView NoBtnAddTarget:self action:@selector(bgViewClicked) forControlEvents:UIControlEventTouchUpInside];
-        
-        [firendView YesBtnAddTarget:self action:@selector(continueFaBu) forControlEvents:UIControlEventTouchUpInside];
-        
-        [[UIApplication sharedApplication].keyWindow addSubview:self.bg];
-        [[UIApplication sharedApplication].keyWindow addSubview:firendView];
-        
-        return;
-    }
-    
     
     ADAccount *acount = [ADAccountTool account];
     
@@ -450,6 +421,28 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
         NSLog(@"%@",error);
     }];
     
+}
+#pragma mark 提示框
+-(void)tiShikuang:(NSMutableDictionary *)dic
+{
+    //友情提示框
+    FriendPrompt *firendView = [FriendPrompt FirendLoadView];
+    self.firendPopView =firendView;
+    firendView.frame = CGRectMake(30, SCREEN_WIDTH/2, SCREEN_WIDTH - 60, 200);
+    
+    firendView.label1.text = [dic objectForKey:@"info1"];
+    firendView.label2.text = [dic objectForKey:@"info2"];
+    
+    //底部大的透明View
+    self.bg = [Function createBackView:self action:@selector(bgViewClicked)];
+    //no按钮添加事件
+    [firendView NoBtnAddTarget:self action:@selector(bgViewClicked) forControlEvents:UIControlEventTouchUpInside];
+    
+    [firendView YesBtnAddTarget:self action:@selector(continueFaBu) forControlEvents:UIControlEventTouchUpInside];
+    
+    [[UIApplication sharedApplication].keyWindow addSubview:self.bg];
+    [[UIApplication sharedApplication].keyWindow addSubview:firendView];
+
 }
 
 #pragma mark  是否可以确认y
@@ -516,10 +509,21 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     
 }
 
-#pragma mark jixu发布订单
+#pragma mark 继续发布订单
 -(void)continueFaBu
 {
     [self bgViewClicked];
+    
+    
+    UIStoryboard *storyboard  = [UIStoryboard storyboardWithName:@"employersLooking" bundle:nil];
+    employersLookingViewController *employer = [storyboard instantiateViewControllerWithIdentifier:@"employersLooking"];
+    
+    employer.isChongXinFaBu = YES;
+    //订单ID
+    employer.orderId = self.OrderID;
+    
+    [self.navigationController pushViewController:employer animated:YES];
+    
 }
 
 //删除遮盖

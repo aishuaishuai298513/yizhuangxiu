@@ -39,14 +39,13 @@
 //备注
 @property (weak, nonatomic) IBOutlet UITextField *BeiZhu;
 
-//是否需要保险
-@property (nonatomic,assign) NSString *isNeedBaoXian;
-
 //分类按钮父视图
 @property (weak, nonatomic) IBOutlet UIView *FenLeiSuperView;
 
 //分类数据源
 @property (nonatomic, strong) NSMutableArray *dataSourceFenLei;
+//重新发布数据源
+@property (nonatomic, strong) NSMutableDictionary *dataSourceChongXinFaBu;
 
 //工种分类ID
 @property (nonatomic, strong) NSString *classId;
@@ -133,6 +132,15 @@
 }
 
 
+-(NSMutableDictionary *)dataSourceChongXinFaBu
+{
+    if (!_dataSourceChongXinFaBu) {
+        _dataSourceChongXinFaBu = [NSMutableDictionary dictionary];
+    }
+    return _dataSourceChongXinFaBu;
+}
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"找工人";
@@ -144,15 +152,16 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     _isInsure = 30;
     _params = [NSMutableDictionary dictionary];
-    _isNeedBaoXian = @"1";
-    _GongZhongType = @"泥工";
-    _peopleCount = @"";
     _shadowView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kU, Ga)];
     _shadowView.backgroundColor = [UIColor colorWithRed:20/255.0 green:20/255.0 blue:20/255.0 alpha:0.6];
     
     _GongChengDiDian.text =[[NSUserDefaults standardUserDefaults]objectForKey:@"placemark"];
-
-    [self netWork];
+    if (self.isChongXinFaBu) {
+        [self chongxinfabu];
+    }else
+    {
+       [self netWork];
+    }
     self.ScrrolView.userInteractionEnabled = YES;
     
     self.LianXIRen.delegate = self;
@@ -259,7 +268,7 @@
 }
 
 
-#pragma mark 发布
+#pragma mark 填写完毕发布按钮
 - (IBAction)commintAction:(id)sender {
     
     self.sureView.hidden = NO;
@@ -287,7 +296,13 @@
     self.beizhu.text = self.BeiZhu.text;
     
     //获取保证金数
-    [self netWorkgetBaoZhengJinForNumber];
+    if (self.isChongXinFaBu) {
+         self.zhiabaojin.text = @"0";
+    }else
+    {
+        [self netWorkgetBaoZhengJinForNumber];
+    }
+        
     
 }
 
@@ -333,8 +348,13 @@
 //提示框返回
 - (IBAction)queDingChongZhi:(id)sender {
     
-    
-    [self toVC:nil];
+    if(!self.isChongXinFaBu)
+    {
+        [self toVC:nil];
+    }else
+    {
+        [self chongXinFaBu];
+    }
     
 }
 
@@ -344,7 +364,6 @@
     
 }
 
-//提示框确认 发布
 - (void)TopQueDing:(id)sender {
     
 }
@@ -440,9 +459,30 @@
     NSLog(@"%@",rechargeController.parm);
     rechargeController.Yue = self.Yue;
     rechargeController.ZhiFuJinE = self.ZhiFuJinE;
+
     [self.navigationController pushViewController:rechargeController animated:YES];
     
     
+}
+#pragma mark 重新发布请求
+-(void)chongXinFaBu
+{
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:_account.userid forKey:@"userid"];
+    [parm setObject:_account.token forKey:@"token"];
+    [parm setObject:self.orderId forKey:@"id"];
+    [parm setObject:self.moenyLabel.text forKey:@"price"];
+    
+    [NetWork postNoParm:YZX_chongxinfabu params:parm success:^(id responseObj) {
+
+        if ([[responseObj objectForKey:@"result"] isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            UIViewController *ViewC = self.navigationController.childViewControllers[1];
+            [self.navigationController popToViewController:ViewC animated:YES];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 #pragma mark 工人类型选择
@@ -457,7 +497,76 @@
     }
     
 }
+#pragma mark 重新发布工种
+-(void)UpdateFenLeiChongXin
+{
+    int colNum = 3;
+    int rowNum= 2;
+    
+    CGFloat squareWidth = 45;
+    CGFloat squareHeight = 45;
+    CGFloat colPan = 20;
+    CGFloat rowpan = 10;
+    
+    //UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, squareHeight * rowNum)];
+        //行号
+    int row = 0;
+        //列号
+    int col = 0;
+        
+    UILabel *squareLab = [[UILabel alloc] initWithFrame:CGRectMake( colPan+squareWidth * col+((ScreenW-colPan*2-squareWidth*colNum)/(colNum-1))*col, rowpan+squareHeight * row+(rowpan *row), squareWidth, squareHeight)];
+    
+        // NSLog(@"%ld",squareLab.tag);
+    squareLab.textAlignment = NSTextAlignmentCenter;
+    squareLab.font = [UIFont systemFontOfSize:14];
+        
+    squareLab.backgroundColor = [UIColor whiteColor];
+    _SelectLabel =squareLab;
+            //切割成圆
+    _SelectLabel.layer.cornerRadius = 22;
+    _SelectLabel.clipsToBounds = YES;
+        
+    squareLab.text = [self.dataSourceChongXinFaBu objectForKey:@"gzname"];
+    
+    [self.FenLeiSuperView addSubview:squareLab];
+    
+    [self makeUIChognxinFaBu];
+    
+}
+#pragma mark 继续发布设置UI
+-(void)makeUIChognxinFaBu
+{
+    self.GongChengDiDian.text = [self.dataSourceChongXinFaBu objectForKey:@"adr"];
+    self.GongChengDiDian.userInteractionEnabled = NO;
+    
+    self.GongZuoNeiRong.text = [self.dataSourceChongXinFaBu objectForKey:@"gongzuoneirong"];
+    self.GongZuoNeiRong.userInteractionEnabled = NO;
+    
+    self.XuQiuRenShu.text = [self.dataSourceChongXinFaBu objectForKey:@"n"];
+    self.XuQiuRenShu.userInteractionEnabled = NO;
+    
+    self.starTimeLabel.text = [self.dataSourceChongXinFaBu objectForKey:@"kaigongriqi"];
+    self.starTimeLabel.userInteractionEnabled = NO;
+    self.dayNum.userInteractionEnabled = NO;
+    
+    self.tianshu.text = [self.dataSourceChongXinFaBu objectForKey:@"yuji"];
+    self.tianshu.userInteractionEnabled = NO;
+    
+    self.BeiZhu.text = [self.dataSourceChongXinFaBu objectForKey:@"beizhu"];
+    self.BeiZhu.userInteractionEnabled = NO;
+    
+    self.LianXIRen.text = [self.dataSourceChongXinFaBu objectForKey:@"lianxiren"];
+    self.LianXIRen.userInteractionEnabled = NO;
+    
+    self.LianXiDianHua.text = [self.dataSourceChongXinFaBu objectForKey:@"lianxidianhua"];
+    self.LianXiDianHua.userInteractionEnabled = NO;
+    
+    self.moenyLabel.text = [self.dataSourceChongXinFaBu objectForKey:@"price"];
 
+    
+    
+}
+#pragma mark 正常工种分类
 -(void)UpdateFenLei
 {
     int colNum = 3;
@@ -515,8 +624,6 @@
         
         self.Id = [self.dataSourceFenLei[0] objectForKey:@"id"];
     }
-
-
 }
 #pragma mark 点击工种
 - (void)HeaderClicked: (UITapGestureRecognizer *)gestureRecognizer
@@ -594,6 +701,26 @@
         
     }];
     
+}
+#pragma mark 重新发布接口
+-(void)chongxinfabu
+{
+    ADAccount *account = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:account.userid forKey:@"userid"];
+    [parm setObject:account.token forKey:@"token"];
+    [parm setObject:self.orderId forKey:@"id"];
+    
+    __weak typeof (self)weakSelf = self;
+    [NetWork postNoParm:YZX_jixufabu params:parm success:^(id responseObj) {
+        
+        NSLog(@"%@",responseObj);
+        self.dataSourceChongXinFaBu = [responseObj objectForKey:@"data"];
+        [weakSelf UpdateFenLeiChongXin];
+        
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 //

@@ -121,7 +121,7 @@
         </view>
     </objects>
     <resources>
-        <image name="dj.png" width="168" height="168"/>
+        <image name="dj.png" width="27" height="20"/>
         <image name="xing" width="18" height="17"/>
     </resources>
 </document>

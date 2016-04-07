@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="TiShiYuE">
+            <rect key="frame" x="0.0" y="0.0" width="244" height="173"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="提示" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XKn-1X-4sL">
+                    <rect key="frame" x="0.0" y="0.0" width="244" height="30"/>
+                    <color key="backgroundColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="TfA-5m-fns"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="当前帐户余额：1500" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QkX-2d-szG">
+                    <rect key="frame" x="13" y="50" width="139.5" height="18"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="可用余额:1000   保证金:500" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Ma-DD-InJ">
+                    <rect key="frame" x="13" y="88" width="187.5" height="18"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lKt-C7-79Q">
+                    <rect key="frame" x="92" y="126" width="60" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="clE-95-CJ1"/>
+                    </constraints>
+                    <state key="normal" title="确定" backgroundImage="红色圆形button">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="QkX-2d-szG" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="13" id="1Ne-9j-1qL"/>
+                <constraint firstItem="QkX-2d-szG" firstAttribute="top" secondItem="XKn-1X-4sL" secondAttribute="bottom" constant="20" id="AwP-WD-Mo1"/>
+                <constraint firstItem="8Ma-DD-InJ" firstAttribute="leading" secondItem="QkX-2d-szG" secondAttribute="leading" id="SNC-DR-K7B"/>
+                <constraint firstItem="lKt-C7-79Q" firstAttribute="top" secondItem="8Ma-DD-InJ" secondAttribute="bottom" constant="20" id="T2Y-QP-MwH"/>
+                <constraint firstItem="XKn-1X-4sL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="aVE-LI-6sP"/>
+                <constraint firstItem="8Ma-DD-InJ" firstAttribute="top" secondItem="QkX-2d-szG" secondAttribute="bottom" constant="20" id="bhG-uK-wNd"/>
+                <constraint firstAttribute="trailing" secondItem="XKn-1X-4sL" secondAttribute="trailing" id="iMz-Lt-mAH"/>
+                <constraint firstItem="lKt-C7-79Q" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="lif-JX-RJL"/>
+                <constraint firstItem="XKn-1X-4sL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="mTT-jB-lvL"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="label1" destination="QkX-2d-szG" id="cCS-nt-tbY"/>
+                <outlet property="label2" destination="8Ma-DD-InJ" id="hI0-i2-ONG"/>
+                <outlet property="makeSurebtn" destination="lKt-C7-79Q" id="cSm-ui-Noq"/>
+            </connections>
+            <point key="canvasLocation" x="492" y="150.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="红色圆形button" width="30" height="31"/>
+    </resources>
+</document>

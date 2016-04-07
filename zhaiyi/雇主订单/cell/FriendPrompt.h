@@ -10,6 +10,10 @@
 
 @interface FriendPrompt : UIView
 
+@property (weak, nonatomic) IBOutlet UILabel *label1;
+
+@property (weak, nonatomic) IBOutlet UILabel *label2;
+
 +(instancetype)FirendLoadView;
 
 - (void)NoBtnAddTarget:(nullable id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents;

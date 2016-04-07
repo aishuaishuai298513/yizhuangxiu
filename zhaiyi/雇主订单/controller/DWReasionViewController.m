@@ -103,31 +103,23 @@
 //提交－－辞退
 -(void)tijiao
 {
-    NSLog(@"123");
+    //////////////辞退
+    ADAccount *acount = [ADAccountTool account];
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.OrderModel.userid forKey:@"userid2"];
+    [parm setObject:self.OrderModel.ID forKey:@"id"];
     
-    NSLog(@"%@",self.UserAcount.username);
-    NSLog(@"%@",_OrderModel.ID );
-    NSLog(@"%@",cell.leftLabel.text);
-    
-    [parm setObject:self.UserAcount.ID forKey:@"user_id"];
-    [parm setObject:_OrderModel.ID forKey:@"order_id"];
-    
-    [parm setObject:cell.leftLabel.text forKey:@"content"];
-    
-    //辞退工人
-    [NetWork postNoParm:ciTuiGongRen params:parm success:^(id responseObj) {
-
-        NSLog(@"%@",responseObj);
+    [NetWork postNoParm:YZX_citui params:parm success:^(id responseObj) {
         
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-            [ITTPromptView showMessage:@"辞退成功"];
-            NSArray *arrControl = self.navigationController.viewControllers;
-            [self.navigationController popToViewController:arrControl[2] animated:YES];
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            pop
         }
         
     } failure:^(NSError *error) {
-        NSLog(@"%@",error);
+        
     }];
     
 }

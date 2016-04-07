@@ -24,13 +24,13 @@
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="您的订单尚差2人未招满" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kPu-cc-wCT">
                     <rect key="frame" x="0.0" y="69" width="278" height="18"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="是否继续发布？" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ysb-Ei-VQF">
                     <rect key="frame" x="0.0" y="97" width="278" height="18"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y0d-Z5-m1E">
@@ -74,6 +74,8 @@
             <connections>
                 <outlet property="NoBtn" destination="RUG-tW-DbY" id="lKm-5Z-UjT"/>
                 <outlet property="YesBtn" destination="Y0d-Z5-m1E" id="kCT-Iu-XDE"/>
+                <outlet property="label1" destination="kPu-cc-wCT" id="VPj-0p-Zqq"/>
+                <outlet property="label2" destination="ysb-Ei-VQF" id="vws-Xw-Hqa"/>
             </connections>
             <point key="canvasLocation" x="351" y="134"/>
         </view>

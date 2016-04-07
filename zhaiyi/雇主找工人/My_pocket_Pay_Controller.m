@@ -14,6 +14,8 @@
 #import "WXApi.h"
 #import "WXApiObject.h"
 
+#import "TiShiYuE.h"
+
 #define NUMBERS @"0123456789.\n"
 #define PAY_POST_URL @"http://zhaiyi.bjqttd.com/api/recharge/user_recharge"
 
@@ -51,6 +53,10 @@ UIAlertViewDelegate
 //帐户余额
 @property (weak, nonatomic) IBOutlet UILabel *zhangHuYe;
 
+//提示View
+@property (nonatomic, strong) TiShiYuE *tiShiYuEView;
+//遮盖
+@property (nonatomic, strong) UIView *bg;
 
 @end
 
@@ -228,15 +234,49 @@ UIAlertViewDelegate
 {
     NSLog(@"%@",self.parm);
     [NetWork postNoParm:YZX_tijiaodingdan params:self.parm success:^(id responseObj) {
-        
+       // NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
             [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
-            pop
+            
+            [self makePopView];
         }
         
     } failure:^(NSError *error) {
         
     }];
+
+}
+#pragma mark 弹出提示框
+-(void)makePopView
+{
+    self.tiShiYuEView =[TiShiYuE loadView];
+    self.tiShiYuEView.frame = CGRectMake(30, SCREEN_WIDTH/2, SCREEN_WIDTH - 60, 200);
+    
+    //显示余额等
+    self.tiShiYuEView.label1.text = [NSString stringWithFormat:@"当前帐户余额:%@",self.Yue];
+    self.tiShiYuEView.label2.text = [NSString stringWithFormat:@"可用余额:%ld     保证金:%@",[self.Yue integerValue]-[self.ZhiFuJinE integerValue],self.ZhiFuJinE];
+    
+    //底部大的透明View
+    self.bg = [Function createBackView:self action:@selector(bgViewClicked)];
+    //no按钮添加事件
+    
+    [self.tiShiYuEView MakeSureBtnAddTarget:self action:@selector(tiShiMakeSureBtnClicked) forControlEvents:UIControlEventTouchUpInside];
+    
+    [[UIApplication sharedApplication].keyWindow addSubview:self.bg];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.tiShiYuEView];
+
+}
+#pragma mark 提示余额
+-(void)tiShiMakeSureBtnClicked
+{
+    [self.bg removeFromSuperview];
+    [self.tiShiYuEView removeFromSuperview];
+    pop;
+}
+//遮盖点击事件
+-(void)bgViewClicked
+{
 
 }
 

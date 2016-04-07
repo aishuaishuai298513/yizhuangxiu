@@ -187,7 +187,7 @@
                                 <constraint firstAttribute="height" constant="20" id="eiF-t2-9lL"/>
                                 <constraint firstAttribute="width" constant="20" id="gxA-Oc-B1Y"/>
                             </constraints>
-                            <state key="normal" image="A1E4E114-0292-4369-9FB1-AE839C02A51E"/>
+                            <state key="normal" image="5C8A7E24-3C73-4AC3-BE92-7CDAC8AC9707"/>
                             <state key="selected" image="充值3"/>
                         </button>
                     </subviews>
@@ -282,7 +282,7 @@
         </view>
     </objects>
     <resources>
-        <image name="A1E4E114-0292-4369-9FB1-AE839C02A51E" width="32" height="32">
+        <image name="5C8A7E24-3C73-4AC3-BE92-7CDAC8AC9707" width="32" height="32">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOzxYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK0HCBEW
 GxwgISksLzU4VSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNSZXBzV05TQ29sb3KA

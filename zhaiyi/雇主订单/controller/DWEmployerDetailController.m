@@ -16,10 +16,20 @@
 
 @property (strong, nonatomic) IBOutlet UIView *dwFooterView;
 @property (weak, nonatomic) IBOutlet UIButton *quitBtn;
+
+@property (nonatomic, strong) NSMutableDictionary *dataSource;
 - (IBAction)quitBtnAction:(UIButton *)sender;
 @end
 
 @implementation DWEmployerDetailController
+
+-(NSMutableDictionary *)dataSource
+{
+    if (!_dataSource) {
+        _dataSource = [NSMutableDictionary dictionary];
+    }
+    return _dataSource;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -27,6 +37,7 @@
     self.tableView.tableHeaderView = self.dwHeaderView;
     self.tableView.tableFooterView = self.dwFooterView;
     [self.tableView registerNib:[UINib nibWithNibName:@"DWEmployerDetailCell" bundle:nil] forCellReuseIdentifier:@"DWEmployerDetailCell"];
+    
     self.quitBtn.layer.cornerRadius = 20;
     self.quitBtn.layer.masksToBounds = YES;
     [self configueRightBarItem];
@@ -41,9 +52,33 @@
         self.tableView.tableFooterView.hidden = NO;
     }
     
+    
+    [self netWorkUserinfo];
+    
+    
+    
   //NSLog(@"%@",self.acount.userid);
 }
 
+-(void)netWorkUserinfo
+{
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.orderModel.userid forKey:@"userid2"];
+    
+    [NetWork postNoParm:YZX_cituipage params:parm success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            self.dataSource = [responseObj objectForKey:@"data"];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+    
+    
+}
 
 //评价列表
 - (void)evaluateList{
@@ -73,51 +108,26 @@
     DWEmployerDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWEmployerDetailCell" forIndexPath:indexPath];
     if (indexPath.row == 0) {
         cell.DWEmpilyerDetailLabelLeft.text = @"姓名";
-        cell.DWEmpilyerDetailLabelRight.text = self.acount.username;
+        cell.DWEmpilyerDetailLabelRight.text = [self.dataSource objectForKey:@"name"];
     }else if (indexPath.row == 1){
         cell.DWEmpilyerDetailLabelLeft.text = @"性别";
-        if ([self.acount.sex isEqualToString:@"82"]) {
-            cell.DWEmpilyerDetailLabelRight.text = @"男";
-        }else
-        {
-            cell.DWEmpilyerDetailLabelRight.text = @"女";
-        }
+        cell.DWEmpilyerDetailLabelRight.text = [self.dataSource objectForKey:@"sex"];
+        
     }else if(indexPath.row == 2){
         cell.DWEmpilyerDetailLabelLeft.text = @"工种";
-        if ([self.acount.gztypeid isEqualToString:@"1"]) {
-            cell.DWEmpilyerDetailLabelRight.text = @"泥工";
-        }else if ([self.acount.gztypeid isEqualToString:@"2"])
-        {
-            cell.DWEmpilyerDetailLabelRight.text = @"油工";
-        }else if ([self.acount.gztypeid isEqualToString:@"3"])
-        {
-            cell.DWEmpilyerDetailLabelRight.text = @"水工";
-        }else if ([self.acount.gztypeid isEqualToString:@"4"])
-        {
-            cell.DWEmpilyerDetailLabelRight.text = @"电工";
-        }else if ([self.acount.gztypeid isEqualToString:@"5"])
-        {
-            cell.DWEmpilyerDetailLabelRight.text = @"木工";
-        }else if ([self.acount.gztypeid isEqualToString:@"6"])
-        {
-            cell.DWEmpilyerDetailLabelRight.text = @"小工";
-        }else
-        {
-            cell.DWEmpilyerDetailLabelRight.text = @"";
-        }
-
+        cell.DWEmpilyerDetailLabelRight.text = [self.dataSource objectForKey:@"gzname"];
     }else if(indexPath.row == 3){
         cell.DWEmpilyerDetailLabelLeft.text = @"工龄";
-        cell.DWEmpilyerDetailLabelRight.text = self.acount.job_year;
+        cell.DWEmpilyerDetailLabelRight.text = [self.dataSource objectForKey:@"gongling"];
     }else if(indexPath.row == 4){
         cell.DWEmpilyerDetailLabelLeft.text = @"学历";
-        cell.DWEmpilyerDetailLabelRight.text = self.acount.education;
+        cell.DWEmpilyerDetailLabelRight.text = [self.dataSource objectForKey:@"xueli"];
     }else if(indexPath.row == 5){
         cell.DWEmpilyerDetailLabelLeft.text = @"户籍";
-        cell.DWEmpilyerDetailLabelRight.text = self.acount.live_city;
+        cell.DWEmpilyerDetailLabelRight.text = [self.dataSource objectForKey:@"huji"];
     }else if(indexPath.row == 6){
         cell.DWEmpilyerDetailLabelLeft.text = @"自我评价";
-        cell.DWEmpilyerDetailLabelRight.text = self.acount.user_desc;
+        cell.DWEmpilyerDetailLabelRight.text = [self.dataSource objectForKey:@"ziwojieshao"];
     }
     return cell;
 }
@@ -128,7 +138,7 @@
 
 - (IBAction)quitBtnAction:(UIButton *)sender {
     
-    //辞退
+    //辞退原因
     DWReasionViewController *vc = [[DWReasionViewController alloc] initWithNibName:@"DWReasionViewController" bundle:nil];
     
     NSLog(@"%@",self.acount.userid);

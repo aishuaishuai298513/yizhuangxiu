@@ -69,6 +69,20 @@
 #define YZX_qiangdanxiangqing @"/api/index/qiangdanxiangqing"
 //抢单（工人端）
 #define YZX_qiangdan @"/api/index/qiangdan"
+//重新发布界面
+#define YZX_jixufabu @"/api/index/jixufabupage"
+//重新发布
+#define YZX_chongxinfabu @"/api/index/chongxinfabu"
+//辞退页面（雇主段）
+#define YZX_cituipage @"/api/index/cituipage"
+//确认开工
+
+//继续发布页面
+
+//
+//
+
+//
 
 
 

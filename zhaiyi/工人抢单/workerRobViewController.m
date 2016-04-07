@@ -67,20 +67,17 @@
 {
 //    [self.dataSource removeAllObjects];
     // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
-
     MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(netWorkQiangDanHeader)];
     // 设置自动切换透明度(在导航栏下面自动隐藏)
     header.automaticallyChangeAlpha = YES;
     // 隐藏时间
     header.lastUpdatedTimeLabel.hidden = YES;
     // 马上进入刷新状态
-    //[header beginRefreshing];
+    [header beginRefreshing];
     // 设置header
     self.tableView.mj_header = header;
     
-    [self.dataSource removeAllObjects];
-    
-    [self netWorkQiangDanHeader];
+    //[self netWorkQiangDanHeader];
     
     
 }
@@ -147,8 +144,8 @@
 //工人端|工人端查看雇主下单列表  抢单列表
 -(void)netWorkQiangDanHeader
 {
+    [self.dataSource removeAllObjects];
     _pageIndex = 1;
-    
 
    ADAccount *acount = [ADAccountTool account];
    NSString *lon = [[NSUserDefaults standardUserDefaults]objectForKey:@"lon"];
