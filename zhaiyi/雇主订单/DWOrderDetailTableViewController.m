@@ -8,6 +8,7 @@
 
 #import "DWOrderDetailTableViewController.h"
 #import "DWOrderDetailCell.h"
+#import "DWOrderViewController.h"
 #import "DWEmployerDetailController.h"
 #import "DWevaluateListViewController.h"
 #import "DWConfirmCheckViewController.h"
@@ -350,7 +351,6 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 }
 
 #pragma mark 查询订单详情
-//确认招用 查询已经抢单用户列表/
 -(void)QiangDanYonghu
 {
     
@@ -371,10 +371,10 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
         WeakSelf.UsersdataSource = [DetialUserInfoM mj_objectArrayWithKeyValuesArray:[[responseObj objectForKey:@"data"] objectForKey:@"list"]];
     
         // 判断是否可开工
-        if (WeakSelf.UsersdataSource.count<=0 && self.type == 1) {
-            
-            self.rightButton.userInteractionEnabled = NO;
-        }
+//        if (WeakSelf.UsersdataSource.count<=0 && self.type == 1) {
+//            
+//            self.rightButton.userInteractionEnabled = NO;
+//        }
         
         [WeakSelf creatOrderUi];
         [WeakSelf.tableView reloadData];
@@ -399,24 +399,28 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 #pragma mark 确认招用／开工
 -(void)queRenZhaoYong
 {
-    
     ADAccount *acount = [ADAccountTool account];
     
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:acount.userid forKey:@"user_id"];
-    [parm setObject:self.OrderModel.ID forKey:@"order_id"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.OrderID forKey:@"orderid"];
     
-    [NetWork postNoParm:guzhuzhaoyong params:parm success:^(id responseObj) {
+    [NetWork postNoParm:YZX_querenkaigong params:parm success:^(id responseObj) {
         
-        if ([[responseObj objectForKey:@"status"]isEqualToString:@"1000"]) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
             
             [self.navigationController popViewControllerAnimated:YES];
+            
+          //跳到施工中
+           DWOrderViewController *DWOrder =  self.navigationController.childViewControllers[1];
+           DWOrder.pushWorking = YES;
+            
         }else
         {
             [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
         }
-        NSLog(@"%@",responseObj);
     } failure:^(NSError *error) {
         NSLog(@"%@",error);
     }];
@@ -470,7 +474,6 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 #pragma mark 确认验收
 -(void)queRenYanShou
 {
-    
     
     ADAccount *acount = [ADAccountTool account];
     

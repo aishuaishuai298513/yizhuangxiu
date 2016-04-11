@@ -350,22 +350,14 @@
     }];
 }
 
-#pragma mark 点击确认招用或者确认验收跳转到已经抢单的用户列表
-//-(void)queRenZhaoYong:(id)sender
-//{
-//    UIButton *btn = (UIButton *)sender;
-//    int tag  = (int)btn.tag;
-//    NSLog(@"%d",tag);
-//    
-//    DWOrderModel *MOdel = self.dataSource[tag];
-//    
-//    
-//    DWOrderDetailTableViewController *vc = [[DWOrderDetailTableViewController alloc] initWithNibName:@"DWOrderDetailTableViewController" bundle:nil];
-//    vc.type = self.type;
-//    NSLog(@"%d",self.type);
-//    vc.OrderModel = MOdel;
-//    [self.navigationController pushViewController:vc animated:YES];
-//}
+#pragma mark  控制点击施工中
+-(void)setPushWorking:(BOOL)pushWorking
+{
+    _pushWorking = pushWorking;
+    if (pushWorking) {
+        [self singleTap2:nil];
+    }
+}
 
 
 @end

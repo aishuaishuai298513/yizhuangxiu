@@ -31,6 +31,10 @@
 #import "ReGeocodeAnnotation.h"
 #import "MANaviAnnotationView.h"
 
+#import "employersLookingViewController.h"
+
+#import "Select_ID.h"
+
 typedef NS_ENUM(NSInteger,daTouZhenType)
 {
     GongRentype,
@@ -81,7 +85,6 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 @property (nonatomic, strong) AMapSearchAPI *search;
 //大头针类型
 @property (nonatomic, assign) daTouZhenType *datouzhenType;
-
 //纪录当前工人类型
 @property (nonatomic, strong) NSString *gongRenLeiXing;
 
@@ -122,20 +125,9 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     [super viewWillAppear:YES];
     
    window = [[UIApplication sharedApplication] keyWindow];
-
-    if(GetUserDefaultsGR)
-    {
-        [self.firstBtn setTitle:@"抢单" forState:(UIControlStateNormal)];
-        [self.myBtn setTitle:@"我的" forState:(UIControlStateNormal)];
-        [self.orderBtn setTitle:@"订单" forState:(UIControlStateNormal)];
-        
-    }else
-    {
-        [self.firstBtn setTitle:@"找工人" forState:(UIControlStateNormal)];
-        [self.myBtn setTitle:@"我的" forState:(UIControlStateNormal)];
-        [self.orderBtn setTitle:@"订单" forState:(UIControlStateNormal)];
-    }
     
+    //选择身份
+    [self SelectViewType];
     //刷新地图
     if (self.mapView) {
         if (GetUserDefaultsGR) {
@@ -157,8 +149,29 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     
 }
 
+#pragma mark 根据身份选择对应页面
+
+-(void)SelectViewType
+{
+    if(GetUserDefaultsGR)
+    {
+        [self.firstBtn setTitle:@"抢单" forState:(UIControlStateNormal)];
+        [self.myBtn setTitle:@"我的" forState:(UIControlStateNormal)];
+        [self.orderBtn setTitle:@"订单" forState:(UIControlStateNormal)];
+        
+    }else
+    {
+        [self.firstBtn setTitle:@"找工人" forState:(UIControlStateNormal)];
+        [self.myBtn setTitle:@"我的" forState:(UIControlStateNormal)];
+        [self.orderBtn setTitle:@"订单" forState:(UIControlStateNormal)];
+    }
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //未登陆选择身份
+    [self SelectShenFen];
     
     //极光推送
     [self jiGuangTuiSong];
@@ -180,6 +193,28 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
        NSForegroundColorAttributeName:[UIColor redColor]}];
     
     AnnCount =0;
+}
+#pragma mark 未登陆选择身份
+-(void)SelectShenFen
+{
+    
+    __weak typeof (self)weakSelf = self;
+    ADAccount *account = [ADAccountTool account];
+    if(!account)
+    {
+        Select_ID *select = [Select_ID loadView];
+        select.selectShenFen=^()
+        {
+            [weakSelf SelectViewType];
+        };
+        //说明第一次登陆身份
+        select.ifFirstLogin = YES;
+        
+        select.frame = [UIApplication sharedApplication].keyWindow.bounds;
+        
+       [[UIApplication sharedApplication].keyWindow addSubview:select];
+    }
+    
 }
 
 - (void)initMapView
@@ -621,7 +656,6 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 - (void)searchReGeocodeWithCoordinate:(CLLocationCoordinate2D)coordinate
 {
     
-    
     AMapReGeocodeSearchRequest *regeo = [[AMapReGeocodeSearchRequest alloc] init];
     
     regeo.location                    = [AMapGeoPoint locationWithLatitude:coordinate.latitude longitude:coordinate.longitude];
@@ -655,6 +689,43 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     }
 }
 
+
+#pragma mark 地理编码
+-(void)tapAction:(NSString *)didian
+{
+    AMapGeocodeSearchRequest *geo = [[AMapGeocodeSearchRequest alloc] init];
+    geo.address = didian;
+    
+    [self.search AMapGeocodeSearch:geo];
+}
+
+#pragma mark - 地理编码回调 AMapSearchDelegate
+
+- (void)onGeocodeSearchDone:(AMapGeocodeSearchRequest *)request response:(AMapGeocodeSearchResponse *)response
+{
+    if (response.geocodes.count == 0)
+    {
+        return;
+    }
+    NSMutableArray *annotations = [NSMutableArray array];
+    
+    [response.geocodes enumerateObjectsUsingBlock:^(AMapGeocode *obj, NSUInteger idx, BOOL *stop) {
+        AMapGeoPoint *coor2D = obj.location;
+        [annotations addObject:coor2D];
+    }];
+    
+     AMapGeoPoint *coor2D = annotations[0];
+    NSLog(@"%f",coor2D.latitude);
+    NSLog(@"%f",coor2D.longitude);
+    
+    NSString *lat = [NSString stringWithFormat:@"%lf",coor2D.latitude];
+     NSString *lng = [NSString stringWithFormat:@"%lf",coor2D.longitude];
+    
+    [[NSUserDefaults standardUserDefaults]setObject:lat forKey:@"gongchengdidianlat"];
+    [[NSUserDefaults standardUserDefaults]setObject:lng forKey:@"gongchengdidianlng"];
+
+}
+
 /* 清除annotations */
 -(void)clear
 {
@@ -664,22 +735,28 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 
 // 抢单
 //1属于工人,0属于雇主
-#pragma mark招工人 抢单
+#pragma mark找工人 抢单
 - (IBAction)grabASingle:(UIButton *)sender {
     
-    ADAccount *acount = [ADAccountTool account];
-    //雇主找工人
-   // if ([self.userStatus isEqualToString:@"0"]) {
-    if (GetUserDefaultsGZ) {
-        UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"employersLooking" bundle:nil];
-        UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"employersLooking"];
-        [self.navigationController pushViewController:test2obj animated:YES];
-        
+    
+    __weak typeof (self)weakSelf =self;
     //工人抢单
-    }else
+    if (GetUserDefaultsGR)
     {
         UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"workerRob" bundle:nil];
         UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"workerRob"];
+        [self.navigationController pushViewController:test2obj animated:YES];
+    }else
+    {
+        UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"employersLooking" bundle:nil];
+        employersLookingViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"employersLooking"];
+        
+        //block 地点
+        test2obj.diLiBianMa = ^(NSString *diDian)
+        {
+            [weakSelf tapAction:diDian];
+        };
+        
         [self.navigationController pushViewController:test2obj animated:YES];
     }
 }
@@ -687,9 +764,14 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 #pragma mark 订单
 - (IBAction)theOrder:(UIButton *)sender {
     
-    [self IfLogin];
+    //[self IfLogin];
     
-    ADAccount *acount = [ADAccountTool account];
+    ADAccount *account = [ADAccountTool account];
+    if (!account) {
+        My_Login_In_ViewController *login = [[My_Login_In_ViewController alloc]init];
+        [self.navigationController pushViewController:login animated:YES];
+        return;
+    }
     
    // if ([self.userStatus isEqualToString:@"0"]) {
     
@@ -707,11 +789,27 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 }
    
 }
+#pragma mark 外界通过此方法跳转
+-(void)setPushOrder:(BOOL)pushOrder
+{
+    _pushOrder = pushOrder;
+    if (pushOrder) {
+        [self theOrder:nil];
+    }
+}
 #pragma mark 我的
 - (IBAction)myList:(UIButton *)sender {
     
     //
     //[self IfLogin];
+    ADAccount *account = [ADAccountTool account];
+    if (!account) {
+        
+        My_Login_In_ViewController *Login = [[My_Login_In_ViewController alloc]init];
+        
+        [self.navigationController pushViewController:Login animated:YES];
+        return;
+    }
     
     UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"employersInMy" bundle:nil];
     
@@ -775,8 +873,20 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 
 {
     if ([identifier isEqualToString:@"xiaoxi"] || [identifier isEqualToString:@"libao"]) {
-            [self IfLogin];
+        
+        ADAccount *account = [ADAccountTool account];
+        
+        if (!account) {
+            
+            My_Login_In_ViewController *login = [[My_Login_In_ViewController alloc]init];
+            
+            [self.navigationController pushViewController:login animated:YES];
+            
+            return NO;
+        }
+            //[self IfLogin];
     }
+    
     return YES;//执行跳转方法
     
 }

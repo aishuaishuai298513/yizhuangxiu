@@ -26,9 +26,8 @@
 @property (strong, nonatomic)NSString *Yue;
 //支付金额／保证金
 @property (strong, nonatomic)NSString *ZhiFuJinE;
-//
-@property (strong, nonatomic) NSString *baoZhengJin;
 
-@property (strong, nonatomic)NSMutableDictionary *parm;
+//订单号
+@property (nonatomic, strong) NSString *orderCode;
 
 @end

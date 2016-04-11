@@ -18,14 +18,14 @@
                     <color key="textColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="T39-3B-J4k">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="工人" translatesAutoresizingMaskIntoConstraints="NO" id="T39-3B-J4k">
                     <rect key="frame" x="52" y="229" width="120" height="120"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="120" id="TUp-ae-fdV"/>
                         <constraint firstAttribute="height" constant="120" id="qqC-vR-xS4"/>
                     </constraints>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jUg-Hv-nOu">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="雇主" translatesAutoresizingMaskIntoConstraints="NO" id="jUg-Hv-nOu">
                     <rect key="frame" x="202" y="229" width="120" height="120"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="120" id="WDo-AU-djg"/>
@@ -79,4 +79,8 @@
             <point key="canvasLocation" x="345.5" y="256.5"/>
         </view>
     </objects>
+    <resources>
+        <image name="工人" width="342" height="342"/>
+        <image name="雇主" width="342" height="342"/>
+    </resources>
 </document>

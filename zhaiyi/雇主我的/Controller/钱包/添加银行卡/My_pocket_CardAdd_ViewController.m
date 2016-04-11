@@ -36,6 +36,11 @@ UITextFieldDelegate
 
 @property (nonatomic ,strong) __block CardViewController *cardVC;
 
+@property (weak, nonatomic) IBOutlet UIButton *bankName;
+
+
+@property (nonatomic, strong) NSMutableDictionary *dataSource;
+
 @end
 
 @implementation My_pocket_CardAdd_ViewController
@@ -48,12 +53,22 @@ UITextFieldDelegate
     return _cardVC;
 }
 
+-(NSMutableDictionary *)dataSource
+{
+    if (!_dataSource) {
+        _dataSource = [NSMutableDictionary dictionary];
+    }
+    
+    return _dataSource;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setExtraCellLineHidden:self.tableView];
     _account = [ADAccountTool account];
 
     [self initalData];
+    [self netWorkInfo];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -62,6 +77,25 @@ UITextFieldDelegate
     _account = [ADAccountTool account];
     
    // NSLog(@"username %@",_account.username);
+}
+
+-(void)netWorkInfo
+{
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    
+    [NetWork postNoParmForMap:YZX_tixianyemian params:parm success:^(id responseObj) {
+        
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            self.dataSource  = [responseObj objectForKey:@"data"];
+            [self.tableView reloadData];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 //设置tableView 的Header  Fotter
@@ -91,11 +125,13 @@ UITextFieldDelegate
 }
 
 
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSString * cellID;
     if (indexPath.row==0) {
         cellID=@"cell0";
+    
     }else if (indexPath.row==1)
     {
         cellID=@"cell1";
@@ -103,6 +139,7 @@ UITextFieldDelegate
     else if(indexPath.row == 2)
     {
         cellID=@"cell2";
+        
     }else if(indexPath.row == 3)
     {
         cellID=@"cell3";
@@ -110,14 +147,29 @@ UITextFieldDelegate
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
     
-    UILabel *label = [cell viewWithTag:420];
-    if ([_account.type isEqualToString:@"78"]) {
-        label.text = _account.userid;
-        [params setObject:_account.userid forKey:@"username"];
-    } else {
-        label.text = _account.userid;
-        [params setObject:_account.userid forKey:@"username"];
+    if ([cellID isEqualToString: @"cell0"]) {
+        
+        UITextField*jine = [cell viewWithTag:419];
+        jine.text = [self.dataSource objectForKey:@"yue"];
+
+        jine.placeholder =[NSString stringWithFormat:@"当前帐户可提现金额%@元",[self.dataSource objectForKey:@"jine"]];
     }
+    if ([cellID isEqualToString: @"cell1"]) {
+        
+        UITextField*chikaren = [cell viewWithTag:420];
+        chikaren.text = [self.dataSource objectForKey:@"chikaren"];
+    }
+    if ([cellID isEqualToString: @"cell2"]) {
+        UITextField*kahao = [cell viewWithTag:421];
+        kahao.text = [self.dataSource objectForKey:@"kahao"];
+    }
+    if ([cellID isEqualToString: @"cell3"]) {
+        
+        UIButton *btn = [cell viewWithTag:422];
+        [btn setTitle:[self.dataSource objectForKey:@"kaihuhang"]  forState:UIControlStateNormal];
+    }
+    
+    
     return cell;
 }
 
@@ -125,16 +177,6 @@ UITextFieldDelegate
     
     self.tableView.scrollEnabled = NO;
     self.title = @"提现";
-    
-//    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [rightButton setBackgroundImage:[UIImage imageNamed:@"右上角按钮"] forState:UIControlStateNormal];
-//    [rightButton setTitle:@"完成" forState:UIControlStateNormal];
-//    [rightButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-//    rightButton.titleLabel.font = [UIFont systemFontOfSize:15];
-//    [rightButton addTarget:self action:@selector(clickFinish) forControlEvents:UIControlEventTouchUpInside];
-//    rightButton.frame = CGRectMake(0, 0, 84, 30);
-//    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithCustomView:rightButton];
-//    self.navigationItem.rightBarButtonItem = rightItem;
     
 }
 
@@ -144,7 +186,7 @@ UITextFieldDelegate
          [self.view endEditing:YES];
         //三角旋转
         [self animationForTriangle:(M_PI)];
-        
+        //遮盖
         _backBtnView = [[UIButton alloc]initWithFrame:self.view.bounds];
         _backBtnView.backgroundColor = [UIColor clearColor];
         [_backBtnView addTarget:self action:@selector(backViewCkicekd) forControlEvents:UIControlEventTouchUpInside];
@@ -160,13 +202,15 @@ UITextFieldDelegate
     //获取选择银行信息  银行卡没点击
    __weak typeof (self)Weakself = self;
     self.cardVC.getSlectString = ^(NSString *bankName,NSInteger cardID){
+        
         //移除弹框
         [Weakself.backBtnView removeFromSuperview];
         //旋转动画
         [Weakself animationForTriangle:(0)];
         
-        NSLog(@"%@",bankName);
-        NSLog(@"%ld",cardID);
+        //[Weakself.bankName setTitle:bankName forState:UIControlStateNormal];
+        
+        [btn setTitle:bankName forState:UIControlStateNormal];
         
     };
     
@@ -207,7 +251,7 @@ UITextFieldDelegate
 #pragma mark 三角形旋转动画
 -(void)animationForTriangle :(CGFloat)Angle
 {
-    self.triangle = [self.tableView viewWithTag:421];
+    self.triangle = [self.tableView viewWithTag:423];
     CGAffineTransform  transform = CGAffineTransformMakeRotation(Angle);
     [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
         self.triangle.transform = transform;

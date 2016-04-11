@@ -33,27 +33,55 @@
 
 - (IBAction)findWorkClicked:(id)sender {
     SetUserDefaultsGR
-    [self setMainView];
+    if (self.ifFirstLogin) {
+        [self animationToDisapper];
+        //block
+        if (self.selectShenFen) {
+            
+            _selectShenFen();
+        }
+        
+    }else
+    {
+       [self setMainView];
+    }
 }
 
 - (IBAction)findPeopleClicked:(id)sender {
     SetUserDefaultsGZ
-    [self setMainView];
+    
+    if (self.ifFirstLogin) {
+        
+        //block
+        if (self.selectShenFen) {
+            
+            _selectShenFen();
+        }
+        [self animationToDisapper];
+    }else
+    {
+        [self setMainView];
+    }
 }
+
 
 -(void)animationToDisapper
 {
     [UIView animateWithDuration:2 animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished) {
-        [self setMainView];
+        [self removeFromSuperview];
     }];
 }
+
+
 
 -(void)setMainView
 {
     UIStoryboard *MainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
     UINavigationController* MainCotroller = [MainStoryboard instantiateViewControllerWithIdentifier:@"MainNav"];
+    
     // 设置窗口的根控制器
     UIWindow *keyWindow = [[UIApplication sharedApplication]keyWindow];
     keyWindow.rootViewController = MainCotroller;
@@ -71,6 +99,5 @@
     view.findwork.clipsToBounds = YES;
     
     return view;
-    
 }
 @end

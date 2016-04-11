@@ -11,7 +11,6 @@
 @interface CardViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (nonatomic, strong) NSMutableArray *dataSource;
 
 @property (nonatomic, copy) void(^getSlectString)(NSString *str,NSInteger cardID);
 

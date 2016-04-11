@@ -126,17 +126,19 @@ UIAlertViewDelegate
     [parm setObject:acount.userid forKey:@"userid"];
     [parm setObject:acount.token forKey:@"token"];
     
+    NSLog(@"%@",parm);
     [NetWork postNoParm:wode_gz params:parm success:^(id responseObj) {
         NSLog(@"%@",responseObj);
+        
         //转模型
         self.MyInfoGz = [MyInfoGz mj_objectWithKeyValues:[responseObj objectForKey:@"data"]];
+        
+        
         [tb reloadData];
         
     } failure:^(NSError *error) {
         
     }];
-    
-
 }
 
 #pragma mark 设置右上角按钮

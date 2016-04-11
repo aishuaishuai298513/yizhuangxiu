@@ -269,6 +269,9 @@
                                                 <state key="normal" title="保证金说明">
                                                     <color key="titleColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="baoZhengJinShuoMing:" destination="jlY-4s-XkC" eventType="touchUpInside" id="EdF-qV-G5R"/>
+                                                </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2016-03-16" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5iO-ju-13J">
                                                 <rect key="frame" x="83" y="312" width="90" height="21"/>

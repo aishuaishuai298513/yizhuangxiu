@@ -10,6 +10,7 @@
 
 @interface DWOrderViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
 
-
+//控制跳向施工中
+@property (nonatomic, assign)BOOL pushWorking;
 
 @end

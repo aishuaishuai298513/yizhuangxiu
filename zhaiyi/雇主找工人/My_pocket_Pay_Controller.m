@@ -13,7 +13,7 @@
 #import <AlipaySDK/AlipaySDK.h>
 #import "WXApi.h"
 #import "WXApiObject.h"
-
+#import "MainViewController.h"
 #import "TiShiYuE.h"
 
 #define NUMBERS @"0123456789.\n"
@@ -95,11 +95,11 @@ UIAlertViewDelegate
     _moneyTF.delegate = self;
     _moneyTF.keyboardType = UIKeyboardTypeNumberPad;
     _parames = [[NSMutableDictionary alloc]init];
-    NSUserDefaults *userDefualts = [NSUserDefaults standardUserDefaults];
-    NSDictionary *dict = [userDefualts objectForKey:@"enter_user_info"];
-    NSLog(@"信息: %@",dict);
-    [_parames setObject:[dict objectForKey:@"nickname"]forKey:@"nickname"];
-    [_parames setObject:[dict objectForKey:@"userid"]forKey:@"user_id"];
+//    NSUserDefaults *userDefualts = [NSUserDefaults standardUserDefaults];
+//    NSDictionary *dict = [userDefualts objectForKey:@"enter_user_info"];
+//    NSLog(@"信息: %@",dict);
+//    [_parames setObject:[dict objectForKey:@"nickname"]forKey:@"nickname"];
+//    [_parames setObject:[dict objectForKey:@"userid"]forKey:@"user_id"];
 
     NSLog(@"信息222: %@ ",_parames);
     _payResultDict = [[NSDictionary alloc]init];
@@ -232,9 +232,14 @@ UIAlertViewDelegate
 //余额支付  提交订单
 -(void)YuEPay
 {
-    NSLog(@"%@",self.parm);
-    [NetWork postNoParm:YZX_tijiaodingdan params:self.parm success:^(id responseObj) {
-       // NSLog(@"%@",responseObj);
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:_account.userid forKey:@"userid"];
+    [parm setObject:_account.token forKey:@"token"];
+    [parm setObject:self.ZhiFuJinE forKey:@"baozhengjin"];
+    [parm setObject:self.orderCode forKey:@"ordercode"];
+    
+    [NetWork postNoParm:YZX_zhifubaozhengjin_yue params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             
             [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
@@ -251,7 +256,7 @@ UIAlertViewDelegate
 -(void)makePopView
 {
     self.tiShiYuEView =[TiShiYuE loadView];
-    self.tiShiYuEView.frame = CGRectMake(30, SCREEN_WIDTH/2, SCREEN_WIDTH - 60, 200);
+    self.tiShiYuEView.frame = CGRectMake(40, SCREEN_WIDTH/2, SCREEN_WIDTH - 80, 200);
     
     //显示余额等
     self.tiShiYuEView.label1.text = [NSString stringWithFormat:@"当前帐户余额:%@",self.Yue];
@@ -272,7 +277,12 @@ UIAlertViewDelegate
 {
     [self.bg removeFromSuperview];
     [self.tiShiYuEView removeFromSuperview];
-    pop;
+    
+    MainViewController *controller = self.navigationController.childViewControllers[0];
+    //[controller ]
+    [self.navigationController popToViewController:controller animated:NO];
+    controller.pushOrder = YES;
+    
 }
 //遮盖点击事件
 -(void)bgViewClicked

@@ -69,21 +69,21 @@
 #define YZX_qiangdanxiangqing @"/api/index/qiangdanxiangqing"
 //抢单（工人端）
 #define YZX_qiangdan @"/api/index/qiangdan"
-//重新发布界面
+//继续发布界面
 #define YZX_jixufabu @"/api/index/jixufabupage"
 //重新发布
 #define YZX_chongxinfabu @"/api/index/chongxinfabu"
 //辞退页面（雇主段）
 #define YZX_cituipage @"/api/index/cituipage"
 //确认开工
-
-//继续发布页面
-
+#define YZX_querenkaigong @"/api/index/querenkaigong"
+//支付保证金－余额支付（雇主端）
+#define YZX_zhifubaozhengjin_yue @"/api/index/zhifubaozhengjin_yue"
+//提现－ 银行列表
+#define YZX_yinhang @"/api/index/yinhang"
+//提现
+#define YZX_tixian @"/api/index/tixian"
+//提现页面
+#define YZX_tixianyemian @"/api/index/tixianyemian"
 //
-//
-
-//
-
-
-
 #endif /* Header_h */

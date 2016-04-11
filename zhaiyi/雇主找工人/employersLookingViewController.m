@@ -11,6 +11,8 @@
 #import <CoreLocation/CoreLocation.h>
 #import "My_pocket_Pay_Controller.h"
 #import "NSDate+ITTAdditions.h"
+#import "My_Login_In_ViewController.h"
+#import "ShuoMingViewController.h"
 
 //#define ZhaoGongRen @"http://drf.unioncloud.com:10094/drf/datagateway/drfrestservice/ExecuteFunction"
 
@@ -118,6 +120,9 @@
 
 - (IBAction)TouchUp:(id)sender;
 
+
+- (IBAction)baoZhengJinShuoMing:(id)sender;
+
 @end
 
 @implementation employersLookingViewController
@@ -153,30 +158,43 @@
     _isInsure = 30;
     _params = [NSMutableDictionary dictionary];
     _shadowView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kU, Ga)];
-    _shadowView.backgroundColor = [UIColor colorWithRed:20/255.0 green:20/255.0 blue:20/255.0 alpha:0.6];
-    
     _GongChengDiDian.text =[[NSUserDefaults standardUserDefaults]objectForKey:@"placemark"];
-    if (self.isChongXinFaBu) {
-        [self chongxinfabu];
-    }else
-    {
-       [self netWork];
-    }
+    
     self.ScrrolView.userInteractionEnabled = YES;
+    
+    //登陆后的操作
+        if (self.isChongXinFaBu) {
+            [self chongxinfabu];
+        }else
+        {
+            //工种分类接口
+            [self netWork];
+        }
+    
     
     self.LianXIRen.delegate = self;
     self.LianXiDianHua.delegate = self;
     self.BeiZhu.delegate = self;
-    
+
+    //初始化地图搜索
+    [self initSearch];
+}
+
+- (void)initSearch
+{
+    self.search.delegate = self;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    [_shadowView removeFromSuperview];
-    _account = [ADAccountTool account];
     
-    [self refreshMoney];
+    _account = [ADAccountTool account];
+    //是否登陆了
+    if (_account.userid) {
+        
+     [self refreshMoney];
+    }
 }
 
 
@@ -255,7 +273,7 @@
 }
 
 - (IBAction)addOrSubMoney:(id)sender {
-    
+
     UIButton *button = sender;
     NSInteger number = [_moenyLabel.text intValue];
     if (button.tag == 20) {
@@ -270,6 +288,22 @@
 
 #pragma mark 填写完毕发布按钮
 - (IBAction)commintAction:(id)sender {
+    
+    if (self.diLiBianMa) {
+        
+        [[NSUserDefaults standardUserDefaults]setObject:nil forKey:@"gongchengdidianlat"];
+        [[NSUserDefaults standardUserDefaults]setObject:nil forKey:@"gongchengdidianlat"];
+        
+        _diLiBianMa(self.topGongZuoDiDian.text);
+    }
+    
+    ADAccount *account = [ADAccountTool account];
+    
+    if (!account) {
+        My_Login_In_ViewController *login = [[My_Login_In_ViewController alloc]init];
+        
+      return;   
+    }
     
     self.sureView.hidden = NO;
     //判断按钮状态
@@ -302,9 +336,72 @@
     {
         [self netWorkgetBaoZhengJinForNumber];
     }
-        
+}
+
+#pragma mark 点击确定 到支付也面
+//提示框返回
+- (IBAction)queDingChongZhi:(id)sender {
+    
+    
+    if(!self.isChongXinFaBu)
+    {
+        [self toVC:nil];
+    }else
+    {
+        [self chongXinFaBu];
+    }
     
 }
+
+#pragma mark 提交订单／跳转支付页
+- (void)toVC:(UIButton *)button{
+    
+    _sureView.hidden = YES;
+    
+    ADAccount *account = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:account.userid forKey:@"userid"];
+    [parm setObject:account.token forKey:@"token"];
+    [parm setObject:self.Id forKey:@"gongzhongid"];
+    [parm setObject:self.GongChengDiDian.text forKey:@"adr"];
+    [parm setObject:self.tianshu.text forKey:@"n"];
+    [parm setObject:self.starTimeLabel.text forKey:@"kaigongriqi"];
+    [parm setObject:self.tianshu.text forKey:@"yuji"];
+    [parm setObject:self.moenyLabel.text forKey:@"price"];
+    [parm setObject:self.LianXIRen.text forKey:@"lianxiren"];
+    [parm setObject:self.LianXiDianHua.text forKey:@"lianxidianhua"];
+    [parm setObject:self.BeiZhu.text forKey:@"beizhu"];
+    [parm setObject:self.zhiabaojin.text forKey:@"baozhengjin"];
+    
+
+    if ([[NSUserDefaults standardUserDefaults]objectForKey:@"gongchengdidianlat"]&&[[NSUserDefaults standardUserDefaults]objectForKey:@"gongchengdidianlng"]) {
+        
+        [parm setObject:[[NSUserDefaults standardUserDefaults]objectForKey:@"gongchengdidianlat"] forKey:@"lat"];
+        [parm setObject:[[NSUserDefaults standardUserDefaults]objectForKey:@"gongchengdidianlng"] forKey:@"lng"];
+    }
+    
+    
+    //提交订单
+    __weak typeof (self)weakSelf = self;
+    [NetWork postNoParm:YZX_tijiaodingdan params:parm success:^(id responseObj) {
+        // NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            
+            [weakSelf pushToZhiFu:[[responseObj objectForKey:@"data"] objectForKey:@"ordercode"]];
+            
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
 
 #pragma mark 判断充值还是确定/Users/ass/Desktop/宅易/zhaiyi/雇主找工人/employersLookingViewController.m
 -(void)SelectBtn:(id)sender
@@ -344,19 +441,6 @@
     
 }
 
-#pragma mark 点击确定 到支付也面
-//提示框返回
-- (IBAction)queDingChongZhi:(id)sender {
-    
-    if(!self.isChongXinFaBu)
-    {
-        [self toVC:nil];
-    }else
-    {
-        [self chongXinFaBu];
-    }
-    
-}
 
 - (IBAction)TopBack:(id)sender {
     
@@ -380,89 +464,24 @@
     [self.FatherView endEditing:YES];
 }
 
-
-#pragma mark 判断余额 是否需要充值
--(BOOL)YuEe
-{
+#pragma mark 保证金说明
+- (IBAction)baoZhengJinShuoMing:(id)sender {
     
-    ADAccount *account = [ADAccountTool account];
-
-    int renshu = [self.XuQiuRenShu.text intValue];
-    if (renshu > 5 ) {
-        
-        //人数 * 钱数 * 天数 + 保险 *人数
-        int costCount = [self.XuQiuRenShu.text intValue]*([self.moenyLabel.text intValue]*[self.dayNum.titleLabel.text intValue]+ [self.baoxianFei.text intValue]);
-        _amountCost = costCount *0.2;
-        NSLog(@"总额:%f !!! %f 现有:%@",_amountCost,_needCost,account.recharge_money);
-        
-        if (_amountCost > [account.recharge_money intValue]) {
-            UIView *view1 = [[UIView alloc]initWithFrame:(CGRectMake(40, self.view.frame.size.height/2-100, self.view.frame.size.width-80, 140))];
-            view1.backgroundColor = [UIColor whiteColor];
-            [self.view addSubview:view1];
-            
-            UILabel *abel = [[UILabel alloc]initWithFrame:(CGRectMake(20, 10, view1.frame.size.width-40, 60))];
-            [view1 addSubview:abel];
-            abel.text = @"账户余额不足,请立即前往钱包充值";
-            abel.numberOfLines = 0;
-            abel.textAlignment = NSTextAlignmentCenter;
-            UIButton *button = [[UIButton alloc]initWithFrame:(CGRectMake(view1.frame.size.width/2-40, view1.frame.size.height-50, 80, 30))];
-            [button setTitleColor:[UIColor whiteColor] forState:(UIControlStateNormal)];
-            [button setTitle:@"前往" forState:(UIControlStateNormal)];
-            [button setBackgroundImage:[UIImage imageNamed:@"充值anniu"] forState:(UIControlStateNormal)];
-            
-            [button addTarget:self action:@selector(toVC:) forControlEvents:(UIControlEventTouchUpInside)];
-            [view1 addSubview:button];
-            
-            [self.view insertSubview:_shadowView belowSubview:view1];
-            
-            return NO;
-        } else {
-            NSString *amount = [NSString stringWithFormat:@"%f",_amountCost];
-            [_params setObject:amount forKey:@"total_money"];
-            return YES;
-        }
+    ShuoMingViewController *baozhengjinShuoming = [[ShuoMingViewController alloc]init];
     
-    } else {
-        NSLog(@"不需要扣钱");
-        [_params setObject:@"0.0" forKey:@"total_money"];
-        return YES;
-       
-    }
- 
+    [self.navigationController pushViewController:baozhengjinShuoming animated:YES];
 }
 
 #pragma mark 跳转支付页
-- (void)toVC:(UIButton *)button{
-    
-    _sureView.hidden = YES;
-    
-    ADAccount *account = [ADAccountTool account];
-    
-    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:account.userid forKey:@"userid"];
-    [parm setObject:account.token forKey:@"token"];
-    [parm setObject:self.Id forKey:@"gongzhongid"];
-    [parm setObject:self.GongChengDiDian.text forKey:@"adr"];
-    [parm setObject:self.tianshu.text forKey:@"n"];
-    [parm setObject:self.starTimeLabel.text forKey:@"kaigongriqi"];
-    [parm setObject:self.tianshu.text forKey:@"yuji"];
-    [parm setObject:self.moenyLabel.text forKey:@"price"];
-    [parm setObject:self.LianXIRen.text forKey:@"lianxiren"];
-    [parm setObject:self.LianXiDianHua.text forKey:@"lianxidianhua"];
-    [parm setObject:self.BeiZhu.text forKey:@"beizhu"];
-    [parm setObject:self.zhiabaojin.text forKey:@"baozhengjin"];
-    
-    
+-(void)pushToZhiFu:(NSString *)orderCode
+{
     My_pocket_Pay_Controller *rechargeController = [[My_pocket_Pay_Controller alloc]init];
-    rechargeController.parm  = parm;
-    
-    NSLog(@"%@",rechargeController.parm);
+
     rechargeController.Yue = self.Yue;
     rechargeController.ZhiFuJinE = self.ZhiFuJinE;
-
+    rechargeController.orderCode = orderCode;
+    
     [self.navigationController pushViewController:rechargeController animated:YES];
-    
-    
 }
 #pragma mark 重新发布请求
 -(void)chongXinFaBu
@@ -652,9 +671,11 @@
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     
     ADAccount *acount = [ADAccountTool account];
-    
-    [parm setObject:acount.userid forKey:@"userid"];
-    [parm setObject:acount.token forKey:@"token"];
+    if (acount) {
+        
+        [parm setObject:acount.userid forKey:@"userid"];
+        [parm setObject:acount.token forKey:@"token"];
+    }
     
     NSLog(@"%@",parm);
     
@@ -702,6 +723,7 @@
     }];
     
 }
+
 #pragma mark 重新发布接口
 -(void)chongxinfabu
 {
@@ -813,5 +835,44 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+#pragma mark 是否登陆
+-(void)IfLogin
+{
+    ADAccount *acount = [ADAccountTool account];
+    if (! acount.userid) {
+        
+        //初始化一个弹框控制器（标题部分）
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"需要登录" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        
+        //取消按钮
+        UIAlertAction * cancel=[UIAlertAction actionWithTitle:@"返回" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        }];
+        
+        //确定按钮（在block里面执行要做的动作）
+        UIAlertAction *sure = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            My_Login_In_ViewController *login = [[My_Login_In_ViewController alloc]init];
+            
+            [self.navigationController pushViewController:login animated:YES];
+            
+            //                        UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:login];
+            //                        window.rootViewController = nav;
+        }];
+        
+        //把动作添加到控制器
+        [alertController addAction:cancel];
+        [alertController addAction:sure];
+        
+        
+        [self presentViewController:alertController animated:YES completion:^{
+            
+        }];
+          return;   
+    }
+}
+
+
+
 
 @end

@@ -11,6 +11,7 @@
 #import "DetatilViewController.h"
 #import "DWOrderModel.h"
 #import "MJRefresh.h"
+#import "My_Login_In_ViewController.h"
 
 @interface workerRobViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -111,6 +112,12 @@
     
     [cell setQiangBlock:^(NSIndexPath *indexpath) {
         
+        ADAccount *account = [ADAccountTool account];
+        if (!account) {
+            My_Login_In_ViewController *login = [[My_Login_In_ViewController alloc]init];
+            [self.navigationController pushViewController:login animated:YES];
+            return ;
+        }
         //跳到抢单详情页
         UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"workerRob" bundle:nil];
         DetatilViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"qiangdanxiangqing"];
@@ -119,8 +126,6 @@
         test2obj.orderId = OrderModel.ID;
         
         [self.navigationController pushViewController:test2obj animated:YES];
-        
-
     }];
     
     if (_dataSource.count != 0) {
@@ -154,8 +159,11 @@
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     
     [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"page"];
-    [parm setObject:acount.userid forKey:@"userid"];
-    [parm setObject:acount.token forKey:@"token"];
+    // 登陆传
+    if (acount) {
+        [parm setObject:acount.userid forKey:@"userid"];
+        [parm setObject:acount.token forKey:@"token"];
+    }
     [parm setObject:lon forKey:@"lng"];
     [parm setObject:lat forKey:@"lat"];
     
@@ -203,8 +211,11 @@
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     
     [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"page"];
-    [parm setObject:acount.userid forKey:@"userid"];
-    [parm setObject:acount.token forKey:@"token"];
+    if(acount)
+    {
+        [parm setObject:acount.userid forKey:@"userid"];
+        [parm setObject:acount.token forKey:@"token"];
+    }
     [parm setObject:lon forKey:@"lng"];
     [parm setObject:lat forKey:@"lat"];
 

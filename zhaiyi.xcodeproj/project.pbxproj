@@ -192,6 +192,8 @@
 		0AF8025F1C3D1C880003B989 /* new_feature_share_false@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AF802531C3D1C880003B989 /* new_feature_share_false@2x.png */; };
 		0AF802601C3D1C880003B989 /* new_feature_share_true@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AF802541C3D1C880003B989 /* new_feature_share_true@2x.png */; };
 		0AF802631C3D37E70003B989 /* NSString+ITTAddtion.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF802621C3D37E70003B989 /* NSString+ITTAddtion.m */; };
+		0AF8AF1D1CB7A9B1007DB36D /* ShuoMingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF8AF1B1CB7A9B1007DB36D /* ShuoMingViewController.m */; };
+		0AF8AF1E1CB7A9B1007DB36D /* ShuoMingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AF8AF1C1CB7A9B1007DB36D /* ShuoMingViewController.xib */; };
 		0AFAEE5B1C3F494500C7C728 /* libPushSDK-1.8.8.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AFAEE5A1C3F494500C7C728 /* libPushSDK-1.8.8.a */; };
 		0AFAEE5D1C3F497700C7C728 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AFAEE5C1C3F497700C7C728 /* CFNetwork.framework */; };
 		0AFAEE5F1C3F498500C7C728 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AFAEE5E1C3F498500C7C728 /* CoreFoundation.framework */; };
@@ -705,6 +707,9 @@
 		0AF802541C3D1C880003B989 /* new_feature_share_true@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "new_feature_share_true@2x.png"; sourceTree = "<group>"; };
 		0AF802611C3D37E70003B989 /* NSString+ITTAddtion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ITTAddtion.h"; sourceTree = "<group>"; };
 		0AF802621C3D37E70003B989 /* NSString+ITTAddtion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ITTAddtion.m"; sourceTree = "<group>"; };
+		0AF8AF1A1CB7A9B1007DB36D /* ShuoMingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShuoMingViewController.h; sourceTree = "<group>"; };
+		0AF8AF1B1CB7A9B1007DB36D /* ShuoMingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShuoMingViewController.m; sourceTree = "<group>"; };
+		0AF8AF1C1CB7A9B1007DB36D /* ShuoMingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShuoMingViewController.xib; sourceTree = "<group>"; };
 		0AFAEE591C3F494500C7C728 /* APService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APService.h; sourceTree = "<group>"; };
 		0AFAEE5A1C3F494500C7C728 /* libPushSDK-1.8.8.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libPushSDK-1.8.8.a"; sourceTree = "<group>"; };
 		0AFAEE5C1C3F497700C7C728 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -1624,11 +1629,8 @@
 		0A813A011CA4D7F700733248 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				0A813A0F1CA4DBEB00733248 /* CardViewController.h */,
-				0A813A101CA4DBEB00733248 /* CardViewController.m */,
-				0A813A111CA4DBEB00733248 /* CardViewController.xib */,
-				04E4A8A21C1529BF0069E4F4 /* My_pocket_CardAdd_ViewController.h */,
-				04E4A8A31C1529BF0069E4F4 /* My_pocket_CardAdd_ViewController.m */,
+				0AF8AF201CB7BB12007DB36D /* 银行卡列表 */,
+				0AF8AF1F1CB7BB05007DB36D /* 提现 */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -2471,6 +2473,35 @@
 			name = "测试图片";
 			sourceTree = "<group>";
 		};
+		0AF8AF191CB7A844007DB36D /* 保证金说明 */ = {
+			isa = PBXGroup;
+			children = (
+				0AF8AF1A1CB7A9B1007DB36D /* ShuoMingViewController.h */,
+				0AF8AF1B1CB7A9B1007DB36D /* ShuoMingViewController.m */,
+				0AF8AF1C1CB7A9B1007DB36D /* ShuoMingViewController.xib */,
+			);
+			name = "保证金说明";
+			sourceTree = "<group>";
+		};
+		0AF8AF1F1CB7BB05007DB36D /* 提现 */ = {
+			isa = PBXGroup;
+			children = (
+				04E4A8A21C1529BF0069E4F4 /* My_pocket_CardAdd_ViewController.h */,
+				04E4A8A31C1529BF0069E4F4 /* My_pocket_CardAdd_ViewController.m */,
+			);
+			name = "提现";
+			sourceTree = "<group>";
+		};
+		0AF8AF201CB7BB12007DB36D /* 银行卡列表 */ = {
+			isa = PBXGroup;
+			children = (
+				0A813A0F1CA4DBEB00733248 /* CardViewController.h */,
+				0A813A101CA4DBEB00733248 /* CardViewController.m */,
+				0A813A111CA4DBEB00733248 /* CardViewController.xib */,
+			);
+			name = "银行卡列表";
+			sourceTree = "<group>";
+		};
 		0AFAEE571C3F491F00C7C728 /* 极光推送 */ = {
 			isa = PBXGroup;
 			children = (
@@ -2685,6 +2716,7 @@
 		18FAAAF01C1194D800728BD6 /* zhaiyi */ = {
 			isa = PBXGroup;
 			children = (
+				0AF8AF191CB7A844007DB36D /* 保证金说明 */,
 				0AF8023F1C3D1A360003B989 /* 新特性 */,
 				0AF8023B1C3D17D30003B989 /* Tool */,
 				0AF801D71C3BB6F70003B989 /* 3rd */,
@@ -3360,6 +3392,7 @@
 				18FAAAFC1C1194D800728BD6 /* Main.storyboard in Resources */,
 				186DEB871C1510E800F65CE7 /* DWQuitReasionCell.xib in Resources */,
 				0AB689991C9BA03300F5082E /* FriendPrompt.xib in Resources */,
+				0AF8AF1E1CB7A9B1007DB36D /* ShuoMingViewController.xib in Resources */,
 				F6E7F65A1C473C0400C91232 /* UMSLoginViewController.xib in Resources */,
 				F6E3D9761C43E04300256E9B /* AlipaySDK.bundle in Resources */,
 				186DEB8F1C1510E800F65CE7 /* DWOrderDetailTableViewController.xib in Resources */,
@@ -3407,6 +3440,7 @@
 				0A28E3251C452398001BB065 /* OrderheaderView.m in Sources */,
 				0AF802171C3BC21B0003B989 /* JSONKit.m in Sources */,
 				0AF802271C3D00C40003B989 /* ReginTextViewCell.m in Sources */,
+				0AF8AF1D1CB7A9B1007DB36D /* ShuoMingViewController.m in Sources */,
 				04E4A8B21C1529BF0069E4F4 /* My_pocket_Hongbao_ViewController.m in Sources */,
 				0AFAEE8E1C3F8D5F00C7C728 /* MJPropertyType.m in Sources */,
 				F62FAF141C50A54D00A11914 /* MyForgetPwdController.m in Sources */,

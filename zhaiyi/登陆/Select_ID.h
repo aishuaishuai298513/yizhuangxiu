@@ -10,4 +10,8 @@
 
 @interface Select_ID : UIView
 +(instancetype)loadView;
+
+@property (nonatomic, assign)BOOL ifFirstLogin;
+
+@property (nonatomic, copy)void(^selectShenFen)();
 @end

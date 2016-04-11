@@ -12,5 +12,7 @@
 
 @interface MainViewController : UIViewController
 
+#pragma mark 外界通过此属性跳转
+@property (nonatomic, assign)BOOL pushOrder;
 
 @end

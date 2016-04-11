@@ -161,6 +161,8 @@
 #pragma mark 登陆
 -(void)ReginClick:(NSString *)userName PassWord:(NSString *)PassWord
 {
+    [self.view endEditing:YES];
+    
     NSMutableDictionary *parm  =[NSMutableDictionary dictionary];
     [parm setObject:userName forKey:@"mobile"];
     [parm setObject:PassWord forKey:@"password"];
@@ -170,6 +172,7 @@
     
     [NetWork postNoParm:YZX_login params:parm success:^(id responseObj) {
         NSLog(@"%@",responseObj);
+        
         //登录返回信息
         if ([[responseObj objectForKey:@"result"] isEqualToString:@"1"]) {
             
