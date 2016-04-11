@@ -16,6 +16,9 @@
 @property (nonatomic ,strong)NSString *xing;
 @property (nonatomic ,strong)NSString *headpic;
 @property (nonatomic ,strong)NSString *ziwojieshao;
-@property (nonatomic ,strong)NSString *status;
+@property (nonatomic ,strong)NSString *status;//
+@property (nonatomic ,strong)NSString *shifoucitui;//是否辞退
+@property (nonatomic ,strong)NSString *gzname;
+
 
 @end

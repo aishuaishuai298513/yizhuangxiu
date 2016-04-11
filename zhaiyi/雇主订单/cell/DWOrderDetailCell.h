@@ -24,5 +24,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *cellBtn;
 
+@property (nonatomic, assign) int xingji;
+
 
 @end

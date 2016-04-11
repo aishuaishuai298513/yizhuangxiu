@@ -35,8 +35,12 @@
 #define YZX_search_gz @"/api/index/search_gz"
 //更换头像雇主
 #define YZX_genghuantouxiang_gz @"/api/index/upload_headpic_gz"
+//更换头像工人
+#define YZX_genghuantouxiang_gr @"/api/index/upload_headpic_gr"
 //我的（雇主端）
 #define wode_gz @"/api/index/wode_gz"
+//我的（工人端）
+#define wode_gr @"/api/index/wode_gr"
 //设置/修改支付密码
 #define YZX_UpdatePassword @"/api/index/shezhizhifumima"
 //钱包
@@ -85,5 +89,9 @@
 #define YZX_tixian @"/api/index/tixian"
 //提现页面
 #define YZX_tixianyemian @"/api/index/tixianyemian"
-//
+//交易记录
+#define YZX_jiaoyijilu @"/api/index/jiaoyijilu"
+//切换身份
+#define YZX_qiehuan @"/api/index/qiehuanshenfen"
+
 #endif /* Header_h */

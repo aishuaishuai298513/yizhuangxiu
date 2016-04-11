@@ -13,8 +13,6 @@
 @interface DWEmployerDetailController : UITableViewController
 @property (nonatomic, assign) int type;
 
-//工人信息
-@property (nonatomic, strong) ADAccount *acount;
 @property (nonatomic, strong) DWOrderModel *orderModel;
 
 @end

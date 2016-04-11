@@ -12,6 +12,7 @@
 @interface CardViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic, assign)int didselectRow;
+@property (nonatomic, assign)BOOL ifDidSelectRow;
 
 @property (nonatomic, strong) NSMutableArray *dataSource;
 @end
@@ -29,7 +30,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self SettableVStyle];
-     self.didselectRow = 0;
+     //self.didselectRow = 0;
     [self netWork];
 }
 
@@ -64,6 +65,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    
     return self.dataSource.count;
 }
 
@@ -75,9 +77,10 @@
         cell = [[[NSBundle mainBundle]loadNibNamed:@"CardTableViewCell" owner:nil options:nil]lastObject];
     }
     
-    if (self.didselectRow != indexPath.row) {
+    if (self.didselectRow != indexPath.row||!self.ifDidSelectRow) {
         cell.cellImageV.hidden = YES;
     }
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.bankName.text = [self.dataSource[indexPath.row] objectForKey:@"yname"];
     
@@ -90,6 +93,7 @@
     CardTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     
     self.didselectRow = (int)indexPath.row;
+    self.ifDidSelectRow = YES;
     [self.tableView reloadData];
     [self.view removeFromSuperview];
     

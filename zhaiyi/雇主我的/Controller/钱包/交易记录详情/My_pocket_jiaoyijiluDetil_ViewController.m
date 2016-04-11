@@ -84,12 +84,12 @@
     TradeRecordModel *model = [[TradeRecordModel alloc]init];
     [model setValuesForKeysWithDictionary:detailDict];
     NSRange range = NSMakeRange(16, 3);
-    bankNameLb.text = [NSString stringWithFormat:@"%@(%@)",model.bank_name,[model.bank_number substringWithRange:range]];
-    moneyLb.text = model.carry_cash;
-    goodsLb.text = model.goods_type;
-    createtimeLb.text = model.createtime;
-    updatetimeLb.text = model.updatetime;
-    orderNumLb.text = model.order_number;
+//    bankNameLb.text = [NSString stringWithFormat:@"%@(%@)",model.bank_name,[model.bank_number substringWithRange:range]];
+//    moneyLb.text = model.carry_cash;
+//    goodsLb.text = model.goods_type;
+//    createtimeLb.text = model.createtime;
+//    updatetimeLb.text = model.updatetime;
+//    orderNumLb.text = model.order_number;
     
     return cell;
 }

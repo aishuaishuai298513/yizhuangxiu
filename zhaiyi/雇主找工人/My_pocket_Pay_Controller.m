@@ -16,6 +16,8 @@
 #import "MainViewController.h"
 #import "TiShiYuE.h"
 
+#import "ZSDPaymentView.h"
+
 #define NUMBERS @"0123456789.\n"
 #define PAY_POST_URL @"http://zhaiyi.bjqttd.com/api/recharge/user_recharge"
 
@@ -57,6 +59,8 @@ UIAlertViewDelegate
 @property (nonatomic, strong) TiShiYuE *tiShiYuEView;
 //遮盖
 @property (nonatomic, strong) UIView *bg;
+
+@property (nonatomic, strong) NSString *miMa;
 
 @end
 
@@ -210,7 +214,9 @@ UIAlertViewDelegate
     
         if (_yeBtn.selected) {
             //余额支付  提交订单
+            
             [self YuEPay];
+            
            }
         else if (_ylBtn.selected) {
             NSLog(@"银联 充值金额为:%@",_moneyTF.text);
@@ -232,11 +238,37 @@ UIAlertViewDelegate
 //余额支付  提交订单
 -(void)YuEPay
 {
+    //支付框
+    ZSDPaymentView *payment = [[ZSDPaymentView alloc]init];
+    
+    __weak typeof (self)weakSelf = self;
+    
+    payment.getText =  ^int(NSString *textInput){
+        
+        NSLog(@"密码%@",textInput);
+        weakSelf.miMa = textInput;
+        //提现
+        [weakSelf netWorkYuEPay];
+        
+        //消除支付框
+        return 1;
+    };
+    payment.title = @"请输入支付密码";
+    payment.goodsName = @"余额提现";
+    payment.amount = [self.ZhiFuJinE floatValue];
+    [payment show];
+
+}
+
+#pragma mark 余额支付接口
+-(void)netWorkYuEPay
+{
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     [parm setObject:_account.userid forKey:@"userid"];
     [parm setObject:_account.token forKey:@"token"];
     [parm setObject:self.ZhiFuJinE forKey:@"baozhengjin"];
     [parm setObject:self.orderCode forKey:@"ordercode"];
+    [parm setObject:self.miMa forKey:@"zhifumima"];
     
     [NetWork postNoParm:YZX_zhifubaozhengjin_yue params:parm success:^(id responseObj) {
         NSLog(@"%@",responseObj);
@@ -250,7 +282,6 @@ UIAlertViewDelegate
     } failure:^(NSError *error) {
         
     }];
-
 }
 #pragma mark 弹出提示框
 -(void)makePopView

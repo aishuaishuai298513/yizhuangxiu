@@ -26,6 +26,8 @@
 @property (nonatomic,copy) NSString *price;
 @property (nonatomic,copy) NSString *gongzuoneirong;
 @property (nonatomic,copy) NSString *status;
+
+
 //工人端订单字段
 @property (nonatomic,copy) NSString *juli;//距离
 @property (nonatomic,copy) NSString *shengyu;// 剩余人数

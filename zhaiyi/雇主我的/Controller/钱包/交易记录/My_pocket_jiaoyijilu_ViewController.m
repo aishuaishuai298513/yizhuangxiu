@@ -22,7 +22,7 @@
     
     BOOL _noTrade;
     
-    float cash_count;
+    //float cash_count;
 }
 
 
@@ -59,7 +59,6 @@
 
 -(void)initalData{
     
-    cash_count = 0.0;
     _account = [ADAccountTool account];
     [self postData];
 
@@ -71,7 +70,7 @@
 
     __weak typeof(self) weakSelf = self;
     tb.mj_header  = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        cash_count = 0.0;
+
         [weakSelf postData];
         
     }];
@@ -79,12 +78,15 @@
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     NSLog(@"计算分组数");
-    return 1;
+    return _dataArr.count;
 }
 
 #pragma mark 返回每组行数
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return _dataArr.count;
+    
+    NSArray *array = [NSArray array];
+    array = [_dataArr[section] objectForKey:@"list"];
+    return array.count;
 }
 
 #pragma mark返回每行的单元格
@@ -94,8 +96,12 @@
     if (!cell) {
         cell=[[[NSBundle mainBundle]loadNibNamed:@"My_pocket_jiaoyijilu_ViewCell" owner:self options:nil]lastObject];
     }
+    
+    
+    NSArray *array = [NSArray array];
+    array = [_dataArr[indexPath.section] objectForKey:@"list"];
  
-    [cell RecordModel:[_dataArr objectAtIndex:indexPath.row]];
+    [cell RecordModel:[array objectAtIndex:indexPath.row]];
     
     return cell;
 }
@@ -120,36 +126,21 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (_noTrade) {
-        UIView * view=[[UIView alloc]init];
-        view.backgroundColor=[UIColor myColorWithString:@"f4f4f4"];
-        UILabel * label=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, kU-20, 30)];
-        label.text=@"暂时没有交易记录";
-        label.textAlignment = NSTextAlignmentCenter;
-        label.font=[UIFont systemFontOfSize:16];
-        [view addSubview:label];
-        return view;
-    } else {
+
     UIView * view=[[UIView alloc]init];
     view.backgroundColor=[UIColor myColorWithString:@"f4f4f4"];
     UILabel * time=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, 100, 30)];
-    time.text = @"2016年";
+    time.text = [_dataArr[section] objectForKey:@"month"];
     time.font=[UIFont systemFontOfSize:14];
     [view addSubview:time];
     UILabel * mnoey=[[UILabel alloc]initWithFrame:CGRectMake(kU-100, 5, 90, 30)];
 //     NSLog(@"交易记录 %@",_dataArr);
-     for (NSDictionary *dict in _dataArr) {
-       float cash = [[dict objectForKey:@"carry_cash"] floatValue];
-        cash_count  = cash_count + cash;
-    }
-    mnoey.text= [NSString stringWithFormat:@"%.2f",cash_count];
+    
+    mnoey.text= @"";
     mnoey.textAlignment=NSTextAlignmentRight;
     mnoey.font=[UIFont systemFontOfSize:14];
     [view addSubview:mnoey];
     return view;
-    }
-    return nil;
-    
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -170,22 +161,25 @@
     // Pass the selected object to the new view controller.
 }
 */
-
+#pragma mark 交易记录
 -(void)postData{
 //    _dataArr = nil;
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:_account.userid forKey:@"user_id"];
-//    [params setObject:_account.type forKey:@"type"];
+    [params setObject:_account.userid forKey:@"userid"];
+    [params setObject:_account.token forKey:@"token"];
     NSLog(@"交易记录待上传信息 %@",params);
-    [NetWork postNoParm:POST_USER_TRADE params:params success:^(id responseObj) {
+    [NetWork postNoParm:YZX_jiaoyijilu params:params success:^(id responseObj) {
         NSLog(@"用户交易 %@",responseObj);
-        _dataArr = [responseObj objectForKey:@"data"];
-        if ([[responseObj objectForKey:@"message"] isEqualToString:@"暂时没有交易记录"]) {
-            _noTrade = YES;
-        }else{
-            _noTrade = NO;
-            
+        
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+           _dataArr = [responseObj objectForKey:@"data"];
         }
+//        if ([[responseObj objectForKey:@"message"] isEqualToString:@"暂时没有交易记录"]) {
+//            _noTrade = YES;
+//        }else{
+//            _noTrade = NO;
+//            
+//        }
         [tb.mj_header endRefreshing];
         [tb reloadData];
     } failure:^(NSError *error) {

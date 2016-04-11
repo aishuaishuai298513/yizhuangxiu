@@ -74,18 +74,6 @@
 {
     self.view.backgroundColor=[UIColor whiteColor];
     
-    //
-    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [rightButton setBackgroundImage:[UIImage imageNamed:@"右上角按钮"] forState:UIControlStateNormal];
-    [rightButton setTitle:@"银行卡" forState:UIControlStateNormal];
-    [rightButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    rightButton.titleLabel.font = [UIFont systemFontOfSize:15];
-    [rightButton addTarget:self action:@selector(card) forControlEvents:UIControlEventTouchUpInside];
-    rightButton.frame = CGRectMake(0, 0, 84, 30);
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithCustomView:rightButton];
-    self.navigationItem.rightBarButtonItem = rightItem;
-    //
-   // _modifyDict = [NSMutableDictionary dictionary];
     _params = [NSMutableDictionary dictionary];
     
     
@@ -116,7 +104,7 @@
     if (GetUserDefaultsGR) {
         return 4;
     }else {
-        return 7;
+        return 6;
     }
 
 }
@@ -209,7 +197,7 @@
         if (GetUserDefaultsGR) {
             name=@[@"红包",@"提现",@"交易记录"];
         }else {
-            name=@[@"红包",@"充值",@"提现",@"交易记录",@"保证金纪录",@"修改支付密码"];
+            name=@[@"红包",@"充值",@"提现",@"交易记录",@"修改支付密码"];
 
         }
         title.text=name[indexPath.row-1];
@@ -291,22 +279,18 @@
     
     else if (indexPath.row==5)
     {
-        //保证金纪录
-        if (GetUserDefaultsGZ) {
-           
-            BaoZhengJinViewController *baozhengjin = [[BaoZhengJinViewController alloc]init];
-            [self.navigationController pushViewController:baozhengjin animated:YES];
-        }
-    }
-    
-    else if (indexPath.row==6)
-    {
         //修改支付密码
         if (GetUserDefaultsGZ) {
             PayPasswordViewController *payC = [[PayPasswordViewController alloc]init];
             payC.payController = updatePassword;
             [self.navigationController pushViewController:payC animated:YES];
         }
+//        //保证金纪录
+//        if (GetUserDefaultsGZ) {
+//           
+//            BaoZhengJinViewController *baozhengjin = [[BaoZhengJinViewController alloc]init];
+//            [self.navigationController pushViewController:baozhengjin animated:YES];
+//        }
     }
 }
 - (void)didReceiveMemoryWarning {

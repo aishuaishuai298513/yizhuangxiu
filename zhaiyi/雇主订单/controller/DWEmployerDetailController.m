@@ -33,7 +33,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navigationItem setTitle:self.acount.username];
+    
+    [self.navigationItem setTitle:@"1111"];
     self.tableView.tableHeaderView = self.dwHeaderView;
     self.tableView.tableFooterView = self.dwFooterView;
     [self.tableView registerNib:[UINib nibWithNibName:@"DWEmployerDetailCell" bundle:nil] forCellReuseIdentifier:@"DWEmployerDetailCell"];
@@ -62,16 +63,23 @@
 
 -(void)netWorkUserinfo
 {
+    
     ADAccount *acount = [ADAccountTool account];
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     [parm setObject:acount.userid forKey:@"userid"];
     [parm setObject:acount.token forKey:@"token"];
-    [parm setObject:self.orderModel.userid forKey:@"userid2"];
+    
+    
+    NSLog(@"%@",self.orderModel);
+    NSLog(@"%@",self.orderModel.ID);
+    [parm setObject:self.orderModel.ID forKey:@"userid2"];
     
     [NetWork postNoParm:YZX_cituipage params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             
             self.dataSource = [responseObj objectForKey:@"data"];
+            [self.tableView reloadData];
         }
     } failure:^(NSError *error) {
         
@@ -84,7 +92,7 @@
 - (void)evaluateList{
     
     DWevaluateListViewController *vc = [[DWevaluateListViewController alloc] initWithNibName:@"DWevaluateListViewController" bundle:nil];
-    vc.userAcount = self.acount;
+   // vc.userAcount = self.acount;
    // NSLog(@"%@",vc.userAcount.userid);
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -100,7 +108,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-
+    
     return 7;
 }
 
@@ -126,8 +134,8 @@
         cell.DWEmpilyerDetailLabelLeft.text = @"户籍";
         cell.DWEmpilyerDetailLabelRight.text = [self.dataSource objectForKey:@"huji"];
     }else if(indexPath.row == 6){
-        cell.DWEmpilyerDetailLabelLeft.text = @"自我评价";
-        cell.DWEmpilyerDetailLabelRight.text = [self.dataSource objectForKey:@"ziwojieshao"];
+//        cell.DWEmpilyerDetailLabelLeft.text = @"自我评价";
+//        cell.DWEmpilyerDetailLabelRight.text = [self.dataSource objectForKey:@"ziwojieshao"];
     }
     return cell;
 }
@@ -141,9 +149,9 @@
     //辞退原因
     DWReasionViewController *vc = [[DWReasionViewController alloc] initWithNibName:@"DWReasionViewController" bundle:nil];
     
-    NSLog(@"%@",self.acount.userid);
+   // NSLog(@"%@",self.acount.userid);
     
-    vc.UserAcount = self.acount;
+    //vc.UserAcount = self.acount;
     
     vc.OrderModel = self.orderModel;
     

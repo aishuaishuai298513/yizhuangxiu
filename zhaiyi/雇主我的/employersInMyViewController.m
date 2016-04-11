@@ -66,6 +66,8 @@ UIAlertViewDelegate
 //雇主信息数据源model
 @property (nonatomic, strong)MyInfoGz *MyInfoGz;
 
+@property (nonatomic, strong)MyInfoGz *MyInfoGr;
+
 @end
 
 @implementation employersInMyViewController
@@ -77,12 +79,24 @@ UIAlertViewDelegate
     }
     return _MyInfoGz;
 }
-
+-(MyInfoGz *)dataSourceInfo_gr
+{
+    if (!_MyInfoGr) {
+        _MyInfoGr = [[MyInfoGz alloc]init];
+    }
+    return _MyInfoGr;
+}
 -(void)viewWillAppear:(BOOL)animated
 {
 //    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onScreenTouch:) name:@"notiScreenTouch" object:nil];
     //雇主端信息
-    [self netWork_Info_gz];
+    
+    if (GetUserDefaultsGZ) {
+        [self netWork_Info_gz_gr:1];
+    }else
+    {
+        [self netWork_Info_gz_gr:2];
+    }
 }
 
 - (void)viewDidLoad {
@@ -115,8 +129,12 @@ UIAlertViewDelegate
 }
 
 #pragma mark 雇主端请求个人信息数据
--(void)netWork_Info_gz
+/*
+ type  1.雇主  2.工人
+ */
+-(void)netWork_Info_gz_gr :(int)Type;
 {
+    
     ADAccount *acount = [ADAccountTool account];
     if (!acount) {
         return;
@@ -125,9 +143,16 @@ UIAlertViewDelegate
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     [parm setObject:acount.userid forKey:@"userid"];
     [parm setObject:acount.token forKey:@"token"];
-    
     NSLog(@"%@",parm);
-    [NetWork postNoParm:wode_gz params:parm success:^(id responseObj) {
+    NSString *url;
+    if (Type == 1) {
+        url = wode_gz;
+    }else if (Type == 2)
+    {
+        url = wode_gr;
+    }
+    
+    [NetWork postNoParm:url params:parm success:^(id responseObj) {
         NSLog(@"%@",responseObj);
         
         //转模型
@@ -258,12 +283,14 @@ UIAlertViewDelegate
                 cell.selectionStyle=UITableViewCellSelectionStyleNone;
             }
             //
-            if ([_account.type isEqualToString:@"78"]) {
+            if (GetUserDefaultsGR) {
+                
                 //工人姓名
-                if ([_account.userid isEqualToString:@""]) {
-                    cell.userNameLb.text = _account.userid;
-                } else {
-                    cell.userNameLb.text = _account.userid;
+                if (self.MyInfoGz.name) {
+                    cell.userNameLb.text = self.MyInfoGz.name;
+                }else
+                {
+                    cell.userNameLb.text =@"未登陆";
                 }
                 
                   //工人头像
@@ -271,8 +298,8 @@ UIAlertViewDelegate
                     NSLog(@"工人头像 :%@",_imageFilePath);
                     cell.userImgV.image = [UIImage imageWithContentsOfFile:_imageFilePath];
                 } else {
-                    ///NSString *pic_url = [NSString stringWithFormat:@"%@%@",XMJ_BASE_URL,_account.picture];
-                    //[cell.userImgV sd_setImageWithURL:[NSURL URLWithString:pic_url] placeholderImage:[UIImage imageNamed:@"我的3"]];
+                    NSString *pic_url = [NSString stringWithFormat:@"%@%@",YZX_BASY_URL,self.MyInfoGz.headpic];
+                    [cell.userImgV sd_setImageWithURL:[NSURL URLWithString:pic_url] placeholderImage:[UIImage imageNamed:@"我的3"]];
                 }
                 
             } else {
@@ -296,7 +323,7 @@ UIAlertViewDelegate
             
             }
             
-            //
+            //地址
             if (self.MyInfoGz.lng) {
                 cell.userAddressLb.text = @"地址";
             } else {
@@ -402,7 +429,7 @@ UIAlertViewDelegate
 #pragma mark 个人详细信息
 - (void)pushPersonalDetails {
     
-    if ([_account.type isEqualToString:@"78"]) {
+    if (GetUserDefaultsGR) {
         
         PersonalGongRenController *personalGR = [[PersonalGongRenController alloc]init];
         personalGR.title = @"个人资料";
@@ -429,12 +456,6 @@ UIAlertViewDelegate
         [self.navigationController pushViewController:pocket animated:YES];
     }
 
-}
-//跳转到接单设置
-- (void)pushSettingVc {
-    NSLog(@"-----3------");
-    My_jidanshezhi_Controller * jd=[My_jidanshezhi_Controller new];
-    [self.navigationController pushViewController:jd animated:YES];
 }
 //跳转到分享有礼
 - (void)pushShareVc {
@@ -548,24 +569,6 @@ UIAlertViewDelegate
 }
 
 #pragma mark 切换身份按钮
-//- (IBAction)QH:(id)sender {
-//    
-//    _changeIdentityBtn.selected = !_changeIdentityBtn.selected;
-//    
-//    if (_changeIdentityBtn.selected) {
-//        [_changeIdentityBtn setTitle:@"取消切换" forState:UIControlStateSelected];
-//        qh=[My_pocket_qiehuan_View initViewWithXib];
-//        qh.frame=CGRectMake(0, 64, kU, 130);
-//        qh.LX=_account.type;
-//        [qh.goren addTarget:self action:@selector(gongren) forControlEvents:UIControlEventTouchUpInside];
-//        [qh.guzhu addTarget:self action:@selector(guzhu) forControlEvents:UIControlEventTouchUpInside];
-//    
-//        [self.view addSubview:qh];
-//    } else {
-//        [qh removeFromSuperview];
-//        NSLog(@"qiehuan");
-//    }
-//}
 
 - (void)QH:(id)sender {
     
@@ -599,23 +602,41 @@ UIAlertViewDelegate
     }
 }
 
-//工人雇主切换
+//工人切换
 -(void)gongren
 {
     SetUserDefaultsGR
     pop
-//    My_Login_In_ViewController * login=[My_Login_In_ViewController new];
-//
-//    [userDefaults setObject:@"78" forKey:@"qiehuan_id"];
-//    [userDefaults synchronize];
-//    [self.navigationController pushViewController:login animated:YES];
+    [self qiehuan:27];
 }
+//雇主切换
 -(void)guzhu
 {
     SetUserDefaultsGZ
     pop
+    [self qiehuan:26];
 }
 
+#pragma mark 切换接口
+
+/*
+ *26雇主27工人
+ */
+-(void)qiehuan:(int)shenFenType
+{
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:[NSString stringWithFormat:@"%d",shenFenType] forKey:@"shenfen"];
+    
+    [NetWork postNoParmForMap:YZX_qiehuan params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+    } failure:^(NSError *error) {
+        
+    }];
+}
 
 
 #pragma mark 相机相册
@@ -667,7 +688,7 @@ UIAlertViewDelegate
         
         UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
         _imageData = UIImageJPEGRepresentation(image, 0.3);
-//        _userImage = image;
+       // _userImage = image;
         //保存图片
         [self saveImage:image];
         [self changeImage];
@@ -703,12 +724,12 @@ UIAlertViewDelegate
     
     
     //判断
-    if ([_account.type isEqualToString:@"78"]) {
+    if (GetUserDefaultsGR) {
         //工人端
-        [AFNetFirst typePicturePOST:POST_GONGREN_PHOTO parameters:params withPicureData:_imageData withKey:@"picture" finish:^(NSData *data, NSError *error) {
+        [AFNetFirst typePicturePOST:YZX_genghuantouxiang_gr parameters:params withPicureData:_imageData withKey:@"headpic" finish:^(NSData *data, NSError *error) {
             NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             NSLog(@"%@",dic);
-            if ([[dic objectForKey:@"code"] isEqualToString:@"1000"]) {
+            if ([[dic objectForKey:@"result"] isEqualToString:@"1"]) {
                 [ITTPromptView showMessage:@"头像修改成功"];
                 [tb reloadData];
             }
@@ -745,7 +766,7 @@ UIAlertViewDelegate
         success = [fileManager removeItemAtPath:imageFilePath error:&error];
         
         //判断保存
-        if ([_account.type isEqualToString:@"78"]) {
+        if (GetUserDefaultsGR) {
             _imageFilePath = imageFilePath;
         } else {
             _em_imageFilePath = imageFilePath;

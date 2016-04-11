@@ -85,6 +85,10 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     return _UsersdataSource;
 }
 
+
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.tableHeaderView = self.DWOrderHeaderView;
@@ -183,7 +187,6 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 //    13
     
     DetialUserInfoM *userInfoM = self.UsersdataSource[indexPath.row];
-    
     DWOrderDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWOrderDetailCell"];
     
     //已竣工
@@ -192,9 +195,8 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
         [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
         [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
         [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
-        
+    //发布中
     }else if (self.type == 1){
-        //发布中
         if ([userInfoM.status isEqualToString:@"8"]) {
             
             [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
@@ -238,15 +240,11 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
         }
         
     }
-     cell.cellBtn.tag = 100+indexPath.row;
-    [cell.cellBtn addTarget:self action:@selector(cellBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
     
-    ADAccount *acount =self.UsersdataSource[indexPath.row];
-    cell.namelb.text = acount.nickname;
-
-    
-    cell.typelb.text = @"泥工";
-    cell.jieshao.text = acount.user_desc;
+    cell.cellBtn.tag = 100+indexPath.row;
+    cell.typelb.text = userInfoM.gzname;
+    cell.jieshao.text = userInfoM.ziwojieshao;
+    cell.namelb.text = userInfoM.name;
     return cell;
 }
 
@@ -314,16 +312,14 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     
 }
 
-#pragma mark 点击cell跳到工人详情页/或者辞退
+#pragma mark 点击cell跳到工人详情页/辞退
 -(void)checkGongRenInfo:(int)indexpathRow
 {
         //工人信息
         DWEmployerDetailController *vc = [[DWEmployerDetailController alloc] initWithNibName:@"DWEmployerDetailController" bundle:nil];
         
         vc.type = self.type;
-        vc.acount = self.UsersdataSource[indexpathRow];
-        vc.orderModel  =self.OrderModel;
-        
+        vc.orderModel = self.UsersdataSource[indexpathRow];
         [self.navigationController pushViewController:vc animated:YES];
 
 }

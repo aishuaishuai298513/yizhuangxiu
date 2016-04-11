@@ -27,6 +27,15 @@ UITextFieldDelegate
     NSArray *_bankArr;
     NSMutableDictionary *params;
     
+    //金额
+    UITextField*jine;
+    //持卡人
+    UITextField*chikaren;
+    //卡号
+    UITextField*kahao;
+    //开户行
+    UIButton *kaihuhang;
+    
     ADAccount *_account;
 }
 
@@ -40,6 +49,9 @@ UITextFieldDelegate
 
 
 @property (nonatomic, strong) NSMutableDictionary *dataSource;
+
+//输入的支付密码
+@property (nonatomic, strong) NSString *miMa;
 
 @end
 
@@ -149,24 +161,30 @@ UITextFieldDelegate
     
     if ([cellID isEqualToString: @"cell0"]) {
         
-        UITextField*jine = [cell viewWithTag:419];
-        jine.text = [self.dataSource objectForKey:@"yue"];
+        jine = [cell viewWithTag:419];
+        //jine.text = [self.dataSource objectForKey:@"yue"];
 
-        jine.placeholder =[NSString stringWithFormat:@"当前帐户可提现金额%@元",[self.dataSource objectForKey:@"jine"]];
+        jine.placeholder =[NSString stringWithFormat:@"当前帐户可提现金额%@元",[self.dataSource objectForKey:@"yue"]];
     }
     if ([cellID isEqualToString: @"cell1"]) {
         
-        UITextField*chikaren = [cell viewWithTag:420];
+        chikaren = [cell viewWithTag:420];
         chikaren.text = [self.dataSource objectForKey:@"chikaren"];
     }
     if ([cellID isEqualToString: @"cell2"]) {
-        UITextField*kahao = [cell viewWithTag:421];
+        kahao = [cell viewWithTag:421];
         kahao.text = [self.dataSource objectForKey:@"kahao"];
     }
     if ([cellID isEqualToString: @"cell3"]) {
         
-        UIButton *btn = [cell viewWithTag:422];
-        [btn setTitle:[self.dataSource objectForKey:@"kaihuhang"]  forState:UIControlStateNormal];
+        kaihuhang = [cell viewWithTag:422];
+        if([[self.dataSource objectForKey:@"kaihuhang"]isEqualToString:@""])
+        {
+          [kaihuhang setTitle:@"选择银行" forState:UIControlStateNormal];
+        }else
+        {
+         [kaihuhang setTitle:[self.dataSource objectForKey:@"kaihuhang"]  forState:UIControlStateNormal];
+        }
     }
     
     
@@ -232,7 +250,7 @@ UITextFieldDelegate
     _bankNumTF.delegate = self;
     if (sender.text.length == 19||sender.text.length == 16) {
         NSLog(@"银行卡 %@",sender.text);
-        [params setObject:sender.text forKey:@"bank_number"];
+       // [params setObject:sender.text forKey:@"bank_number"];
     } else {
         
     }
@@ -240,6 +258,7 @@ UITextFieldDelegate
 }
 #pragma mark 限制输入卡号
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    
 //限制输入的内容
     NSCharacterSet *cs;
     cs = [[NSCharacterSet characterSetWithCharactersInString:NUMBERS]invertedSet];
@@ -294,53 +313,70 @@ UITextFieldDelegate
 }
 
 #pragma mark 添加完成 下一步
-
 -(void)clickFinish{
     
-    //支付框
-    ZSDPaymentView *payment = [[ZSDPaymentView alloc]init];
-    payment.getText =  ^int(NSString *textInput){
-        
-        NSLog(@"密码%@",textInput);
-        
-        return 1;
-    };
-    payment.title = @"请输入支付密码";
-    payment.goodsName = @"商品名称";
-    payment.amount = 20.00f;
-    [payment show];
+    if ([kaihuhang.titleLabel.text isEqualToString:@"选择银行"]) {
+        [ITTPromptView showMessage:@"请选择银行"];
+    }
+    if ([jine.text isEqualToString:@""]) {
+        [ITTPromptView showMessage:@"请输入金额"];
+    }
+    if ([kahao.text isEqualToString:@""]) {
+        [ITTPromptView showMessage:@"请输入卡号"];
+    }
+    if ([chikaren.text isEqualToString:@""]) {
+        [ITTPromptView showMessage:@"请输入持卡人姓名"];
+    }
     
     
     NSLog(@"btn标题 %@",_bankBtn.titleLabel.text);
-    if (_bankNumTF.text.length ==19||_bankNumTF.text.length == 16 ) {
-        [self postData];
-
-    } else {
-        NSLog(@"kakakaa %ld",_bankNumTF.text.length);
-
-        [ITTPromptView showMessage:@"您输入的银行卡号有误"];
+    if (kahao.text.length !=19||kahao.text.length != 16 ) {
+        [ITTPromptView showMessage:@"输入卡号有误"];
     }
+    
+    
+    //支付框
+    ZSDPaymentView *payment = [[ZSDPaymentView alloc]init];
+    
+    __weak typeof (self)weakSelf = self;
+    
+    payment.getText =  ^int(NSString *textInput){
+        
+        NSLog(@"密码%@",textInput);
+        weakSelf.miMa = textInput;
+        //提现
+        [weakSelf postData];
+        
+        //代表成功
+        return 1;
+    };
+    payment.title = @"请输入支付密码";
+    payment.goodsName = @"余额提现";
+    payment.amount = [jine.text floatValue];
+    [payment show];
 }
-//请求数据
+#pragma mark 请求提现
 -(void)postData{
     
-
-    [params setObject:_account.userid forKey:@"user_id"];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:_account.userid forKey:@"userid"];
+    [parm setObject:_account.token forKey:@"token"];
+    [parm setObject:jine forKey:@"jine"];
+    [parm setObject:chikaren forKey:@"chikaren"];
+    [parm setObject:kahao forKey:@"kahao"];
+    [parm setObject:kaihuhang forKey:@"kaihuhang"];
+    [parm setObject:self.miMa forKey:@"zhifumima"];
     
-    if (_bankBtn.titleLabel.text == nil) {
-        [params setObject:_bankArr[0] forKey:@"bank_name"];
-    }else {
-    [params setObject:_bankBtn.titleLabel.text forKey:@"bank_name"];
-    }
- 
-    NSLog(@"添加银行卡 请求数据%@",params);
-    [NetWork postNoParm:POST_ADD_BANKCARD params:params success:^(id responseObj) {
-       
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-            [self.navigationController popViewControllerAnimated:YES];
+    
+    [NetWork postNoParm:YZX_tixian params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            pop
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
         }
-        [ITTPromptView showMessage:responseObj[@"message"]];
-         NSLog(@"添加银行卡: %@",responseObj);
      } failure:^(NSError *error) {
         
     }];

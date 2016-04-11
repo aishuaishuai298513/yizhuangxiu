@@ -78,11 +78,26 @@ UIAlertViewDelegate
     [self getGZTypeData];
     _titleArr = @[@"*姓名",@"*性别",@"*年龄",@"*工种",@"*户籍",@"现居住地址",@"*工龄",@"学历",@"身份证号码",@"资质证书",@"自我介绍"];
     _sexTypeArr = @[@"男",@"女"];
-    _contentArr = @[_account.username,@"18",[self returnSexType:_account.sex],[self jugeGongZhongType:_account.gztypeid],_account.live_city,_account.address,_account.job_year,_account.education,_account.id_card,@"",_account.user_desc];
+    
+    //_contentArr = @[_account.username,@"18",[self returnSexType:_account.sex],[self jugeGongZhongType:_account.gztypeid],_account.live_city,_account.address,_account.job_year,_account.education,_account.id_card,@"",_account.user_desc];
     _tv.delegate = self;
     _tv.dataSource = self;
+    _tv.separatorStyle = UITableViewCellSeparatorStyleNone;
 //    [self resignTheFirstResponser];
+    
+    [self netWorkUserinfo];
 }
+-(void)netWorkUserinfo
+{
+    ADAccount *account = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:account.userid forKey:@"userid"];
+    [parm setObject:account.token forKey:@"token"];
+    
+    
+}
+
 -(void)createUI{
     _gzTypeArr = [NSMutableArray array];
     _params = [NSMutableDictionary dictionary];
@@ -120,21 +135,21 @@ UIAlertViewDelegate
     
     //初始化上传数据
     
-    [_params setObject:_account.userid forKey:@"user_id"];
-    [_params setObject:_account.username forKey:@"username"];
-    [_params setObject:_account.sex forKey:@"sex"];
-    [_params setObject:_account.tel forKey:@"tel"];
-    [_params setObject:_account.address forKey:@"address"];
-    [_params setObject:_account.gztypeid forKey:@"type"];
-    [_params setObject:_account.live_city forKey:@"live_city"];
-    [_params setObject:_account.job_year forKey:@"job_year"];
-    [_params setObject:_account.education forKey:@"education"];
-    [_params setObject:_account.id_card forKey:@"id_card"];
-    [_params setObject:_account.user_desc forKey:@"user_desc"];
-    [_params setObject:_account.education_image forKey:@"education_image"];
+//    [_params setObject:_account.userid forKey:@"user_id"];
+//    [_params setObject:_account.username forKey:@"username"];
+//    [_params setObject:_account.sex forKey:@"sex"];
+//    [_params setObject:_account.tel forKey:@"tel"];
+//    [_params setObject:_account.address forKey:@"address"];
+//    [_params setObject:_account.gztypeid forKey:@"type"];
+//    [_params setObject:_account.live_city forKey:@"live_city"];
+//    [_params setObject:_account.job_year forKey:@"job_year"];
+//    [_params setObject:_account.education forKey:@"education"];
+//    [_params setObject:_account.id_card forKey:@"id_card"];
+//    [_params setObject:_account.user_desc forKey:@"user_desc"];
+//    [_params setObject:_account.education_image forKey:@"education_image"];
     
     //保存本地
-    _modifyDict =  [ADAccountTool backWitDictionary];
+   // _modifyDict =  [ADAccountTool backWitDictionary];
     
 }
 
@@ -156,8 +171,8 @@ UIAlertViewDelegate
         if (!cell) {
             cell = [PersonaldetailsCell loadPersonaldetailsCell];
         }
-        cell.textfield.text = _contentArr [indexPath.row];
-        cell.nameLabel.text = _titleArr [indexPath.row];
+//        cell.textfield.text = _contentArr [indexPath.row];
+          cell.nameLabel.text = _titleArr [indexPath.row];
         
         //设置文字颜色
         if ([[cell.nameLabel.text substringToIndex:1] isEqualToString:@"*"]) {
