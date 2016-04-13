@@ -13,8 +13,11 @@
 
 //用户
 
-@property (nonatomic, strong) ADAccount *UserAcount;
+//@property (nonatomic, strong) ADAccount *UserAcount;
+//
+//@property (nonatomic, strong) DWOrderModel *OrderModel;
 
-@property (nonatomic, strong) DWOrderModel *OrderModel;
+@property (nonatomic, strong) NSString *orderNum;
+@property (nonatomic, strong) NSString *userId;
 
 @end

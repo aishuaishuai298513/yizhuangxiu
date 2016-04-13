@@ -9,6 +9,8 @@
             <connections>
                 <outlet property="dwFooterView" destination="KXW-iu-v9c" id="jgl-EA-SK7"/>
                 <outlet property="dwHeaderView" destination="scx-hm-gNo" id="ofa-gd-3mo"/>
+                <outlet property="headPicImage" destination="7h2-fk-By2" id="FZd-7S-4gD"/>
+                <outlet property="jiedanLabel" destination="OHK-IB-0II" id="l70-ih-4r6"/>
                 <outlet property="quitBtn" destination="Pcq-QI-hgX" id="xKB-pi-jxU"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -29,30 +31,23 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="162"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dj.png" translatesAutoresizingMaskIntoConstraints="NO" id="7h2-fk-By2">
-                    <rect key="frame" x="118" y="28" width="84" height="84"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="84" id="joO-aR-Ubp"/>
-                        <constraint firstAttribute="width" constant="84" id="pbR-ZJ-pXk"/>
-                    </constraints>
-                </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xing" translatesAutoresizingMaskIntoConstraints="NO" id="XW9-Ew-qRM">
+                <imageView userInteractionEnabled="NO" tag="103" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xing" translatesAutoresizingMaskIntoConstraints="NO" id="XW9-Ew-qRM">
                     <rect key="frame" x="148" y="122" width="25" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="25" id="1yg-cH-hPW"/>
                         <constraint firstAttribute="width" constant="25" id="x2h-bo-LhK"/>
                     </constraints>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xing" translatesAutoresizingMaskIntoConstraints="NO" id="tCH-Nc-DbW">
+                <imageView userInteractionEnabled="NO" tag="104" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xing" translatesAutoresizingMaskIntoConstraints="NO" id="tCH-Nc-DbW">
                     <rect key="frame" x="173" y="122" width="25" height="25"/>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xing" translatesAutoresizingMaskIntoConstraints="NO" id="D2W-TB-i8p">
+                <imageView userInteractionEnabled="NO" tag="105" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xing" translatesAutoresizingMaskIntoConstraints="NO" id="D2W-TB-i8p">
                     <rect key="frame" x="198" y="122" width="25" height="25"/>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xing" translatesAutoresizingMaskIntoConstraints="NO" id="c8O-bZ-v39">
+                <imageView userInteractionEnabled="NO" tag="102" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xing" translatesAutoresizingMaskIntoConstraints="NO" id="c8O-bZ-v39">
                     <rect key="frame" x="123" y="122" width="25" height="25"/>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xing" translatesAutoresizingMaskIntoConstraints="NO" id="hrH-BG-XKM">
+                <imageView userInteractionEnabled="NO" tag="101" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xing" translatesAutoresizingMaskIntoConstraints="NO" id="hrH-BG-XKM">
                     <rect key="frame" x="98" y="122" width="25" height="25"/>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="已接200单" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OHK-IB-0II">
@@ -61,6 +56,13 @@
                     <color key="textColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dj.png" translatesAutoresizingMaskIntoConstraints="NO" id="7h2-fk-By2">
+                    <rect key="frame" x="118" y="28" width="84" height="84"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="84" id="joO-aR-Ubp"/>
+                        <constraint firstAttribute="width" constant="84" id="pbR-ZJ-pXk"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>

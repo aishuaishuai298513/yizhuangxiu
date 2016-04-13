@@ -148,7 +148,7 @@
     
     [NetWork postNoParm:YZX_qiangdan params:parm success:^(id responseObj) {
         
-        NSLog(@"%@",responseObj);
+       // NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             
             //提示抢单成功

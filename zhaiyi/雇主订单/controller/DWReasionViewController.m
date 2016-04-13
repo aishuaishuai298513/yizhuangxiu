@@ -108,14 +108,37 @@
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     [parm setObject:acount.userid forKey:@"userid"];
     [parm setObject:acount.token forKey:@"token"];
-    [parm setObject:self.OrderModel.userid forKey:@"userid2"];
-    [parm setObject:self.OrderModel.ID forKey:@"id"];
+    [parm setObject:self.userId forKey:@"userid2"];
+    [parm setObject:self.orderNum forKey:@"id"];
+    
+    switch (SelectIndex) {
+        case 0:
+            [parm setObject:@"工作态度差" forKey:@"cituiyuanyin"];
+            break;
+        case 1:
+            [parm setObject:@"技术不达标" forKey:@"cituiyuanyin"];
+            break;
+        case 2:
+            [parm setObject:@"消极怠工" forKey:@"cituiyuanyin"];
+            break;
+        case 3:
+            [parm setObject:@"其他" forKey:@"cituiyuanyin"];
+            break;
+            
+        default:
+            break;
+    }
+    [parm setObject:textV.text forKey:@"content"];
     
     [NetWork postNoParm:YZX_citui params:parm success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
-            pop
+            
+            NSArray *array = self.navigationController.childViewControllers ;
+            
+            UIViewController *Controller = array[2];
+            [self.navigationController popToViewController:Controller animated:YES];
         }
         
     } failure:^(NSError *error) {

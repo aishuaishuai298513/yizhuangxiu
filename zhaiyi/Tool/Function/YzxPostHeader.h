@@ -93,5 +93,23 @@
 #define YZX_jiaoyijilu @"/api/index/jiaoyijilu"
 //切换身份
 #define YZX_qiehuan @"/api/index/qiehuanshenfen"
+//个人资料（工人端
+#define YZX_gerenziliaogr @"/api/index/gerenziliao_gr"
+//个人资料保存（工人端）
+#define YZX_gerenzhiliao_gr_baocun @"/api/index/gerenzhiliao_gr_baocun"
+//订单（工人端）
+#define YZX_dingdan_gr @"/api/index/dingdan"
+
+//
+
+//
+//
+//
+//
+//
+
+//
+
+//
 
 #endif /* Header_h */

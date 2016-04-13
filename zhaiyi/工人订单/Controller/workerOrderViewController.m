@@ -19,9 +19,9 @@
 
 typedef enum
 {
-    getOrder,
-    working,
-    worked
+    getOrder = 1,//以抢单
+    working = 2,//施工中
+    worked = 3 //已竣工
     
     
     
@@ -92,24 +92,25 @@ typedef enum
 - (void)viewDidLoad {
     [super viewDidLoad];
     //左边按钮颜色
-//    self.leftTopLabel.backgroundColor = [UIColor colorWithRed:(69/255.0) green:(203/255.0) blue:(181/255.0) alpha:1.0];
-//    self.leftDownLabel.backgroundColor = [UIColor colorWithRed:(69/255.0) green:(203/255.0) blue:(181/255.0) alpha:1.0];
     UIView *view = [UIView new];
     [self.orderTableView setTableFooterView:view];
     _PageIndex = 1;
-//    [self leftBtnClick:nil];
-    //[self gongRenDingDan];
-    _WorkStatue = working;
-    [self MJRefreshPullRefresh];
-    [self MJRefreshLoadMore];
+   // _WorkStatue = getOrder;
+//    [self MJRefreshPullRefresh];
+//    [self MJRefreshLoadMore];
+    //[self netWorkWorking:getOrder];
     
+    //设置cell的高度自适应
+    self.orderTableView.rowHeight = UITableViewAutomaticDimension;
+    self.orderTableView.estimatedRowHeight =120;
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    [self gongRenDingDan];
+   // [self gongRenDingDan];
     [self leftleftBtnClicked:nil];
+    //[self netWorkWorked];
 }
 
 //下拉刷新
@@ -122,17 +123,17 @@ typedef enum
         if (_WorkStatue == working) {
             
             [weakSelf.WorkingdataSource removeAllObjects];
-            [weakSelf netWorkWorking];
+            //[weakSelf netWorkWorking];
         }
         if (_WorkStatue == worked)
         {
             [weakSelf.WorkedDataSource removeAllObjects];
-            [weakSelf netWorkWorked];
+            //[weakSelf netWorkWorked];
         }
         if (_WorkStatue == getOrder) {
             //需要修改
             [weakSelf.WorkingdataSource removeAllObjects];
-            [weakSelf netWorkWorking];
+            //[weakSelf netWorkWorking];
         }
         
     }];
@@ -146,14 +147,14 @@ typedef enum
         _PageIndex++;
 
         if (_WorkStatue == working) {
-            [weakSelf netWorkWorking];
+            //[weakSelf netWorkWorking];
         }
         else if(_WorkStatue == worked){
-            [weakSelf netWorkWorked];
+            //[weakSelf netWorkWorked];
         }else
         {
             //待修改
-            [weakSelf netWorkWorking];
+           // [weakSelf netWorkWorking];
         }
     }];
 }
@@ -168,23 +169,12 @@ typedef enum
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    //施工中
-    if (_WorkStatue == working) {
-        return self.WorkingdataSource.count;
-    }
-    
-    //已竣工
-    else if(_WorkStatue == worked)
-    {
-        return  self.WorkedDataSource.count;
-    }else
-    {
-        //待调整
-      return self.WorkingdataSource.count;
-    }
+    return self.WorkingdataSource.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    
     //施工中
     if (_WorkStatue == working) {
      
@@ -204,15 +194,17 @@ typedef enum
     else if(_WorkStatue == worked)
     {
         static NSString *ID = @"access";
-        RightAccessViewCell *access = [tableView dequeueReusableCellWithIdentifier:ID];
+        ADOrderViewCell *access = [tableView dequeueReusableCellWithIdentifier:ID];
 
         if (!access) {
-            access = [RightAccessViewCell rightCell];
+            access = [ADOrderViewCell cell];
         }
         
         if (_WorkedDataSource.count != 0) {
             access.OrderModel = self.WorkedDataSource[indexPath.row];
         }
+        [access setNeedsUpdateConstraints];
+        
         return access;
     }
     else
@@ -232,10 +224,10 @@ typedef enum
     
 }
 #pragma mark---代理方法
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    return 110;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+//    
+//    return 110;
+//}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -288,7 +280,7 @@ typedef enum
     
     //施工中接口
     [self.WorkingdataSource removeAllObjects];
-    [self netWorkWorking];
+    [self netWorkWorking:working];
 //
     [self.orderTableView reloadData];
   }
@@ -319,7 +311,7 @@ typedef enum
     
     //已竣工列表
     [self.WorkedDataSource removeAllObjects];
-    [self netWorkWorked];
+    [self netWorkWorking:worked];
     
 //    [self.orderTableView reloadData];
     
@@ -347,19 +339,16 @@ typedef enum
     self.leftTopLabel.textColor = [UIColor blackColor];
     self.leftDownLabel.textColor = [UIColor blackColor];
     
-    _WorkStatue = working;
-    NSLog(@"%ld",_WorkStatue);
-    
-    
+    _WorkStatue = getOrder;
     //施工中接口
     [self.WorkingdataSource removeAllObjects];
-    [self netWorkWorking];
+    [self netWorkWorking:getOrder];
     //
     [self.orderTableView reloadData];
 }
 
 #pragma 工人抢单列表－施工中
--(void)netWorkWorking
+-(void)netWorkWorking:(WorkStute)workstatue
 {
     
     NSLog(@"工作中");
@@ -367,27 +356,35 @@ typedef enum
     ADAccount *acount = [ADAccountTool account];
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     
-    [parm setObject:acount.userid forKey:@"user_id"];
-    [parm setObject:[NSString stringWithFormat:@"%d",_PageIndex] forKey:@"pageindex"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:[NSString stringWithFormat:@"%d",workstatue] forKey:@"status"];
     
-    [NetWork postNoParm:GrQdlbWorking params:parm success:^(id responseObj) {
-       // NSLog(@"%@",responseObj);
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+    
+    [NetWork postNoParm:YZX_dingdan_gr params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            //已抢单数量
+            self.leftLeftDownLabel.text =[NSString stringWithFormat:@"%@",[[responseObj objectForKey:@"data"] objectForKey:@"yiqiangdan"]];
+            //施工中数量
+            self.leftDownLabel.text = [NSString stringWithFormat:@"%@",[[responseObj objectForKey:@"data"] objectForKey:@"shigongzhong"]];
+            //已竣工数量
+            self.rightdownLabel.text = [NSString stringWithFormat:@"%@",[[responseObj objectForKey:@"data"] objectForKey:@"yijungong"]];
             
             NSMutableArray *array = [NSMutableArray array];
-            array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
-
+            array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[[responseObj objectForKey:@"data"] objectForKey:@"list"]];
             [self.WorkingdataSource addObjectsFromArray:array];
             
             [self.orderTableView reloadData];
             
         }
-        [self MJEndRefresh];
+        //[self MJEndRefresh];
 
     } failure:^(NSError *error) {
         
         NSLog(@"%@",error);
-        [self MJEndRefresh];
+        //[self MJEndRefresh];
         
     }];
 
@@ -397,62 +394,4 @@ typedef enum
     [self.orderTableView.mj_header endRefreshing];
     [self.orderTableView.mj_footer endRefreshing];
 }
-#pragma 工人抢单列表－已竣工
-
--(void)netWorkWorked
-{
-    NSLog(@"竣工");
-    ADAccount *acount = [ADAccountTool account];
-    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    
-    [parm setObject:acount.userid forKey:@"user_id"];
-    [parm setObject:[NSString stringWithFormat:@"%d",_PageIndex] forKey:@"pageindex"];
-    [NetWork postNoParm:GrQdlbWorked params:parm success:^(id responseObj) {
-        
-        NSLog(@"已竣工:  %@",responseObj);
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-            
-            NSMutableArray *array = [NSMutableArray array];
-            
-           
-            array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
-            
-            [self.WorkedDataSource addObjectsFromArray:array];
-            [self.orderTableView reloadData];
-        }
-        [self MJEndRefresh];
-
-    } failure:^(NSError *error) {
-        NSLog(@"%@",error);
-        [self MJEndRefresh];
-
-    }];
-}
-
-
-//工人订单
--(void)gongRenDingDan
-{
-    ADAccount *acount = [ADAccountTool account];
-    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:acount.userid forKey:@"user_id"];
-    [NetWork postNoParm:gongRenDingDanShuLiang params:parm success:^(id responseObj) {
-        
-        // NSLog(@"%@",responseObj);
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-            
-            //模拟以抢单
-            self.leftLeftDownLabel.text =[NSString stringWithFormat:@"%@",[responseObj objectForKey:@"work"]];
-            
-            self.leftDownLabel.text = [NSString stringWithFormat:@"%@",[responseObj objectForKey:@"work"]];
-            
-            self.rightdownLabel.text = [NSString stringWithFormat:@"%@",[responseObj objectForKey:@"finish"]];
-        }
-        
-    } failure:^(NSError *error) {
-        NSLog(@"%@",error);
-    }];
-
-}
-
 @end

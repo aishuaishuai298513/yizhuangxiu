@@ -189,9 +189,6 @@ UITextFieldDelegate
                 //[_params setObject:textField.text forKey:@"tel"];
                 [_modifyDict setObject:textField.text forKey:@"tel"];
 //            }
-            
-            
-            
         }
             break;
         case 3:{

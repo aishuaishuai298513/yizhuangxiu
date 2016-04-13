@@ -23,6 +23,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *zhangDanId;
 
+@property (weak, nonatomic) IBOutlet UIImageView *BaoImage;
 
 - (IBAction)qiangBtn:(id)sender;
 
@@ -78,6 +79,14 @@
     self.zhangDanId.text = _cellModel.ordercode;
     
     [_gongZhong setTitle:_cellModel.gzname forState:UIControlStateNormal];
+    
+    if([_cellModel.baozhengjin intValue]<=0)
+    {
+        self.BaoImage.hidden = YES;
+    }else
+    {
+        self.BaoImage.hidden = NO;
+    }
 
 }
 

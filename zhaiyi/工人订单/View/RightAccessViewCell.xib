@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1713" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
@@ -15,7 +15,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="375" height="119.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="riqi" translatesAutoresizingMaskIntoConstraints="NO" id="Yjl-11-aRm" userLabel="左上角图片">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="保" translatesAutoresizingMaskIntoConstraints="NO" id="Yjl-11-aRm" userLabel="左上角图片">
                         <rect key="frame" x="16" y="13" width="20" height="20"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="20" id="EIa-fV-Pk0"/>
@@ -150,7 +150,7 @@
     <resources>
         <image name="gongzhongkuang" width="50" height="24"/>
         <image name="querenkuang" width="111" height="34"/>
-        <image name="riqi" width="28" height="28"/>
         <image name="touxiang1" width="143" height="143"/>
+        <image name="保" width="32" height="46"/>
     </resources>
 </document>

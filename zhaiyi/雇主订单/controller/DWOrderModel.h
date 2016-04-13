@@ -22,6 +22,7 @@
 @property (nonatomic,copy) NSString *zhuangtai;
 @property (nonatomic,copy) NSString *jiesuanshu;
 @property (nonatomic,copy) NSString *yizhaorenshu;
+
 //雇主端订单详情专用
 @property (nonatomic,copy) NSString *price;
 @property (nonatomic,copy) NSString *gongzuoneirong;
@@ -38,5 +39,7 @@
 @property (nonatomic,copy) NSString *userid;//用户id
 @property (nonatomic,copy) NSString *headpic;//
 @property (nonatomic,copy) NSString *xing;//星级
-
+//工人订单（已抢单）
+@property (nonatomic,copy) NSString *orderid;//订单id
+@property (nonatomic,copy) NSString *shifoucitui;//是否被辞退  37正常工作38已被辞退
 @end

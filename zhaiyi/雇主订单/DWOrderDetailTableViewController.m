@@ -87,19 +87,19 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 
 
 
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.tableHeaderView = self.DWOrderHeaderView;
     [self.navigationItem setTitle:@"订单详情"];
     [self.tableView registerNib:[UINib nibWithNibName:@"DWOrderDetailCell" bundle:nil] forCellReuseIdentifier:@"DWOrderDetailCell"];
     [self configueRightBtn];
-    
-    //查询订单详情
-    [self QiangDanYonghu];
    //[self creatOrderUi];
     
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    //查询订单详情
+    [self QiangDanYonghu];
 }
 
 
