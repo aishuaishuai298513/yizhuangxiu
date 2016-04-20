@@ -11,5 +11,7 @@
 @interface My_pocket_jiaoyijiluDetil_ViewController : UITableViewController
 
 @property (nonatomic, copy) NSString *orderNum;
+// 交易记录些许信息
+@property (nonatomic, strong) NSDictionary *List;
  
 @end

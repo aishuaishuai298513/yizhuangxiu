@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -70,11 +69,22 @@
                         </state>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="我手艺好做事认真细心，才能够使就。。。" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ygX-Oc-IUI">
-                        <rect key="frame" x="16" y="28" width="196" height="29"/>
+                        <rect key="frame" x="16" y="28" width="180" height="29"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hX7-JK-L7Y">
+                        <rect key="frame" x="204" y="44" width="50" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="50" id="6jG-gX-ihI"/>
+                            <constraint firstAttribute="height" constant="20" id="qy7-GX-5Ic"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                        <state key="normal" title="以辞退" backgroundImage="gongzhongkuang">
+                            <color key="titleColor" red="0.33143939389999999" green="0.33143939389999999" blue="0.33143939389999999" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Iay-oB-qZY" firstAttribute="centerY" secondItem="Qeh-iX-Mo7" secondAttribute="centerY" id="6u7-We-W7m"/>
@@ -84,21 +94,24 @@
                     <constraint firstItem="0Ut-QC-XPQ" firstAttribute="height" secondItem="l7E-Tc-ahL" secondAttribute="height" id="CdK-o4-7eK"/>
                     <constraint firstItem="Xoc-vc-oQy" firstAttribute="trailing" secondItem="HXd-pX-Ikk" secondAttribute="trailing" id="D7h-TE-Ev5"/>
                     <constraint firstItem="Qeh-iX-Mo7" firstAttribute="width" secondItem="l7E-Tc-ahL" secondAttribute="width" id="E59-r3-cqH"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="ygX-Oc-IUI" secondAttribute="trailing" constant="100" id="Ifk-Jv-kG7"/>
                     <constraint firstItem="umk-y4-GYR" firstAttribute="width" secondItem="l7E-Tc-ahL" secondAttribute="width" id="LUN-BR-OU8"/>
                     <constraint firstItem="Rwp-0g-iQd" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="PCv-v5-kjk"/>
                     <constraint firstItem="umk-y4-GYR" firstAttribute="centerY" secondItem="0Ut-QC-XPQ" secondAttribute="centerY" id="QoG-2g-KyI"/>
                     <constraint firstItem="Qeh-iX-Mo7" firstAttribute="height" secondItem="l7E-Tc-ahL" secondAttribute="height" id="Qpu-v2-ACf"/>
+                    <constraint firstItem="hX7-JK-L7Y" firstAttribute="height" secondItem="Xoc-vc-oQy" secondAttribute="height" id="RFj-lD-h9u"/>
                     <constraint firstItem="Iay-oB-qZY" firstAttribute="leading" secondItem="Qeh-iX-Mo7" secondAttribute="trailing" constant="8" id="VUy-Lj-hfc"/>
+                    <constraint firstItem="hX7-JK-L7Y" firstAttribute="centerY" secondItem="Xoc-vc-oQy" secondAttribute="centerY" id="VxZ-UW-rNp"/>
                     <constraint firstItem="EUG-xs-MJB" firstAttribute="leading" secondItem="Rwp-0g-iQd" secondAttribute="trailing" constant="15" id="XlZ-wo-a2R"/>
                     <constraint firstItem="l7E-Tc-ahL" firstAttribute="bottom" secondItem="EUG-xs-MJB" secondAttribute="bottom" id="alf-id-Bqe"/>
                     <constraint firstItem="0Ut-QC-XPQ" firstAttribute="centerY" secondItem="Iay-oB-qZY" secondAttribute="centerY" id="b0A-Qj-VN7"/>
                     <constraint firstItem="umk-y4-GYR" firstAttribute="height" secondItem="l7E-Tc-ahL" secondAttribute="height" id="bl4-K0-Iri"/>
+                    <constraint firstItem="hX7-JK-L7Y" firstAttribute="width" secondItem="Xoc-vc-oQy" secondAttribute="width" id="cVW-dG-cS6"/>
                     <constraint firstItem="0Ut-QC-XPQ" firstAttribute="leading" secondItem="Iay-oB-qZY" secondAttribute="trailing" constant="8" id="egC-Lo-vdh"/>
                     <constraint firstItem="Iay-oB-qZY" firstAttribute="height" secondItem="l7E-Tc-ahL" secondAttribute="height" id="fRK-o4-gIC"/>
                     <constraint firstAttribute="trailing" secondItem="HXd-pX-Ikk" secondAttribute="trailing" constant="8" id="fcD-81-3Zb"/>
                     <constraint firstItem="umk-y4-GYR" firstAttribute="leading" secondItem="0Ut-QC-XPQ" secondAttribute="trailing" constant="8" id="g4Q-1V-19p"/>
                     <constraint firstItem="umk-y4-GYR" firstAttribute="bottom" secondItem="EUG-xs-MJB" secondAttribute="bottom" id="gK0-kG-hHH"/>
+                    <constraint firstItem="Xoc-vc-oQy" firstAttribute="leading" secondItem="hX7-JK-L7Y" secondAttribute="trailing" constant="8" id="hI1-bz-j2m"/>
                     <constraint firstItem="Iay-oB-qZY" firstAttribute="width" secondItem="l7E-Tc-ahL" secondAttribute="width" id="iKQ-7C-nb9"/>
                     <constraint firstItem="HXd-pX-Ikk" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="icm-dA-6AB"/>
                     <constraint firstItem="Iay-oB-qZY" firstAttribute="bottom" secondItem="EUG-xs-MJB" secondAttribute="bottom" id="jfP-CI-jCG"/>
@@ -110,6 +123,7 @@
                     <constraint firstItem="Qeh-iX-Mo7" firstAttribute="centerY" secondItem="l7E-Tc-ahL" secondAttribute="centerY" id="sVJ-E3-AqW"/>
                     <constraint firstItem="Qeh-iX-Mo7" firstAttribute="bottom" secondItem="EUG-xs-MJB" secondAttribute="bottom" id="sfa-zG-JZv"/>
                     <constraint firstItem="0Ut-QC-XPQ" firstAttribute="width" secondItem="l7E-Tc-ahL" secondAttribute="width" id="wD4-cZ-i3e"/>
+                    <constraint firstItem="hX7-JK-L7Y" firstAttribute="leading" secondItem="ygX-Oc-IUI" secondAttribute="trailing" constant="8" id="yFn-oi-O8n"/>
                     <constraint firstItem="EUG-xs-MJB" firstAttribute="bottom" secondItem="Rwp-0g-iQd" secondAttribute="bottom" id="yOH-aj-YvP"/>
                     <constraint firstItem="EUG-xs-MJB" firstAttribute="centerY" secondItem="Rwp-0g-iQd" secondAttribute="centerY" id="zub-qe-XMs"/>
                 </constraints>
@@ -132,11 +146,13 @@
                 <outlet property="xing3" destination="Iay-oB-qZY" id="dnm-hI-jVB"/>
                 <outlet property="xing4" destination="0Ut-QC-XPQ" id="TGi-RI-7oy"/>
                 <outlet property="xing5" destination="umk-y4-GYR" id="hx4-3T-3bB"/>
+                <outlet property="yiCiTuiBtn" destination="hX7-JK-L7Y" id="ChW-u3-pOX"/>
             </connections>
             <point key="canvasLocation" x="99" y="136"/>
         </tableViewCell>
     </objects>
     <resources>
+        <image name="gongzhongkuang" width="50" height="24"/>
         <image name="xing1.png" width="28" height="26"/>
         <image name="圆角矩形" width="222" height="68"/>
         <image name="订单详情2.png" width="52" height="52"/>

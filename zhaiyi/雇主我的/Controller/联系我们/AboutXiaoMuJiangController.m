@@ -73,9 +73,14 @@ UIWebViewDelegate
 #pragma mark 请求数据
 -(void)postData{
     
-    [NetWork postNoParm:POST_ABOUT_XMJ params:nil success:^(id responseObj) {
-        NSLog(@"%@",responseObj);
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    
+    [NetWork postNoParm:YZX_aboutYZX params:parm success:^(id responseObj) {
+        //NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             _dataDict = [responseObj objectForKey:@"data"];
             [self loadData];
         }
@@ -90,9 +95,7 @@ UIWebViewDelegate
     
     NSLog(@"111 %@",_dataDict);
     
- 
-    
-    NSString *content = [_dataDict objectForKey:@"content"];
+    NSString *content = [_dataDict objectForKey:@"about"];
     
     [_webView loadHTMLString:content baseURL:nil];
 }

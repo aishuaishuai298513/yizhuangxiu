@@ -203,7 +203,7 @@
         title.text=name[indexPath.row-1];
         title.textColor = THEME_COLOR;
         UIImageView * jt=[[UIImageView alloc]initWithFrame:CGRectMake(kU-30, 20, 10, 20)];
-        jt.image=[UIImage imageNamed:@"right.png"];
+        jt.image=[UIImage imageNamed:@"钱包3"];
         [cell1.contentView addSubview:jt];
         
         UIView * view=[[UIView alloc]initWithFrame:CGRectMake(10, 59, kU-10, 1)];

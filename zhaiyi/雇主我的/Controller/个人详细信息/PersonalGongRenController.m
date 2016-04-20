@@ -63,11 +63,21 @@ UIAlertViewDelegate
 
 @property (nonatomic, strong)UserInfoGr *userInfoGr;
 
+@property (nonatomic, strong)NSMutableArray *gongZongDataSource;
+
 //弹出框
 @end
 
 @implementation PersonalGongRenController
 
+//工种
+-(NSMutableArray *)gongZongDataSource
+{
+    if (!_gongZongDataSource) {
+        _gongZongDataSource = [NSMutableArray array];
+    }
+    return _gongZongDataSource;
+}
 
 -(UserInfoGr*)userInfoGr
 {
@@ -123,12 +133,24 @@ UIAlertViewDelegate
             [weakSelf setData];
             
             [_tv reloadData];
+            
+            
+            
         }
     } failure:^(NSError *error) {
         
     }];
     
     
+    //默默的请求工种
+    [NetWork postNoParm:YZX_gongzhongliebiao params:parm success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            self.gongZongDataSource = [responseObj objectForKey:@"data"];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
     
 }
 
@@ -203,6 +225,7 @@ UIAlertViewDelegate
             cell.textfield.enabled = NO;
             cell.textfield.clearButtonMode = UITextFieldViewModeNever;
             if (indexPath.row == 3) {
+                //[ _params setObject:@"" forKey:@""];
                 UIImageView *imageV = [[UIImageView alloc]init];
                 imageV.image = [UIImage imageNamed:@"下拉"];
                 [cell.contentView addSubview:imageV];
@@ -247,7 +270,7 @@ UIAlertViewDelegate
         
         //添加图片按钮
         UIImageView *imgV = [[UIImageView alloc]init];
-        imgV.image = [UIImage imageNamed:@"tianjia"];
+        imgV.image = [UIImage imageNamed:@"加号"];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addPicture:)];
         imgV.userInteractionEnabled = YES;
         [imgV addGestureRecognizer:tap];
@@ -255,7 +278,7 @@ UIAlertViewDelegate
         //布局九宫格
         int lieshu = 3;//列数
         //int hangshu = 3;//行数
-        CGFloat colpan = 10;//间隔
+        CGFloat colpan = 20;//间隔
         int hangNum;//行号
         int lieNum;//列号
         CGFloat ImageWith = (SCREEN_WIDTH-cell2.nameLb.width-colpan*(lieshu+1))/lieshu;
@@ -275,11 +298,13 @@ UIAlertViewDelegate
                     
                     if(i==8)
                     {
-                        imgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, 0);
+                        imgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+(hangNum+1)*(ImageHeigh+colpan), ImageWith, 0);
                     }else
                     {
                     
                     imgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, ImageHeigh);
+                        
+                        
                     [cell2.contentView addSubview:imgV];
                         
                     }
@@ -291,6 +316,11 @@ UIAlertViewDelegate
                 {
                     UIImageView *svImgV = [[UIImageView alloc]init];
                     svImgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, ImageHeigh);
+                    
+                    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(svImgV.x-10, svImgV.y-10, svImgV.width+20, svImgV.height+20)];
+                    view.backgroundColor = [UIColor clearColor];
+                    
+    
 
                     if (i<_webPicArr.count) {
                         
@@ -298,48 +328,63 @@ UIAlertViewDelegate
                       [svImgV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YZX_BASY_URL,_webPicArr[i]]] placeholderImage:nil];
                         
                       [cell2.contentView addSubview:svImgV];
+        
                         
                     }else if(i-_webPicArr.count<_picArr.count&&i>=_webPicArr.count)
                     {
                         
                        svImgV.image = [UIImage imageWithData:[_picArr objectAtIndex:i-_webPicArr.count]];
+                        
                       [cell2.contentView addSubview:svImgV];
                         
                     }
+                
+                    
+                    
+                    //添加删除符号
+                    UIButton *removeButton = [[UIButton alloc]initWithFrame:CGRectMake(view.width-20, 0, 20, 20)];
+                    removeButton.tag = 100+i;
+                    [removeButton addTarget:self action:@selector(removeImage:) forControlEvents:UIControlEventTouchUpInside];
+                    
+                    [removeButton setBackgroundImage:[UIImage imageNamed:@"叉叉-1"] forState:UIControlStateNormal];
+                    [view addSubview:removeButton];
+                    svImgV.userInteractionEnabled = YES;
+                    
+                    [cell2.contentView addSubview:view];
                     
                 }
                 
             }
         } else {
-            for (int i = 0; i<_picArr.count+1; i++) {
-                
-                //行号
-                hangNum = i/lieshu;
-                //列号
-                lieNum = i%lieshu;
-                
-                
-                if (i==_picArr.count) {
-                    
-                    if(i==9)
-                    {
-                    imgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, 0);
-                    }else
-                    {
-                    imgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, ImageWith);
-                    }
-                    [cell2.contentView addSubview:imgV];
-                    imageRowHeigh =imgV.frame.origin.y+imgV.frame.size.height+10;
-                }else
-                {
-                    UIImageView *svImgV = [[UIImageView alloc]init];
-                    svImgV.backgroundColor = [UIColor orangeColor];
-                    svImgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, ImageHeigh);
-                    
-                    svImgV.image = [UIImage imageWithData:[_picArr objectAtIndex:i]];
-                    [cell2.contentView addSubview:svImgV];
-                }
-            }
+//            for (int i = 0; i<_picArr.count+1; i++) {
+//                
+//                //行号
+//                hangNum = i/lieshu;
+//                //列号
+//                lieNum = i%lieshu;
+//                
+//                
+//                if (i==_picArr.count) {
+//                    
+//                    if(i==9)
+//                    {
+//                    imgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, 0);
+//                    }else
+//                    {
+//                    imgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, ImageWith);
+//                    }
+//                    [cell2.contentView addSubview:imgV];
+//                    imageRowHeigh =imgV.frame.origin.y+imgV.frame.size.height+10;
+//                }else
+//                {
+//                    UIImageView *svImgV = [[UIImageView alloc]init];
+//                    svImgV.backgroundColor = [UIColor orangeColor];
+//                    svImgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, ImageHeigh);
+//                    
+//                    svImgV.image = [UIImage imageWithData:[_picArr objectAtIndex:i]];
+//                    [cell2.contentView addSubview:svImgV];
+//                }
+//            }
             
             
         }
@@ -348,6 +393,61 @@ UIAlertViewDelegate
     }
 
  }
+
+#pragma mark 删除图片
+-(void)removeImage:(id)sender
+{
+    UIButton *btn =(UIButton *)sender;
+    int num = (int)btn.tag -100;
+    if(num<_webPicArr.count)
+    {
+        [self removeImageNetWork:num];
+    }else
+    {
+        int num2 = num-(int)_webPicArr.count;
+        [_picArr removeObjectAtIndex:num2];
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:9 inSection:0];
+        NSArray *indexPathArr = @[indexPath];
+        [self.tv reloadRowsAtIndexPaths:indexPathArr withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+    }
+    
+}
+
+#pragma mark 删除图片接口
+-(void)removeImageNetWork:(int)num
+{
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:_webPicArr[num] forKey:@"url"];
+    
+    __weak typeof (self)weakSelf = self;
+    [NetWork postNoParm:YZX_shanchuzizhi params:parm success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            //删除图片
+            NSMutableArray *array = [NSMutableArray array];
+            [array addObjectsFromArray:_webPicArr];
+            [array removeObjectAtIndex:num];
+            _webPicArr = array;
+            
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:9 inSection:0];
+            NSArray *indexPathArr = @[indexPath];
+            [weakSelf.tv reloadRowsAtIndexPaths:indexPathArr withRowAnimation:UITableViewRowAnimationAutomatic];
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+    
+}
+
 #pragma mark 点解完成 修改信息
 -(void)finshInfo
 {
@@ -387,28 +487,56 @@ UIAlertViewDelegate
         case 3:{
             _isSex = NO;
             
-            backView = [Function createBackView:self action:@selector(backClicked)];
-            backView.alpha = 0.8;
-            //_pView.frame = CGRectMake(40, 100, SCREEN_WIDTH - 80, 60);
-            _pView.height = 200;
-            _pickerView.height = _pView.height;
-            [[UIApplication sharedApplication].keyWindow addSubview:_pView];
-            [self.view addSubview:backView];
+            //获得工种
+            [self networkGongZhong];
 
-            
-            _pickerView.dataSource = self;
-            _pickerView.delegate = self;
-            [self.view endEditing:YES];
-
-            [UIView animateWithDuration:1 animations:^{
-                _pView.hidden = NO;
-            }];
-            NSLog(@"选择工作");
-        }
+                }
             break;
         default:
             break;
     }
+}
+
+#pragma mark 请求工种
+-(void)networkGongZhong
+{
+    //获得工种
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    __weak typeof (self)weakSelf = self;
+    [NetWork postNoParm:YZX_gongzhongliebiao params:parm success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            NSLog(@"%@",responseObj);
+            self.gongZongDataSource = [responseObj objectForKey:@"data"];
+            [weakSelf pickViewGongZhong];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+    
+}
+#pragma 工种弹窗
+-(void)pickViewGongZhong
+{
+    backView = [Function createBackView:self action:@selector(backClicked)];
+    backView.alpha = 0.8;
+    //_pView.frame = CGRectMake(40, 100, SCREEN_WIDTH - 80, 60);
+    _pView.height = 200;
+    _pickerView.height = _pView.height;
+    [[UIApplication sharedApplication].keyWindow addSubview:_pView];
+    [self.view addSubview:backView];
+    
+    _pickerView.dataSource = self;
+    _pickerView.delegate = self;
+    [self.view endEditing:YES];
+    
+    [UIView animateWithDuration:1 animations:^{
+        _pView.hidden = NO;
+    }];
+    NSLog(@"选择工作");
+
 }
 
 -(void)backClicked
@@ -588,28 +716,40 @@ UIAlertViewDelegate
     if (_isSex) {
         return _sexTypeArr.count;
     }else{
-        return _gzTypeArr.count;
+        //return _gzTypeArr.count;
+        return self.gongZongDataSource.count;
     }
 }
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
+    
     if (_isSex) {
         return _sexTypeArr[row];
     } else {
-        return _gzTypeArr[row];
+        //return _gzTypeArr[row];
+       // NSLog(@" %@",[self.gongZongDataSource[row] objectForKey:@"gzname"]);
+        return [self.gongZongDataSource[row] objectForKey:@"gzname"];
     }
 }
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
     return 1;
 }
+
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
     NSString *str;
+    NSString *ID;
     UITextField *textFeild;
     if (_isSex) {
         str = [_sexTypeArr objectAtIndex:[pickerView selectedRowInComponent:component]];
         textFeild = [self.tv viewWithTag:372];
     } else {
         textFeild = [self.tv viewWithTag:374];
-        str = [_gzTypeArr objectAtIndex:[pickerView selectedRowInComponent:component]];
+        //str = [_gzTypeArr objectAtIndex:[pickerView selectedRowInComponent:component]];
+        str = [[self.gongZongDataSource objectAtIndex:[pickerView selectedRowInComponent:component]] objectForKey:@"gzname"];
+        
+        ID = [[self.gongZongDataSource objectAtIndex:[pickerView selectedRowInComponent:component]] objectForKey:@"id"];
+        //NSLog(@" %@",ID);
+        [_params setObject:ID forKey:@"gongzhongid"];
+        
     }
     textFeild.text = str;
     
@@ -679,9 +819,18 @@ UIAlertViewDelegate
     
     //工种
     UITextField *gzTypeField = [self.view viewWithTag:374];
-    NSString *gzTypeStr = [self returnGZtype:gzTypeField.text];
-    if (gzTypeStr !=  nil) {
-        [_params setObject:gzTypeStr forKey:@"gongzhongid"];
+//    NSString *gzTypeStr = [self returnGZtype:gzTypeField.text];
+//    if (gzTypeStr !=  nil) {
+//        [_params setObject:gzTypeStr forKey:@"gongzhongid"];
+//    }
+    
+    if (![_params objectForKey:@"gongzhongid"]) {
+        
+        for (int i = 0; i<self.gongZongDataSource.count; i++) {
+            if ([gzTypeField.text isEqualToString:[self.gongZongDataSource[i] objectForKey:@"gzname"]]) {
+                [_params setObject:[self.gongZongDataSource[i] objectForKey:@"id"] forKey:@"gongzhongid"];
+            }
+        }
     }
     
     //户籍
@@ -727,41 +876,6 @@ UIAlertViewDelegate
 -(void)getGZTypeData{
     
     [_gzTypeArr addObjectsFromArray:@[@"木工",@"油工",@"电工",@"瓦工",@"小工"]];
-    
-//  NSMutableDictionary *params = [NSMutableDictionary dictionary];
-//    [params setObject:_account.userid forKey:@"user_id"];
-//    
-//    [NetWork postNoParm:POST_GONGZHONG_LIST params:params success:^(id responseObj) {
-//        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-//            NSArray *arr = [responseObj objectForKey:@"data"];
-////            NSMutableArray *typeArr;
-//            for (NSDictionary *dict in arr) {
-//                [_gzTypeArr addObject:[dict objectForKey:@"typeName"]];
-//            }
-//            if (_gzTypeArr.count == 0) {
-//                [_gzTypeArr addObject:[self jugeGongZhongType:_account.gztypeid]];
-//            }
-//         }
-//    } failure:^(NSError *error) {
-//        NSLog(@"工种获取: %@",error.localizedDescription);
-//    }];
-}
-#pragma mark 工种判断
--(NSString *)jugeGongZhongType:(NSString *)str{
-    
-    if ([str isEqualToString:@"1"]) {
-        return @"泥工";
-    }else if ([str isEqualToString:@"2"]){
-        return @"油工";
-    }else if ([str isEqualToString:@"3"]){
-        return @"水工";
-    }else if ([str isEqualToString:@"4"]){
-        return @"电工";
-    }else if ([str isEqualToString:@"5"]){
-        return @"木工";
-    }else{
-        return @"小工";
-    }
 }
 
 -(NSString *)returnGZtype:(NSString *)str{
@@ -797,9 +911,15 @@ UIAlertViewDelegate
 
 #pragma mark 上传信息
 -(void)postData{
-
+   //[_params setObject:ID forKey:@"gongzhongid"];
+    
+    if (![_params objectForKey:@"gongzhongid"]) {
+        
+        [_params setObject:@"" forKey:@"gongzhongid"];
+    }
+    
     NSMutableArray *keyArr = [[NSMutableArray alloc]init];
-    for (int i = 0; i <_picArr.count+_webPicArr.count; i++) {
+    for (int i = 0; i <_picArr.count; i++) {
         NSString *str = [NSString stringWithFormat:@"pic%d",i+1];
         [keyArr addObject:str];
         
@@ -812,6 +932,7 @@ UIAlertViewDelegate
 //         [_picArr addObject:imageData];
 //    }
     
+    NSLog(@"%ld",_picArr.count);
     
     NSLog(@"上传图片数量: %ld",_picArr.count);
     ADAccount *acount = [ADAccountTool account];

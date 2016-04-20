@@ -362,7 +362,7 @@ UIAlertViewDelegate
             //雇主
         }else{
             picArr=@[@"我的_03.png",@"我的_10.png",@"我的_12.png",@"我的_14.png",@"我的_16",@"我的_19.png"];
-            NSArray * name=@[@"钱       包",@"分       享",@"意见反馈",@"服务电话",@"退        出"];
+            NSArray * name=@[@"钱       包",@"分       享",@"意见反馈",@"客服电话",@"退        出"];
             img.image=[UIImage imageNamed:picArr[indexPath.row-1]];
             title.text=name[indexPath.row-1];
         }

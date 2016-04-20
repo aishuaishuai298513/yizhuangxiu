@@ -109,7 +109,7 @@ static NSString *tel = @"400－876－6263";
     [cell.contentView addSubview:bgView];
     cell.textLabel.font = [UIFont systemFontOfSize:16];
     UIImageView *image = [UIImageView new];
-    image.image = [UIImage imageNamed:@"right1"];
+    image.image = [UIImage imageNamed:@"钱包3"];
     image.frame = CGRectMake(0, 0, 10, 12);
     cell.accessoryView = image;
     
@@ -125,7 +125,7 @@ static NSString *tel = @"400－876－6263";
         //[button setTitle:@"333" forState:UIControlStateNormal];
         [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         button.titleLabel.font = [UIFont systemFontOfSize:16];
-        [button setImage:[UIImage imageNamed:@"right1"] forState:UIControlStateNormal];
+        [button setImage:[UIImage imageNamed:@"钱包3"] forState:UIControlStateNormal];
         [button addTarget:self  action:@selector(tel:) forControlEvents:UIControlEventTouchUpInside];
         button.frame = CGRectMake(0, 0, 135, 12);
        //button.backgroundColor = [UIColor redColor];
@@ -134,7 +134,7 @@ static NSString *tel = @"400－876－6263";
         
     }else {
         
-        cell.textLabel.text = @"关于小木匠";
+        cell.textLabel.text = @"关于亿装修";
         UIView  *lineView = [UIView new];
         lineView.backgroundColor = [UIColor lightGrayColor];
         [cell.contentView addSubview:lineView];

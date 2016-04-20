@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PayInfoModel.h"
+#import "DetialUserInfoM.h"
 
 @interface My_pocket_Controller : UIViewController
 
@@ -30,6 +32,14 @@
 
 
 @property (weak, nonatomic) IBOutlet UIView *moneyView;
+//帐户余额
+@property (weak, nonatomic) IBOutlet UILabel *zhangHuYuE;
+
+//支付页面信息
+@property (nonatomic ,strong)PayInfoModel *payInfoModel;
+
+//工人信息 －主要抢单id
+@property (nonatomic, strong)DetialUserInfoM *detilInfoModel;
 
 
 @end

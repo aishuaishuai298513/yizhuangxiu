@@ -66,7 +66,7 @@
     _pageIndex = 1;
 
     [self.navigationItem setTitle:@"订单"];
-    [self.tableView registerNib:[UINib nibWithNibName:@"DWOrderCell" bundle:nil] forCellReuseIdentifier:@"DWOrderCell"];
+//    [self.tableView registerNib:[UINib nibWithNibName:@"DWOrderCell" bundle:nil] forCellReuseIdentifier:@"DWOrderCell"];
     UITapGestureRecognizer *t1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap1:)];
     [self.view1 addGestureRecognizer:t1];
     
@@ -76,6 +76,12 @@
     UITapGestureRecognizer *t3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap3:)];
     [self.view3 addGestureRecognizer:t3];
     [self singleTap1:self.view1];
+    
+    
+    self.tableView.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
+    
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
     
 }
 
@@ -228,7 +234,15 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
+//    DWOrderCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWOrderCell"];
     DWOrderCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWOrderCell"];
+    if (!cell) {
+        cell = [[[NSBundle mainBundle]loadNibNamed:@"DWOrderCell" owner:nil options:nil]firstObject];
+    }
+   // cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    
+    //施工中
     if (self.type == 2) {
         //[cell.confirmBtn setTitle:@"确认验收" forState:UIControlStateNormal];
         //[cell.confirmBtn addTarget:self action:@selector(queRenZhaoYong:) forControlEvents:UIControlEventTouchUpInside];
@@ -237,28 +251,40 @@
         
         cell.confirmBtn.hidden = NO;
         cell.deleteBtn.hidden = YES;
-        cell.evaluateBtn.hidden = YES;
+        //预计天数
+        cell.yujitianshu.hidden = YES;
 
-    }else if(self.type == 3){
+    }
+    //已竣工
+    else if(self.type == 3){
         cell.confirmBtn.hidden = YES;
         cell.deleteBtn.hidden = NO;
+        
+        //预计天数
+        cell.yujitianshu.hidden = YES;
         //cell.evaluateBtn.hidden = NO;
         
-    }else{
+    }
+    //发布中
+    else{
         cell.confirmBtn.hidden= YES;
         //[cell.confirmBtn setTitle:@"确认招用" forState:UIControlStateNormal];
         //[cell.confirmBtn addTarget:self action:@selector(queRenZhaoYong:) forControlEvents:UIControlEventTouchUpInside];
         cell.confirmBtn.tag = indexPath.row;
         cell.confirmBtn.hidden = NO;
-        cell.deleteBtn.hidden = YES;
-        cell.evaluateBtn.hidden = YES;
+        cell.deleteBtn.hidden = NO;
+        
+        //预计天数
+        cell.yujitianshu.hidden = NO;
+        //结算数
+        cell.jiesuanshuBtn.hidden = YES;
     }
     
     
-    //删除    回调
+//    //删除    回调
     [cell setDeleteBlock:^(UIButton *deleteBtn) {
 
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确定删除订单？" message:nil preferredStyle:1];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确定取消订单？" message:nil preferredStyle:1];
         
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
 
@@ -274,28 +300,25 @@
         [self presentViewController:alert animated:YES completion:nil];
 
     }];
-    
-    //评价
-    [cell setEvaluateBlock:^(UIButton *evaluateBtn) {
-        
-         DWOrderModel *OrderMOdel = self.dataSource[indexPath.row];
-        //
-        EvaluateViewController *vc = [[EvaluateViewController alloc] initWithNibName:@"EvaluateViewController" bundle:nil];
-        vc.OrderModel = OrderMOdel;
-        
-        NSLog(@"%@",vc.OrderModel);
-        
-        [self.navigationController pushViewController:vc animated:YES];
-        
-    }];
+//
+//    //评价
+//    [cell setEvaluateBlock:^(UIButton *evaluateBtn) {
+//        
+//         DWOrderModel *OrderMOdel = self.dataSource[indexPath.row];
+//        //
+//        EvaluateViewController *vc = [[EvaluateViewController alloc] initWithNibName:@"EvaluateViewController" bundle:nil];
+//        vc.OrderModel = OrderMOdel;
+//        
+//        NSLog(@"%@",vc.OrderModel);
+//        
+//        [self.navigationController pushViewController:vc animated:YES];
+//        
+//    }];
     
     
         DWOrderModel *MOdel = self.dataSource[indexPath.row];
-        cell.date.text = MOdel.createtime;
-        cell.Adress.text = MOdel.adr;
-        cell.dingDanhao.text = MOdel.ordercode;
-        cell.yujitianshu.text = [NSString stringWithFormat:@"%@天",MOdel.yuji];
-        cell.gongzhong.text = MOdel.gzname;
+        cell.MOdel =MOdel;
+   // cell.userInteractionEnabled = YES;
 
     
     return cell;
@@ -322,6 +345,23 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"123");
+}
+
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+//{
+//    // 输出点击的view的类名
+//    NSLog(@"%@", NSStringFromClass([touch.view class]));
+//    
+//    // 若为UITableViewCellContentView（即点击了tableViewCell），则不截获Touch事件
+//    if ([NSStringFromClass([touch.view class]) isEqualToString:@"UITableViewCellContentView"]) {
+//        return NO;
+//    }
+//    return  YES;
+//}
+
 
 //删除我的订单
 -(void)shanchuNetWork:(NSIndexPath *)indexpath
@@ -332,17 +372,21 @@
     DWOrderModel *MOdel = self.dataSource[indexpath.row];
     
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:acount.userid forKey:@"user_id"];
-    [parm setObject:MOdel.ID forKey:@"send_id"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:MOdel.ID forKey:@"id"];
     
-    [NetWork postNoParm:guzhushanchuDingdan params:parm success:^(id responseObj) {
+    [NetWork postNoParm:YZX_quxiaodingdan_gz params:parm success:^(id responseObj) {
         NSLog(@"%@",responseObj);
         
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-            [ITTPromptView showMessage:@"删除订单成功"];
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
             
             [self netWork];
             
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
         }
         
     } failure:^(NSError *error) {

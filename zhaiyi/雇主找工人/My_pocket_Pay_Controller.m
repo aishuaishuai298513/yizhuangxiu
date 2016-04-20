@@ -245,7 +245,7 @@ UIAlertViewDelegate
     
     payment.getText =  ^int(NSString *textInput){
         
-        NSLog(@"密码%@",textInput);
+       // NSLog(@"密码%@",textInput);
         weakSelf.miMa = textInput;
         //提现
         [weakSelf netWorkYuEPay];
@@ -287,7 +287,7 @@ UIAlertViewDelegate
 -(void)makePopView
 {
     self.tiShiYuEView =[TiShiYuE loadView];
-    self.tiShiYuEView.frame = CGRectMake(40, SCREEN_WIDTH/2, SCREEN_WIDTH - 80, 200);
+    self.tiShiYuEView.frame = CGRectMake((SCREEN_WIDTH-240)/2, SCREEN_WIDTH/2, 240, 200);
     
     //显示余额等
     self.tiShiYuEView.label1.text = [NSString stringWithFormat:@"当前帐户余额:%@",self.Yue];
@@ -307,12 +307,18 @@ UIAlertViewDelegate
 -(void)tiShiMakeSureBtnClicked
 {
     [self.bg removeFromSuperview];
+    self.bg = nil;
     [self.tiShiYuEView removeFromSuperview];
+    
     
     MainViewController *controller = self.navigationController.childViewControllers[0];
     //[controller ]
+    
+    //[self.navigationController popToRootViewControllerAnimated:YES];
     [self.navigationController popToViewController:controller animated:NO];
-    controller.pushOrder = YES;
+     controller.pushOrder = YES;
+    
+    
     
 }
 //遮盖点击事件

@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DWOrderModel.h"
 
 @interface DWOrderCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UIButton *evaluateBtn;
 @property (weak, nonatomic) IBOutlet UIButton *deleteBtn;
 - (IBAction)deleteBtnActin:(UIButton *)sender;
 - (IBAction)evaluateBtnAction:(UIButton *)sender;
@@ -24,5 +24,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *Adress;
 @property (weak, nonatomic) IBOutlet UILabel *gongzhong;
 @property (weak, nonatomic) IBOutlet UILabel *yujitianshu;
+
+@property (weak, nonatomic) IBOutlet UIButton *biaoZhiImageV;
+
+@property (weak, nonatomic) IBOutlet UIButton *jiesuanshuBtn;
+
+@property (nonatomic, strong) DWOrderModel *MOdel ;
 
 @end

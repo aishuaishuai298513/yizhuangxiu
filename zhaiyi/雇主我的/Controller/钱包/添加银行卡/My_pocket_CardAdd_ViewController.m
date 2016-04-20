@@ -100,7 +100,7 @@ UITextFieldDelegate
     
     [NetWork postNoParmForMap:YZX_tixianyemian params:parm success:^(id responseObj) {
         
-        NSLog(@"%@",responseObj);
+        //NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             self.dataSource  = [responseObj objectForKey:@"data"];
             [self.tableView reloadData];
@@ -361,10 +361,10 @@ UITextFieldDelegate
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     [parm setObject:_account.userid forKey:@"userid"];
     [parm setObject:_account.token forKey:@"token"];
-    [parm setObject:jine forKey:@"jine"];
-    [parm setObject:chikaren forKey:@"chikaren"];
-    [parm setObject:kahao forKey:@"kahao"];
-    [parm setObject:kaihuhang forKey:@"kaihuhang"];
+    [parm setObject:jine.text forKey:@"jine"];
+    [parm setObject:chikaren.text forKey:@"chikaren"];
+    [parm setObject:kahao.text forKey:@"kahao"];
+    [parm setObject:kaihuhang.titleLabel.text forKey:@"kaihuhang"];
     [parm setObject:self.miMa forKey:@"zhifumima"];
     
     

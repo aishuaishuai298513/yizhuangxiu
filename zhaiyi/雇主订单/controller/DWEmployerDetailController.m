@@ -64,6 +64,8 @@
     [self.navigationItem setTitle:@"1111"];
     self.tableView.tableHeaderView = self.dwHeaderView;
     self.tableView.tableFooterView = self.dwFooterView;
+    self.tableView.showsHorizontalScrollIndicator = NO;
+    self.tableView.showsVerticalScrollIndicator = NO;
     //[self.tableView registerNib:[UINib nibWithNibName:@"DWEmployerDetailCell" bundle:nil] forCellReuseIdentifier:@"DWEmployerDetailCell"];
     
     self.quitBtn.layer.cornerRadius = 20;
@@ -130,6 +132,7 @@
 - (void)evaluateList{
     
     DWevaluateListViewController *vc = [[DWevaluateListViewController alloc] initWithNibName:@"DWevaluateListViewController" bundle:nil];
+    vc.userid = self.orderModel.userid;
    // vc.userAcount = self.acount;
    // NSLog(@"%@",vc.userAcount.userid);
     [self.navigationController pushViewController:vc animated:YES];

@@ -11,12 +11,16 @@
 #import "My_jidanshezhi_Controller.h"
 #import "UIImageView+WebCache.h"
 #import "grabOrderResult.h"
+#import "FileOrderResult.h"
+
+#import "jieSuanView.h"
 
 
 @interface DetatilViewController ()
 //
 {
     grabOrderResult *grabOrderV;
+    FileOrderResult *fileOrderV;
     UIView *backView;
 }
 
@@ -49,6 +53,10 @@
 
 @property (nonatomic ,strong) NSString *xingji;//星级
 
+@property (weak, nonatomic) IBOutlet UIButton *baiBianBtn;
+
+
+@property (nonatomic, strong)jieSuanView *jiesuanView;
 
 @end
 
@@ -63,9 +71,48 @@
     self.orderAction.backgroundColor = [UIColor colorWithRed:203.0 / 255.0 green:233.0 / 255.0 blue:243.0 / 255.0 alpha:1];
  
     [self netWorkInfo];
+    [self setBtnInfo];
+    
     self.title = @"详情";
     self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.showsVerticalScrollIndicator = NO;
+}
+
+-(void)setBtnInfo
+{
+    if (self.statue == 1) {
+        
+        [self.baiBianBtn setTitle:@"取消订单" forState:UIControlStateNormal];
+        [self.baiBianBtn addTarget:self action:@selector(quxiaoOrderC) forControlEvents:UIControlEventTouchUpInside];
+        
+    }else if (self.statue == 2)
+    {
+        if ([self.orderModel.status isEqualToString:@"9"]||[self.orderModel.status isEqualToString:@"10"]) {
+            
+            [self.baiBianBtn setTitle:@"实时结算" forState:UIControlStateNormal];
+            [self.baiBianBtn addTarget:self action:@selector(jisuanOrderC) forControlEvents:UIControlEventTouchUpInside];
+
+        }else if([self.orderModel.status isEqualToString:@"11"])
+        {
+            [self.baiBianBtn setTitle:@"待结算" forState:UIControlStateNormal];
+            self.baiBianBtn.userInteractionEnabled = NO;
+            
+        }else if ([self.orderModel.status isEqualToString:@"12"])
+        {
+            [self.baiBianBtn setTitle:@"确认收款" forState:UIControlStateNormal];
+            [self.baiBianBtn addTarget:self action:@selector(queRenShouKuanC) forControlEvents:UIControlEventTouchUpInside];
+        }
+
+    }else if(self.statue == 3)
+    {
+       [self.baiBianBtn setTitle:@"删除订单" forState:UIControlStateNormal];
+        [self.baiBianBtn addTarget:self action:@selector(shanchuOrderC) forControlEvents:UIControlEventTouchUpInside];
+    }else
+    {
+       [self.baiBianBtn setTitle:@"确认" forState:UIControlStateNormal];
+        [self.baiBianBtn addTarget:self action:@selector(netWork) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
 }
 //更新UI
 -(void)netWorkInfo
@@ -80,6 +127,7 @@
     
     __weak typeof(self) weak= self;
     
+    NSLog(@"%@",parm);
     [NetWork postNoParm:YZX_qiangdanxiangqing params:parm success:^(id responseObj) {
         NSLog(@"%@",responseObj);
         if([[responseObj objectForKey:@"result"]isEqualToString:@"1"])
@@ -167,6 +215,18 @@
             
         }else
         {
+            fileOrderV = [FileOrderResult LoadView];
+            fileOrderV.frame = CGRectMake(50, 200, SCREEN_WIDTH -100, SCREEN_WIDTH -100);
+            
+            [fileOrderV YesBtnAddTarget:self action:@selector(makeSureClicked) forControlEvents:UIControlEventTouchUpInside];
+            fileOrderV.info.text = [[responseObj objectForKey:@"data"]objectForKey:@"info"];
+            fileOrderV.info2.text = [[responseObj objectForKey:@"data"]objectForKey:@"info2"];
+            
+            
+            backView = [Function createBackView:self action:@selector(backViewClicked)];
+            [[[UIApplication sharedApplication]keyWindow]addSubview:backView];
+            [[[UIApplication sharedApplication]keyWindow]addSubview:fileOrderV];
+            
             [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
         }
         
@@ -186,21 +246,121 @@
 {
     [backView removeFromSuperview];
     [grabOrderV removeFromSuperview];
+    [fileOrderV removeFromSuperview];
     
-    self.makeSureBtn.userInteractionEnabled = NO;
+    self.baiBianBtn.userInteractionEnabled = NO;
     
 }
 
 
 - (IBAction)orderAction:(id)sender {
     
+}
+
+#pragma mark 取消订单
+-(void)quxiaoOrderC
+{
+    
     if (self.shawdowView != nil) {
         [self.shawdowView removeFromSuperview];
     }
     
-    //抢单
-     [self netWork];
+    ADAccount *acount = [ADAccountTool account];
     
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    //抢单id
+    [parm setObject:self.orderModel.ID forKey:@"id"];
+    
+    [NetWork postNoParm:YZX_quxiaodingdan_gr params:parm success:^(id responseObj) {
+         NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+        pop
+    } failure:^(NSError *error) {
+        [ITTPromptView showMessage:@"网路错误"];
+    }];
+}
+
+#pragma mark 实时结算
+-(void)jisuanOrderC
+{
+    if (self.shawdowView != nil) {
+        [self.shawdowView removeFromSuperview];
+    }
+    
+    _jiesuanView = [jieSuanView LoadView];
+    
+    __weak typeof (self)weakSelf = self;
+    [_jiesuanView jieSuan:self.orderModel jiesuansucess:^(NSDictionary *response) {
+        NSLog(@"%@",response);
+        
+        if ([[response objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[response objectForKey:@"message"]];
+        }
+        pop
+
+        
+    } JieSuanFaluse:^(NSDictionary *response) {
+        
+    }];
+
+    
+}
+
+#pragma mark 确认收款
+-(void)queRenShouKuanC
+{
+    if (self.shawdowView != nil) {
+        [self.shawdowView removeFromSuperview];
+    }
+    // NSLog(@"123");
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    //抢单id
+    [parm setObject:self.orderModel.ID forKey:@"id"];
+    
+    [NetWork postNoParm:YZX_querenshoukuan params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+        pop
+        
+    } failure:^(NSError *error) {
+        [ITTPromptView showMessage:@"网路错误"];
+    }];
+}
+
+
+#pragma mark 删除订单
+-(void)shanchuOrderC
+{
+    if (self.shawdowView != nil) {
+        [self.shawdowView removeFromSuperview];
+    }
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    //抢单id
+    [parm setObject:self.orderModel.ID forKey:@"id"];
+    
+    [NetWork postNoParm:YZX_shanchudingdan_gr params:parm success:^(id responseObj) {
+        // NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+        pop
+    } failure:^(NSError *error) {
+        [ITTPromptView showMessage:@"网路错误"];
+    }];
 }
 
 @end

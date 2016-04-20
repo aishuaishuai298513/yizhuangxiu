@@ -9,6 +9,7 @@
 #import "My_pocket_jiaoyijilu_ViewController.h"
 #import "My_pocket_jiaoyijilu_ViewCell.h"
 #import "My_pocket_jiaoyijiluDetil_ViewController.h"
+#import "TiXianDetailViewController.h"
 #import "TradeRecordModel.h"
 #import "MJRefresh.h"
 
@@ -115,13 +116,20 @@
 {
     
     UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"JiaoyiDetil" bundle:nil];
-    UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"JiaoyiDetil"];
-    NSDictionary *dict = [_dataArr objectAtIndex:indexPath.row];
-    NSLog(@"对应订单详情 %@",dict);
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:dict forKey:@"pocket_tade_detail"];
-    [userDefaults synchronize];
-    [self.navigationController pushViewController:test2obj animated:YES];
+    My_pocket_jiaoyijiluDetil_ViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"JiaoyiDetil"];
+    NSDictionary *dictList = [_dataArr[indexPath.section] objectForKey:@"list"][indexPath.row];
+    test2obj.List = dictList;
+    
+    if ([[dictList objectForKey:@"leixing"]isEqualToString:@"33"]||[[dictList objectForKey:@"leixing"]isEqualToString:@"35"]) {
+        
+       [self.navigationController pushViewController:test2obj animated:YES];
+    }else
+    {
+        TiXianDetailViewController *tixian = [[TiXianDetailViewController alloc]init];
+        tixian.List= dictList;
+        [self.navigationController pushViewController:tixian animated:YES];
+    
+    }
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -152,15 +160,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 #pragma mark 交易记录
 -(void)postData{
 //    _dataArr = nil;
@@ -169,17 +168,11 @@
     [params setObject:_account.token forKey:@"token"];
     NSLog(@"交易记录待上传信息 %@",params);
     [NetWork postNoParm:YZX_jiaoyijilu params:params success:^(id responseObj) {
-        NSLog(@"用户交易 %@",responseObj);
+        //NSLog(@"用户交易 %@",responseObj);
         
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
            _dataArr = [responseObj objectForKey:@"data"];
         }
-//        if ([[responseObj objectForKey:@"message"] isEqualToString:@"暂时没有交易记录"]) {
-//            _noTrade = YES;
-//        }else{
-//            _noTrade = NO;
-//            
-//        }
         [tb.mj_header endRefreshing];
         [tb reloadData];
     } failure:^(NSError *error) {

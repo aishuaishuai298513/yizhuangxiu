@@ -562,6 +562,7 @@ static BOOL canUseNetWork =NO;
     //2.发送网络请求
     [mgr POST:Url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObj) {
     
+
         if (success) {
             success(responseObj);
         }

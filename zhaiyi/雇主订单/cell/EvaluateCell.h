@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "DWOrderModel.h"
-@protocol CellDelete <NSObject>
+@protocol CellXingClicked <NSObject>
 
 @optional
--(void)cellDeleteClicked:(id)Target;
+-(void)cellXingClicked:(int)xingJi row:(int)Row;
 
 @end
 
@@ -19,7 +19,8 @@
 
 @property (nonatomic, strong) ADAccount *UserAcount;
 @property (nonatomic, strong) DWOrderModel *OrderModel;
-@property (nonatomic,weak)id<CellDelete>delegate;
+@property (nonatomic,weak)id<CellXingClicked>delegate;
 
+@property (nonatomic, assign) int row;
 @property (weak, nonatomic) IBOutlet UILabel *zongtifuwu;
 @end

@@ -318,6 +318,13 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     NSString *lon = [NSString stringWithFormat:@"%f",userLocation.location.coordinate.longitude];
     NSString *lat = [NSString stringWithFormat:@"%f",userLocation.location.coordinate.latitude];
     
+    //保存位置
+    [[NSUserDefaults standardUserDefaults]setObject:lat forKey:@"gongchengdidianlat"];
+    [[NSUserDefaults standardUserDefaults]setObject:lon forKey:@"gongchengdidianlng"];
+    
+    [self searchReGeocodeWithCoordinate:coord2D];
+    
+    
     NSLog(@"%@",lon);
     NSLog(@"%@",lat);
     
@@ -413,9 +420,6 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     randomPoint.x = arc4random() % (int)(CGRectGetWidth(self.view.bounds));
     randomPoint.y = arc4random() % (int)(CGRectGetHeight(self.view.bounds));
     
-//    NSLog(@"%f",randomPoint.x);
-//    NSLog(@"%f",randomPoint.y);
-    
     return randomPoint;
 }
 
@@ -464,13 +468,8 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 #pragma mark 导航栏
 -(void)updateNav
 {
-//    UILabel * lab = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 200, 20)];
-//    lab.backgroundColor = [UIColor redColor];
-//    lab.text = @"小木匠";
-//    lab.textColor = [UIColor blueColor];
-//    lab.font = [UIFont fontWithName:@"Arial-BoldItalicMT" size:16];
-//    lab.textAlignment = NSTextAlignmentCenter;
-//    self.navigationItem.titleView = lab;
+
+    
     UIImageView *imageV = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 20, 30)];
     imageV.image = [UIImage imageNamed:@"亿装修@2x"];
 //    
@@ -572,11 +571,6 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     
     AMapTip *tip = self.tips[indexPath.row];
     
-//    if (tip.location == nil)
-//    {
-//        cell.imageView.image = [UIImage imageNamed:@"search"];
-//    }
-    
     cell.textLabel.text = tip.name;
     cell.detailTextLabel.text = tip.district;
     
@@ -601,15 +595,6 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 
 - (void)clearAndShowAnnotationWithTip:(AMapTip *)tip
 {
-    
-//    [[NSUserDefaults standardUserDefaults]setObject:@"78" forKey:@"shenfentype"];
-//    
-//    [[NSUserDefaults standardUserDefaults]setObject:@"79" forKey:@"shenfentype"];
-//    
-//    
-//    [[[NSUserDefaults standardUserDefaults]objectForKey:@"shenfentype"]isEqualToString:@"78"];
-//    [[[NSUserDefaults standardUserDefaults]objectForKey:@"shenfentype"]isEqualToString:@"79"];
-    
     
     /* 清除annotations & overlays */
     [self clear];
@@ -673,17 +658,20 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
         
         self.reGeocode = response.regeocode;
         self.coordinate = coordinate;
-        self.titles = [NSString stringWithFormat:@"%@%@%@%@",
+        self.titles = [NSString stringWithFormat:@"%@%@%@%@%@",
                       self.reGeocode.addressComponent.province?: @"",
                       self.reGeocode.addressComponent.city ?: @"",
                       self.reGeocode.addressComponent.district?: @"",
-                      self.reGeocode.addressComponent.township?: @""];
+                      self.reGeocode.addressComponent.township?: @"",
+                      self.reGeocode.addressComponent.building?: @""];
         self.subtitle = [NSString stringWithFormat:@"%@%@",
                          self.reGeocode.addressComponent.neighborhood?: @"",
                          self.reGeocode.addressComponent.building?: @""];
         
         NSLog(@"%@",self.titles);
-        NSLog(@"%@",self.subtitle);
+        
+        [[NSUserDefaults standardUserDefaults]setObject:self.titles forKey:@"position"];
+        //NSLog(@"%@",self.subtitle);
         
         
     }
@@ -793,9 +781,12 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 -(void)setPushOrder:(BOOL)pushOrder
 {
     _pushOrder = pushOrder;
-    if (pushOrder) {
-        [self theOrder:nil];
-    }
+//    if (pushOrder) {
+//        [self theOrder:nil];
+//    }
+    
+    DWOrderViewController *dwOrderVc = [[DWOrderViewController alloc] initWithNibName:@"DWOrderViewController" bundle:nil];
+    [self.navigationController pushViewController:dwOrderVc animated:YES];
 }
 #pragma mark 我的
 - (IBAction)myList:(UIButton *)sender {

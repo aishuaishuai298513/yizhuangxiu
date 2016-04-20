@@ -26,6 +26,7 @@
 //找工人
 #import "employersLookingViewController.h"
 
+#import "PayInfoModel.h"
 //标志按钮状态
 typedef NS_ENUM(NSUInteger, CellBtnState) {
     PAY,//支付
@@ -62,6 +63,10 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 @property (strong, nonatomic) UIButton *rightButton;
 
 @property (nonatomic ,strong) NSMutableArray *UsersdataSource;
+//支付信息模型
+@property (nonatomic, strong) PayInfoModel *payInfoModel;
+//工人列表信息
+@property (nonatomic, strong) DetialUserInfoM *infoM;
 
 //底部弹出透明View
 @property (nonatomic, strong) UIView *bg;
@@ -85,14 +90,14 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     return _UsersdataSource;
 }
 
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.tableHeaderView = self.DWOrderHeaderView;
     [self.navigationItem setTitle:@"订单详情"];
     [self.tableView registerNib:[UINib nibWithNibName:@"DWOrderDetailCell" bundle:nil] forCellReuseIdentifier:@"DWOrderDetailCell"];
     [self configueRightBtn];
+    
+    self.tableView.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
    //[self creatOrderUi];
     
 }
@@ -189,57 +194,89 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     DetialUserInfoM *userInfoM = self.UsersdataSource[indexPath.row];
     DWOrderDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWOrderDetailCell"];
     
-    //已竣工
-    if (self.type == 3) {
-        
-        [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
-        [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
-    //发布中
-    }else if (self.type == 1){
-        if ([userInfoM.status isEqualToString:@"8"]) {
-            
-            [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
-            [cell.cellBtn addTarget:self action:@selector(ciTui:) forControlEvents:UIControlEventTouchUpInside];
-        }
-
-    }else if(self.type == 2){
-        //施工中
-       // cell.cellBtn.hidden = YES;
-        
-        switch ([userInfoM.status intValue]) {
-            //工作中
-            case 9:
-                [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
-                [cell.cellBtn addTarget:self action:@selector(ciTui:) forControlEvents:UIControlEventTouchUpInside];
-                break;
-                //已辞退
-            case 10:
-                [cell.cellBtn setTitle:@"已辞退" forState:UIControlStateNormal];
-                cell.cellBtn.userInteractionEnabled = NO;
-                break;
-                //带结算
-            case 11:
-                
-                self.btnState = PAY;
-                [cell.cellBtn setTitle:@"去支付" forState:UIControlStateNormal];
-                [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-                [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
-                [cell.cellBtn addTarget:self action:@selector(goPay:) forControlEvents:UIControlEventTouchUpInside];
-                break;
-                //已结算
-            case 12:
-                
-                [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
-                [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-                [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
-                break;
-                
-            default:
-                break;
-        }
-        
+    cell.yiCiTuiBtn.hidden = YES;
+    cell.userInteractionEnabled = YES;
+//    //已竣工
+//    if (self.type == 3) {
+//        
+//        [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+//        [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+//        [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
+//    //发布中
+//    }else if (self.type == 1){
+//        if ([userInfoM.status isEqualToString:@"8"]) {
+//            
+//            [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
+//            [cell.cellBtn addTarget:self action:@selector(ciTui:) forControlEvents:UIControlEventTouchUpInside];
+//        }
+//
+//    }else if(self.type == 2){
+//        
+//    }
+    //37正常工作38已被辞退
+    if([userInfoM.shifoucitui isEqualToString:@"38"])
+    {
+        cell.yiCiTuiBtn.hidden = NO;
     }
+    
+    switch ([userInfoM.status intValue]) {
+            //工作中
+        case 9:
+            [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
+            //[cell.cellBtn addTarget:self action:@selector(ciTui:) forControlEvents:UIControlEventTouchUpInside];
+            cell.cellBtn.userInteractionEnabled = NO;
+            break;
+        case 8:
+            [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
+            //[cell.cellBtn addTarget:self action:@selector(ciTui:) forControlEvents:UIControlEventTouchUpInside];
+            cell.cellBtn.userInteractionEnabled = NO;
+            break;
+            //已辞退
+            //已辞退
+        case 10:
+            [cell.cellBtn setTitle:@"已辞退" forState:UIControlStateNormal];
+            cell.cellBtn.userInteractionEnabled = NO;
+            break;
+            //带结算
+        case 11:
+            
+            self.btnState = PAY;
+
+            [cell.cellBtn setTitle:@"去支付" forState:UIControlStateNormal];
+            [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+            [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
+            [cell.cellBtn addTarget:self action:@selector(goPay:) forControlEvents:UIControlEventTouchUpInside];
+            break;
+            //已结算
+        case 12:
+            
+            [cell.cellBtn removeTarget:self action:@selector(goPay:) forControlEvents:UIControlEventTouchUpInside];
+            [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+            [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+            cell.cellBtn.tag = 100+indexPath.row;
+            [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
+            break;
+            
+        case 13:
+            
+            [cell.cellBtn removeTarget:self action:@selector(goPay:) forControlEvents:UIControlEventTouchUpInside];
+            [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+            [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+            cell.cellBtn.tag = 100+indexPath.row;
+            [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
+            break;
+            
+        case 39:
+            
+            cell.cellBtn.userInteractionEnabled = NO;
+            [cell.cellBtn setTitle:@"已删除" forState:UIControlStateNormal];
+            [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+            break;
+            
+        default:
+            break;
+    }
+
     
     cell.cellBtn.tag = 100+indexPath.row;
     cell.typelb.text = userInfoM.gzname;
@@ -271,24 +308,58 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 -(void)goPay:(id)sender
 {
     //支付
-        
-        NSLog(@"123");
-        self.BackView = [Function createBackView:self action:@selector(BackViewClicked)];
-        
-        self.certificatePayView = [CertificatePayView loadView];
-        //添加点击事件
-        [self.certificatePayView addTargetWithCancleBtnClicked:self action:@selector(CertificateCnclebtnClicked) forControlEvents:UIControlEventTouchUpInside];
-        [self.certificatePayView addTargetWithMakeSureBtnClicked:self action:@selector(CertificateMakeSureClicked) forControlEvents:UIControlEventTouchUpInside];
-        
-        [[UIApplication sharedApplication].keyWindow addSubview:self.BackView];
-        [[UIApplication sharedApplication].keyWindow addSubview:self.certificatePayView];
-        
-        //设置大小
-        [self.certificatePayView autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [self.certificatePayView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        [self.certificatePayView autoSetDimension:ALDimensionWidth toSize:300];
-        [self.certificatePayView autoSetDimension:ALDimensionHeight toSize:300];
     
+    UIButton *btn = (UIButton *)sender;
+    int row = (int)btn.tag-100;
+    _infoM = self.UsersdataSource[row];
+    
+    
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:_infoM.ID forKey:@"id"];
+    
+    __weak typeof (self)weakSelf = self;
+    [NetWork postNoParm:YZX_zhifugongzipage params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            weakSelf.payInfoModel = [PayInfoModel mj_objectWithKeyValues:[responseObj objectForKey:@"data"]];
+            
+//            NSLog(@"%@",[responseObj objectForKey:@"data"]);
+//            NSLog(@"%@",self.payInfoModel.gzname);
+            
+            [weakSelf popZhiFukuang:weakSelf.payInfoModel];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
+#pragma mark 弹出支付框
+-(void)popZhiFukuang:(PayInfoModel *)payInfoModel
+{
+    
+    NSLog(@"%@",payInfoModel.gzname);
+    NSLog(@"123");
+    self.BackView = [Function createBackView:self action:@selector(BackViewClicked)];
+    
+    self.certificatePayView = [CertificatePayView loadView];
+    //添加点击事件  拒绝支付
+    [self.certificatePayView addTargetWithCancleBtnClicked:self action:@selector(CertificateCnclebtnClicked) forControlEvents:UIControlEventTouchUpInside];
+    //确定 去支付
+    [self.certificatePayView addTargetWithMakeSureBtnClicked:self action:@selector(CertificateMakeSureClicked) forControlEvents:UIControlEventTouchUpInside];
+    self.certificatePayView.payinfoModel = payInfoModel;
+    
+    [[UIApplication sharedApplication].keyWindow addSubview:self.BackView];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.certificatePayView];
+    
+    //设置大小
+    [self.certificatePayView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [self.certificatePayView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [self.certificatePayView autoSetDimension:ALDimensionWidth toSize:300];
+    [self.certificatePayView autoSetDimension:ALDimensionHeight toSize:300];
 }
 
 #pragma mark 遮盖背景置灰
@@ -300,14 +371,38 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 #pragma mark 支付凭证取消按钮点击事件
 -(void)CertificateCnclebtnClicked
 {
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:_infoM.ID forKey:@"id"];
+    
+    __weak typeof (self)weakSelf = self;
+    [NetWork postNoParm:YZX_jujuezhifu params:parm success:^(id responseObj) {
+        //NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            [weakSelf.navigationController popViewControllerAnimated:YES];
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+    
     [self BackViewClicked];
 
 }
-#pragma mark 支付凭证确认点击事件
+#pragma mark 支付凭证确认点击事件 去支付
 -(void)CertificateMakeSureClicked
 {
     [self BackViewClicked];
+    
     My_pocket_Controller *zhifu = [[My_pocket_Controller alloc]init];
+    zhifu.payInfoModel = self.payInfoModel;
+    zhifu.detilInfoModel = _infoM;
+    
     [self.navigationController pushViewController:zhifu animated:YES];
     
 }
@@ -326,7 +421,12 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 #pragma mark 评价
 -(void)evaluate:(id)sender
 {
+    UIButton *btn = (UIButton *)sender;
+    
+    DetialUserInfoM *userInfoM = self.UsersdataSource[btn.tag-100];
+
     EvaluateViewController *evaluate = [[EvaluateViewController alloc]init];
+    evaluate.UserInfoM = userInfoM;
     [self.navigationController pushViewController:evaluate animated:YES];
 
 }
@@ -445,68 +545,6 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 
 }
 
-#pragma mark  是否可以确认y
--(void)ifQueRenYanShou
-{
-    
-    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:self.OrderModel.ID  forKey:@"send_id"];
-    [NetWork postNoParm:IfQueRenZhaoYong params:parm success:^(id responseObj) {
-        
-        NSLog(@"%@",responseObj);
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-            [self queRenYanShou];
-        }else
-        {
-            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
-        }
-        
-    } failure:^(NSError *error) {
-        
-    }];
-
-}
-
-#pragma mark 确认验收
--(void)queRenYanShou
-{
-    
-    ADAccount *acount = [ADAccountTool account];
-    
-    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:acount.userid forKey:@"user_id"];
-    [parm setObject:self.OrderModel.ID forKey:@"order_id"];
-    
-    //评价
-    DWConfirmCheckViewController *vc = [[DWConfirmCheckViewController alloc] initWithNibName:@"DWConfirmCheckViewController" bundle:nil];
-    vc.UserDataSource = self.UsersdataSource;
-    vc.Ordermodel = self.OrderModel;
-    vc.TypeFrom = 1;
-    //[self.navigationController pushViewController:vc animated:YES];
-    
-    __weak  typeof(self) WeakSelf = self;
-    
-    [NetWork postNoParm:guzhuyanShou params:parm success:^(id responseObj) {
-        
-                NSLog(@"%@",responseObj);
-        
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-            
-            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
-            // 确认验收
-            
-            [WeakSelf.navigationController pushViewController:vc animated:YES];
-            
-        }else
-        {
-//            [WeakSelf.navigationController pushViewController:vc animated:YES];
-//            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
-        }
-    } failure:^(NSError *error) {
-        //NSLog(@"%@",error);
-    }];
-    
-}
 
 #pragma mark 继续发布订单
 -(void)continueFaBu

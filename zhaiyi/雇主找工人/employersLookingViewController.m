@@ -106,6 +106,9 @@
 
 @property (strong, nonatomic) UIView *shadowView;
 
+//遮盖
+@property (strong, nonatomic) UIView *backView;
+
 //
 @property (strong, nonatomic) NSMutableDictionary *params;
 //帐号信息
@@ -158,7 +161,11 @@
     _isInsure = 30;
     _params = [NSMutableDictionary dictionary];
     _shadowView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kU, Ga)];
-    _GongChengDiDian.text =[[NSUserDefaults standardUserDefaults]objectForKey:@"placemark"];
+    //_GongChengDiDian.text =[[NSUserDefaults standardUserDefaults]objectForKey:@"placemark"];
+    
+    _GongChengDiDian.text =[[NSUserDefaults standardUserDefaults]objectForKey:@"position"];
+    
+//    [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%@%@",tip.district,tip.name] forKey:@"position"];
     
     self.ScrrolView.userInteractionEnabled = YES;
     
@@ -289,6 +296,11 @@
 #pragma mark 填写完毕发布按钮
 - (IBAction)commintAction:(id)sender {
     
+    //添加遮盖
+    self.backView = [Function createBackView:self action:@selector(backClicked)];
+    self.backView.frame = CGRectMake(0, 0, SCREEN_WIDTH, 1000);
+    [self.ScrrolView insertSubview:self.backView belowSubview:self.sureView];
+    
     if (self.diLiBianMa) {
         
         [[NSUserDefaults standardUserDefaults]setObject:nil forKey:@"gongchengdidianlat"];
@@ -381,7 +393,7 @@
         [parm setObject:[[NSUserDefaults standardUserDefaults]objectForKey:@"gongchengdidianlng"] forKey:@"lng"];
     }
     
-    
+    NSLog(@"%@",parm);
     //提交订单
     __weak typeof (self)weakSelf = self;
     [NetWork postNoParm:YZX_tijiaodingdan params:parm success:^(id responseObj) {
@@ -445,7 +457,15 @@
 - (IBAction)TopBack:(id)sender {
     
     _sureView.hidden = YES;
+    [self.backView removeFromSuperview];
     
+}
+#pragma mark遮盖
+-(void)backClicked
+{
+    [self TopBack:nil];
+    [self.backView removeFromSuperview];
+
 }
 
 - (void)TopQueDing:(id)sender {

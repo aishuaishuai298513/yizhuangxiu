@@ -51,6 +51,8 @@ UIAlertViewDelegate
 //支付方式
 @property (nonatomic,assign)Paytype paytype;
 
+
+
 @end
 
 @implementation My_pocket_Controller
@@ -64,22 +66,30 @@ UIAlertViewDelegate
     
 }
 
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 //初始化数据
 -(void)initalData{
+    
+    self.zhangHuYuE.text = [NSString stringWithFormat:@"当前帐户余额%@元",_payInfoModel.yue];
+    self.moneyTF.text = _payInfoModel.gongji;
+    self.moneyTF.enabled = NO;
+    
     _account = [ADAccountTool account];
     self.title = @"支付";
     _moneyTF.delegate = self;
     _moneyTF.keyboardType = UIKeyboardTypeNumberPad;
     _parames = [[NSMutableDictionary alloc]init];
-    NSUserDefaults *userDefualts = [NSUserDefaults standardUserDefaults];
-    NSDictionary *dict = [userDefualts objectForKey:@"enter_user_info"];
-    NSLog(@"信息: %@",dict);
-    [_parames setObject:[dict objectForKey:@"nickname"]forKey:@"nickname"];
-    [_parames setObject:[dict objectForKey:@"userid"]forKey:@"user_id"];
+    //NSUserDefaults *userDefualts = [NSUserDefaults standardUserDefaults];
+    //NSDictionary *dict = [userDefualts objectForKey:@"enter_user_info"];
+//    NSLog(@"信息: %@",dict);
+//    [_parames setObject:[dict objectForKey:@"nickname"]forKey:@"nickname"];
+//    [_parames setObject:[dict objectForKey:@"userid"]forKey:@"user_id"];
 
    // NSLog(@"信息222: %@ ",_parames);
     _payResultDict = [[NSDictionary alloc]init];
@@ -180,18 +190,18 @@ UIAlertViewDelegate
         //
         if(self.paytype == YUEPAY)
         {
-            
+            __weak typeof (self)weakSelf = self;
             ZSDPaymentView *payment = [[ZSDPaymentView alloc]init];
             payment.getText =  ^int(NSString *textInput){
                 
-                NSLog(@"密码%@",textInput);
+                [weakSelf yuEpay:textInput];
     
                 return 1;
             };
             
             payment.title = @"输入密码";
             //payment.goodsName = @"商品名称";
-            payment.amount = 20.00f;
+            payment.amount = [self.payInfoModel.gongji floatValue];
             [payment show];
             
             return;
@@ -245,6 +255,38 @@ UIAlertViewDelegate
             NSLog(@"订单生成失败: %@",error.localizedDescription);
         }];
 }
+
+
+-(void)yuEpay:(NSString *)mima
+{
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.detilInfoModel.ID forKey:@"id"];
+    [parm setObject:self.moneyTF.text forKey:@"money"];
+    [parm setObject:mima forKey:@"zhifumima"];
+    
+    __weak typeof(self)weakSelf = self;
+    
+    [NetWork postNoParm:YZX_zhifugongzi_yue params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            
+            [weakSelf.navigationController popViewControllerAnimated:YES];
+        }else
+        {
+          [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
+
 //支付宝
 -(void)alipay{
     Order *order = [[Order alloc]init];

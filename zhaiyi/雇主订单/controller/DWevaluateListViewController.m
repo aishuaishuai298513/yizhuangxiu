@@ -30,6 +30,8 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"DWEvaluateListCell" bundle:nil] forCellReuseIdentifier:@"DWEvaluateListCell"];
     [self.navigationItem setTitle:@"评价列表"];
     [self netWork];
+    
+    self.tableView.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
 }
 
 #pragma mark - Table view data source
@@ -44,6 +46,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     DWEvaluateListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWEvaluateListCell" forIndexPath:indexPath];
     cell.dataSource = self.dataSource[indexPath.row];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }
@@ -56,21 +59,26 @@
 -(void)netWork
 {
     
-//    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-//    [parm setObject:self.userAcount.ID forKey:@"user_id"];
-//    
-//    [NetWork postNoParm:pingjiaLieBiao params:parm success:^(id responseObj) {
-//        NSLog(@"%@",responseObj);
-//        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-//            
-//            self.dataSource = [responseObj objectForKey:@"data"];
-//            [self.tableView reloadData];
-//        }
-//        
-//        //self.dataSource = [responseObj objectForKey:@"data"];
-//        
-//    } failure:^(NSError *error) {
-//        NSLog(@"");
-//    }];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    
+    ADAccount *acount  = [ADAccountTool account];
+    
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.userid forKey:@"userid2"];
+    
+    [NetWork postNoParm:YZX_pingjialiebiao_gr params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            self.dataSource = [responseObj objectForKey:@"data"];
+            [self.tableView reloadData];
+        }
+        
+        //self.dataSource = [responseObj objectForKey:@"data"];
+        
+    } failure:^(NSError *error) {
+        NSLog(@"");
+    }];
 }
 @end

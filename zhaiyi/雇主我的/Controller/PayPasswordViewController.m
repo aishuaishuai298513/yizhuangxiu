@@ -15,6 +15,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *getCodeBtn;
 
+@property (weak, nonatomic) IBOutlet UIView *YzmView;
 
 @property (nonatomic, strong)ADAccount *account;
 
@@ -37,8 +38,46 @@
     self.maekSurebtn.layer.cornerRadius = 20;
     self.maekSurebtn.clipsToBounds = YES;
     
+    [self notofictionKeyBoard];
+    
 }
 
+-(void)notofictionKeyBoard
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:)name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:)name:UIKeyboardWillHideNotification object:nil];
+    
+}
+//键盘弹出
+- (void)keyboardWasShown:(NSNotification*)aNotification
+
+{
+    //键盘高度
+    CGRect keyBoardFrame = [[[aNotification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    NSNumber *duration = [[aNotification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    
+    if(SCREEN_HEIGHT - (self.YzmView.height+self.YzmView.y)<=keyBoardFrame.size.height)
+    {
+        [UIView animateWithDuration:[duration doubleValue] animations:^{
+            CGFloat h = SCREEN_HEIGHT-keyBoardFrame.size.height-self.YzmView.height;
+            self.view.y = -(self.YzmView.height+self.YzmView.y-keyBoardFrame.origin.y);
+        }];
+    }
+}
+
+//键盘隐藏
+-(void)keyboardWillBeHidden:(NSNotification*)aNotification
+
+{
+    
+    NSNumber *duration = [[aNotification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    
+    [UIView animateWithDuration:[duration doubleValue] animations:^{
+        self.view.y =0;
+    }];
+    
+}
 
 - (IBAction)getCode:(id)sender {
     
@@ -117,5 +156,10 @@
         self.headerLabel.text = @"请修改您的支付密码";
         self.title = @"修改支付密码";
     }
+}
+
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [self.view endEditing:YES];
 }
 @end

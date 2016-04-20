@@ -12,6 +12,17 @@
 @interface My_pocket_jiaoyijiluDetil_ViewController ()
 {
     NSDictionary *detailDict;
+    UILabel *zhanghu;
+    UILabel *zhanhuNameL;
+    
+    UILabel *goodsLb;
+    UILabel *statusLb;
+    UILabel *createtimeLb;
+    UILabel *jiaoyifangshi;
+    UILabel *jiaoyidanhao;
+
+    UILabel *dingdanhao;
+    UILabel *dingdanhaoNeirong ;
 }
 @end
 
@@ -21,17 +32,12 @@
     [super viewDidLoad];
 
     [self setExtraCellLineHidden:self.tableView];
+    [self getPostData];
+    self.title = @"交易详情";
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    
-    NSLog(@"交易详情号 %@",_orderNum);
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    detailDict = [userDefaults objectForKey:@"pocket_tade_detail"];
-    
-    NSLog(@"交易详情号 %@",detailDict);
-    
 }
 
 
@@ -60,18 +66,46 @@
     NSString * cellID;
     if (indexPath.row==0) {
         cellID=@"cell1";
+        
     }else
     {
         cellID=@"cell2";
     }
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
-    UILabel *moneyLb = [cell viewWithTag:410];
-    UILabel *goodsLb = [cell viewWithTag:411];
-    UILabel *statusLb = [cell viewWithTag:412];
-    UILabel *createtimeLb = [cell viewWithTag:413];
-    UILabel *updatetimeLb = [cell viewWithTag:414];
-    UILabel *bankNameLb = [cell viewWithTag:415];
-    UILabel *orderNumLb = [cell viewWithTag:416];
+    //金额
+
+    if (indexPath.row==0) {
+       zhanghu = [cell viewWithTag:410];
+        //充值账户 or 对方账户
+    zhanhuNameL = [cell viewWithTag:418];
+        
+    }else
+    {
+        goodsLb = [cell viewWithTag:411];
+        statusLb = [cell viewWithTag:412];
+        createtimeLb = [cell viewWithTag:413];
+        jiaoyifangshi = [cell viewWithTag:414];
+        jiaoyidanhao = [cell viewWithTag:415];
+        //订单号
+       dingdanhao = [cell viewWithTag:419];
+        //订单内容
+        dingdanhaoNeirong = [cell viewWithTag:416];
+    }
+    
+     //支付
+    if ([[self.List objectForKey:@"leixing"]isEqualToString:@"33"]) {
+        zhanhuNameL.text = @"对方账户";
+    }
+    //充值
+    if ([[self.List objectForKey:@"leixing"]isEqualToString:@"35"])
+    {
+        zhanhuNameL.text = @"充值账户";
+        dingdanhao.hidden = YES;
+        dingdanhaoNeirong.hidden = YES;
+        
+    }
+    
 
     NSString *status = [NSString stringWithFormat:@"%@",[detailDict objectForKey:@"status"]];
     if ([status isEqualToString:@"107"]) {
@@ -100,13 +134,40 @@
         return 50;
     }else
     {
-        return 250;
+        return 200;
     }
 }
 
 
 
 -(void)getPostData{
+    
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm  = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:[self.List objectForKey:@"id" ]forKey:@"id"];
+    
+    NSLog(@"%@",[self.List objectForKey:@"id" ]);
+    
+    [NetWork postNoParm:YZX_jiaoyijiluxiangqing params:parm success:^(id responseObj) {
+        
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            zhanghu.text = [[responseObj objectForKey:@"data"] objectForKey:@"chongzhizhanghu"];
+            goodsLb.text = [[responseObj objectForKey:@"data"] objectForKey:@"money"];
+            statusLb.text = [[responseObj objectForKey:@"data"] objectForKey:@"status"];
+            createtimeLb.text = [[responseObj objectForKey:@"data"] objectForKey:@"createtime"];
+            jiaoyifangshi.text = [[responseObj objectForKey:@"data"] objectForKey:@"jiaoyifangshi"];
+            jiaoyidanhao.text = [[responseObj objectForKey:@"data"] objectForKey:@"jiaoyidanhao"];
+            dingdanhaoNeirong.text = [[responseObj objectForKey:@"data"] objectForKey:@"ordercode"];
+            
+        }
+    } failure:^(NSError *error) {
+        
+    }];
     
     
     

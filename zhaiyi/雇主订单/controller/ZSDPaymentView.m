@@ -14,6 +14,8 @@
 @interface ZSDPaymentView ()
 {
     CGFloat keyboardHeight;
+    UIWindow *keyWindow;
+    UITapGestureRecognizer *keyWindowClickedtap;
 }
 
 @property (nonatomic,strong) ZSDPaymentForm *paymentForm;
@@ -153,11 +155,11 @@
 
 -(void)show
 {
-    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+    keyWindow = [UIApplication sharedApplication].keyWindow;
     [keyWindow addSubview:self];
     
     //添加手势
-    UITapGestureRecognizer *keyWindowClickedtap =[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(keyWindowClicked)];
+    keyWindowClickedtap =[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(keyWindowClicked)];
     [keyWindow addGestureRecognizer:keyWindowClickedtap];
     
     self.translatesAutoresizingMaskIntoConstraints = NO;
@@ -184,6 +186,7 @@
 -(void)keyWindowClicked
 {
     [self dismiss];
+    
 }
 
 -(void)dismiss
@@ -195,6 +198,7 @@
         if(finished)
         {
             [self removeFromSuperview];
+            [keyWindow removeGestureRecognizer:keyWindowClickedtap];
         }
     }];
 }

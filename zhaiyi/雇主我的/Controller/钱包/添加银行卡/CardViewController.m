@@ -34,6 +34,7 @@
     [self netWork];
 }
 
+//抢单
 -(void)netWork
 {
     ADAccount *acount = [ADAccountTool account];

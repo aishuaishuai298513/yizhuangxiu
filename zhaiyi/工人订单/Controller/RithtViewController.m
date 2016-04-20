@@ -39,9 +39,26 @@
     self.title = @"详情";
     ADAccount *acount = [ADAccountTool account];
 
-    [self.icon sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://zhaiyi.bjqttd.com%@",acount.picture]]];
+   // [self.icon sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://zhaiyi.bjqttd.com%@",acount.picture]]];
     
     [self configueRightBarItem];
+    
+    [self netWorkInfo];
+}
+
+-(void)netWorkInfo
+{
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.Ordermodel.ID forKey:@"id"];
+    
+    [NetWork postNoParm:YZX_qiangdanxiangqing params:parm success:^(id responseObj) {
+        
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 - (void)configueRightBarItem{
@@ -82,45 +99,45 @@
             cell = [ADDetailViewCell cell];
         }
         switch (indexPath.row) {
-//            case 0:
-//                cell.leftLabel.text = @"工程地点";
-//                cell.midLabel.text = _Ordermodel.address;
-//                cell.rightLable.text = @"";
-//                break;
-//            case 1:
-//                cell.leftLabel.text = @"工作内容";
-//                cell.midLabel.text = _Ordermodel.txt;
-//                cell.rightLable.text = @"";
-//                break;
-//            case 2:
-//                cell.leftLabel.text = @"需求人数";
-//                cell.midLabel.text = [NSString stringWithFormat:@"%@人",_Ordermodel.num];
-//                cell.rightLable.text = @"";
-//                break;
-//            case 4:
-//                cell.leftLabel.text = @"价格";
-//                cell.midLabel.text = [NSString stringWithFormat:@"%d",[_Ordermodel.money intValue]];
-//                cell.midLabel.textColor = [UIColor redColor];
-//                cell.rightLable.text = @"元/天";
-//                break;
-//            case 5:
-//                cell.leftLabel.text = @"联系人";
-//                cell.midLabel.text = _Ordermodel.name;
-//                cell.rightLable.text = @"";
-//                break;
-//            case 6:
-//                cell.leftLabel.text = @"订单号";
-//                cell.midLabel.text = _Ordermodel.ddh;
-//                cell.rightLable.text = @"";
-//                break;
-//            case 7:
-//                cell.leftLabel.text = @"备注";
-//                cell.midLabel.text = _Ordermodel.txt1;
-//                cell.rightLable.text = @"";
-//                break;
-//                
-//            default:
-//                break;
+            case 0:
+                cell.leftLabel.text = @"工程地点";
+               // cell.midLabel.text = _Ordermodel.address;
+                cell.rightLable.text = @"";
+                break;
+            case 1:
+                cell.leftLabel.text = @"工作内容";
+               // cell.midLabel.text = _Ordermodel.txt;
+                cell.rightLable.text = @"";
+                break;
+            case 2:
+                cell.leftLabel.text = @"需求人数";
+                //cell.midLabel.text = [NSString stringWithFormat:@"%@人",_Ordermodel.num];
+                cell.rightLable.text = @"";
+                break;
+            case 4:
+                cell.leftLabel.text = @"价格";
+                //cell.midLabel.text = [NSString stringWithFormat:@"%d",[_Ordermodel.money intValue]];
+                cell.midLabel.textColor = [UIColor redColor];
+                cell.rightLable.text = @"元/天";
+                break;
+            case 5:
+                cell.leftLabel.text = @"联系人";
+                //cell.midLabel.text = _Ordermodel.name;
+                cell.rightLable.text = @"";
+                break;
+            case 6:
+                cell.leftLabel.text = @"订单号";
+                //cell.midLabel.text = _Ordermodel.ddh;
+                cell.rightLable.text = @"";
+                break;
+            case 7:
+                cell.leftLabel.text = @"备注";
+                //cell.midLabel.text = _Ordermodel.txt1;
+                cell.rightLable.text = @"";
+                break;
+                
+            default:
+                break;
         }
         return cell;
     }

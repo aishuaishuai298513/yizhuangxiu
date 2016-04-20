@@ -25,7 +25,7 @@
     EvaluateViewController *vc = [[EvaluateViewController alloc] initWithNibName:@"EvaluateViewController" bundle:nil];
     vc.TypeFrom = 1;
     vc.UserDataSource = self.UserDataSource;
-    vc.OrderModel = self.Ordermodel;
+   // vc.OrderModel = self.Ordermodel;
 
     [self.navigationController pushViewController:vc animated:YES];
 }

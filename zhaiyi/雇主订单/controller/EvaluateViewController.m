@@ -11,7 +11,7 @@
 #import "MJExtension.h"
 #import "PureLayout.h"
 
-@interface EvaluateViewController ()<CellDelete>
+@interface EvaluateViewController ()<CellXingClicked>
 {
     //姓名 工种  头像
     UILabel *namelabel;
@@ -19,6 +19,14 @@
     UIImageView *headImageV;
 }
 @property (nonatomic, weak) UIButton *rightBtn;
+
+@property (nonatomic, assign)int xingji;
+
+//
+@property (nonatomic ,strong)NSString *gongZuoTaiDu;
+@property (nonatomic ,strong)NSString *gongZuoNengLi;
+@property (nonatomic ,strong)NSString *gongZuoXiaoLv;
+@property (nonatomic ,strong)NSString *tuanDuiHeZuo;
 @end
 
 @implementation EvaluateViewController
@@ -53,18 +61,18 @@
     UIView *HeaderbackV  = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
     //添加姓名label
     namelabel = [[UILabel alloc]initForAutoLayout];
-    namelabel.text = @"邓君";
+    namelabel.text = self.UserInfoM.name;
     namelabel.textColor = [UIColor redColor];
     namelabel.font = [UIFont systemFontOfSize:15];
     //添加工种label
     typeWorkLabel = [[UILabel alloc]initForAutoLayout];
-    typeWorkLabel.text =@"木工";
+    typeWorkLabel.text =self.UserInfoM.gzname;
     typeWorkLabel.textColor = [UIColor redColor];
     typeWorkLabel.font = [UIFont systemFontOfSize:14];
+    
     //添加头像
     headImageV = [[UIImageView alloc]initForAutoLayout];
-    headImageV.image = [UIImage imageNamed:@"订单详情2"];
-    
+    [headImageV sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YZX_BASY_URL,self.UserInfoM.headpic]]];
     
     [HeaderbackV addSubview:namelabel];
     [HeaderbackV addSubview:typeWorkLabel];
@@ -93,10 +101,14 @@
     
     UIButton *makeSureBtn = [[UIButton alloc]initForAutoLayout];
     [makeSureBtn setTitle:@"确定" forState:UIControlStateNormal];
+    
+    [makeSureBtn addTarget:self action:@selector(pingjia) forControlEvents:UIControlEventTouchUpInside];
+    
     [makeSureBtn setBackgroundColor:THEME_COLOR];
     makeSureBtn.layer.cornerRadius = 20;
     makeSureBtn.clipsToBounds = YES;
     [FooterView addSubview:makeSureBtn];
+
     
     //约束
     [makeSureBtn autoAlignAxis:ALAxisHorizontal toSameAxisOfView:FooterView];
@@ -106,48 +118,7 @@
     
     return FooterView;
 }
-//- (void)configueRightBarItem{
-//    UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80, 26)];
-//    self.rightBtn = rightBtn;
-//    [rightBtn setTitle:@"一键好评" forState:UIControlStateNormal];
-//    [rightBtn addTarget:self action:@selector(goodEvaluate) forControlEvents:UIControlEventTouchUpInside];
-//    [rightBtn setBackgroundImage:[UIImage imageNamed:@"订单详情1.png"] forState:UIControlStateNormal];
-//    UIBarButtonItem *barBtnItem = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
-//    self.navigationItem.rightBarButtonItem = barBtnItem;
-//}
 
-
-////一键好评
-//- (void)goodEvaluate{
-//
-//    ADAccount *acount = [ADAccountTool account];
-//    
-//    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-//    [parm setObject:acount.userid forKey:@"user_id"];
-//    [parm setObject:self.OrderModel.ID forKey:@"send_id"];
-//    [parm setObject:@"5" forKey:@"degree"];
-//    [parm setObject:self.OrderModel.ddh forKey:@"order_number"];
-//    [parm setObject:@"好好好" forKey:@"content"];
-//    
-//   // NSLog(@"%@",yiJianPingjia);
-//    [NetWork postNoParm:yiJianPingjia params:parm success:^(id responseObj) {
-//        
-//        NSLog(@"%@",responseObj);
-//        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-//            [ITTPromptView showMessage:@"评价成功"];
-//        }
-//        
-//    } failure:^(NSError *error) {
-//        NSLog(@"%@",error);
-//    }];
-//    
-//    
-//    [self.rightBtn setBackgroundImage:[UIImage imageNamed:@"一键好评.png"] forState:UIControlStateNormal];
-//    self.rightBtn.userInteractionEnabled = NO;
-//    
-//    
-//    
-//}
 
 
 #pragma mark - Table view data source
@@ -161,7 +132,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     EvaluateCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EvaluateCell" forIndexPath:indexPath];
-    
+    cell.row = (int)indexPath.row;
     cell.delegate =self;
     cell.zongtifuwu.text = self.UserDataSource[indexPath.row];
     
@@ -171,44 +142,64 @@
     return cell;
 }
 
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     return 60;
 }
 
-//评价工人列表
-//-(void)netWork
-//{
-//
-//    [self.UserDataSource removeAllObjects];
-//    ADAccount *acount = [ADAccountTool account];
-//    
-//    NSMutableDictionary *parm = [NSMutableDictionary  dictionary];
-//    
-//    [parm setObject:acount.userid forKey:@"user_id"];
-//    [parm setObject:self.OrderModel.ID forKey:@"send_id"];
-//    // NSLog(@"%@",parm);
-//    
-//    // NSLog(@"%@",self.OrderModel.ID );
-//    [NetWork postNoParm:yijungongGongRenLb params:parm success:^(id responseObj) {
-//        
-//       // NSLog(@"%@",responseObj);
-//        self.UserDataSource = [ADAccount mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
-//       // NSLog(@"%ld",self.UserDataSource.count);
-//        
-//        [self.tableView reloadData];
-//        
-//    } failure:^(NSError *error) {
-//        
-//    }];
-//}
+#pragma mark 评价
+-(void)pingjia
+{
+    ADAccount *account = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:self.UserInfoM.userid forKey:@"userid2"];
+    [parm setObject:account.userid forKey:@"userid"];
+    [parm setObject:account.token forKey:@"token"];
+    [parm setObject:self.gongZuoTaiDu forKey:@"gongzuotaidu"];
+    [parm setObject:self.gongZuoNengLi forKey:@"gongzuonengli"];
+    [parm setObject:self.gongZuoXiaoLv forKey:@"gongzuoxiaolv"];
+    [parm setObject:self.tuanDuiHeZuo forKey:@"tuanduihezuo"];
+    
+    [NetWork postNoParm:YZX_pingjiagongren params:parm success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            pop
+            
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+    
+}
+
+#pragma mark Delegate
+-(void)cellXingClicked:(int)xingJi row:(int)Row
+{
+    if (Row == 0) {
+        self.gongZuoTaiDu = [NSString stringWithFormat:@"%d",_xingji];
+    }else if (Row == 1)
+    {
+        self.gongZuoNengLi = [NSString stringWithFormat:@"%d",_xingji];
+    }else if (Row == 2)
+    {
+        self.gongZuoXiaoLv = [NSString stringWithFormat:@"%d",_xingji];
+    }else if (Row == 3)
+    {
+        self.tuanDuiHeZuo = [NSString stringWithFormat:@"%d",_xingji];
+    }
+}
+
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     NSLog(@"123");
     [self.view endEditing:YES];
 }
-
 //添加手势
 -(void)AddTap
 {
@@ -223,33 +214,4 @@
     [self.view endEditing:YES];
 }
 
-#pragma mark cellDelegte  删除
- -(void)cellDeleteClicked:(id)Target
-{
-//   NSIndexPath *indexPath = [self.tableView indexPathForCell:Target];
-//   // NSLog(@"%d",indexPath.row);
-//    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-//    
-//    ADAccount *acount = self.UserDataSource[indexPath.row];
-//   [parm setObject:acount.pinjia_id forKey:@"assess_id"];
-//    
-//    NSLog(@"%@",parm);
-//    
-//    [NetWork postNoParm:shanchuPingjia params:parm success:^(id responseObj) {
-//        NSLog(@"%@",responseObj);
-//        
-//        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
-//            
-//            [ITTPromptView showMessage:@"删除成功"];
-//            [self netWork];
-//            
-//        }else
-//        {
-//            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
-//        }
-//        
-//    } failure:^(NSError *error) {
-//        NSLog(@" ");
-//    }];
-}
 @end

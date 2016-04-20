@@ -17,4 +17,10 @@
 @property (nonatomic, strong) DWOrderModel *Model;
 @property (nonatomic, strong) NSString *orderId;
 
+//父页面传值过来
+@property (nonatomic, strong) DWOrderModel *orderModel;
+
+//1 已抢单  2.施工中  3.已竣工
+@property (nonatomic, assign) int statue;;
+
 @end

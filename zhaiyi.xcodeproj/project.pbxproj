@@ -24,8 +24,6 @@
 		04B5B1501C11FFDA00B4B5F3 /* My_Login_UserInfo_Cell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04B5B14E1C11FFDA00B4B5F3 /* My_Login_UserInfo_Cell.xib */; };
 		04B5B1561C120F4900B4B5F3 /* My_pocket_index_ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B5B1541C120F4900B4B5F3 /* My_pocket_index_ViewController.m */; };
 		04B5B1571C120F4900B4B5F3 /* My_pocket_index_ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04B5B1551C120F4900B4B5F3 /* My_pocket_index_ViewController.xib */; };
-		04E4A8AB1C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A8971C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.m */; };
-		04E4A8AC1C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04E4A8981C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.xib */; };
 		04E4A8AD1C1529BF0069E4F4 /* JiaoyiDetil.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04E4A89A1C1529BF0069E4F4 /* JiaoyiDetil.storyboard */; };
 		04E4A8AE1C1529BF0069E4F4 /* My_pocket_jiaoyijiluDetil_ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A89C1C1529BF0069E4F4 /* My_pocket_jiaoyijiluDetil_ViewController.m */; };
 		04E4A8AF1C1529BF0069E4F4 /* My_pocket_tixian_ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A89F1C1529BF0069E4F4 /* My_pocket_tixian_ViewController.m */; };
@@ -142,9 +140,18 @@
 		0AE771FF1C887E00008B277D /* MyAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AE771FE1C887E00008B277D /* MyAnnotationView.m */; };
 		0AE772011C887E32008B277D /* MyAnnotationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AE772001C887E32008B277D /* MyAnnotationView.xib */; };
 		0AE99F801CABE06E0029EA7A /* MyMoney.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AE99F7F1CABE06E0029EA7A /* MyMoney.m */; };
+		0AEB1E011CC63CFA00FCE281 /* FileOrderResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AEB1DFF1CC63CFA00FCE281 /* FileOrderResult.m */; };
+		0AEB1E021CC63CFA00FCE281 /* FileOrderResult.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AEB1E001CC63CFA00FCE281 /* FileOrderResult.xib */; };
 		0AEEFA741C5B054900881A32 /* 引导页_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AEEFA711C5B054900881A32 /* 引导页_1.png */; };
 		0AEEFA751C5B054900881A32 /* 引导页_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AEEFA721C5B054900881A32 /* 引导页_2.png */; };
 		0AEEFA761C5B054900881A32 /* 引导页_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AEEFA731C5B054900881A32 /* 引导页_3.png */; };
+		0AF1167B1CBF615000FB9813 /* jieSuanView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF1167A1CBF615000FB9813 /* jieSuanView.m */; };
+		0AF1167D1CBF617300FB9813 /* jieSuanView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AF1167C1CBF617300FB9813 /* jieSuanView.xib */; };
+		0AF116811CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF1167F1CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.m */; };
+		0AF116821CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AF116801CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.xib */; };
+		0AF1168F1CC0ED4100FB9813 /* TiXianDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF1168D1CC0ED4100FB9813 /* TiXianDetailViewController.m */; };
+		0AF116901CC0ED4100FB9813 /* TiXianDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AF1168E1CC0ED4100FB9813 /* TiXianDetailViewController.xib */; };
+		0AF116951CC22AFF00FB9813 /* PayInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF116941CC22AFF00FB9813 /* PayInfoModel.m */; };
 		0AF55EA81CACFCAA00C9F2A0 /* BaoZhengJinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF55EA71CACFCAA00C9F2A0 /* BaoZhengJinViewController.m */; };
 		0AF5762D1CAA256A008340CB /* ReGeocodeAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF5762C1CAA256A008340CB /* ReGeocodeAnnotation.m */; };
 		0AF576301CAA2975008340CB /* MANaviAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF5762F1CAA2975008340CB /* MANaviAnnotationView.m */; };
@@ -432,9 +439,6 @@
 		04B5B1531C120F4900B4B5F3 /* My_pocket_index_ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = My_pocket_index_ViewController.h; sourceTree = "<group>"; };
 		04B5B1541C120F4900B4B5F3 /* My_pocket_index_ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = My_pocket_index_ViewController.m; sourceTree = "<group>"; };
 		04B5B1551C120F4900B4B5F3 /* My_pocket_index_ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = My_pocket_index_ViewController.xib; sourceTree = "<group>"; };
-		04E4A8961C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = My_pocket_jiaoyijilu_ViewController.h; sourceTree = "<group>"; };
-		04E4A8971C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = My_pocket_jiaoyijilu_ViewController.m; sourceTree = "<group>"; };
-		04E4A8981C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = My_pocket_jiaoyijilu_ViewController.xib; sourceTree = "<group>"; };
 		04E4A89A1C1529BF0069E4F4 /* JiaoyiDetil.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = JiaoyiDetil.storyboard; sourceTree = "<group>"; };
 		04E4A89B1C1529BF0069E4F4 /* My_pocket_jiaoyijiluDetil_ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = My_pocket_jiaoyijiluDetil_ViewController.h; sourceTree = "<group>"; };
 		04E4A89C1C1529BF0069E4F4 /* My_pocket_jiaoyijiluDetil_ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = My_pocket_jiaoyijiluDetil_ViewController.m; sourceTree = "<group>"; };
@@ -630,9 +634,23 @@
 		0AE772001C887E32008B277D /* MyAnnotationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyAnnotationView.xib; sourceTree = "<group>"; };
 		0AE99F7E1CABE06E0029EA7A /* MyMoney.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyMoney.h; sourceTree = "<group>"; };
 		0AE99F7F1CABE06E0029EA7A /* MyMoney.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyMoney.m; sourceTree = "<group>"; };
+		0AEB1DFE1CC63CFA00FCE281 /* FileOrderResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOrderResult.h; sourceTree = "<group>"; };
+		0AEB1DFF1CC63CFA00FCE281 /* FileOrderResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileOrderResult.m; sourceTree = "<group>"; };
+		0AEB1E001CC63CFA00FCE281 /* FileOrderResult.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FileOrderResult.xib; sourceTree = "<group>"; };
 		0AEEFA711C5B054900881A32 /* 引导页_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "引导页_1.png"; sourceTree = "<group>"; };
 		0AEEFA721C5B054900881A32 /* 引导页_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "引导页_2.png"; sourceTree = "<group>"; };
 		0AEEFA731C5B054900881A32 /* 引导页_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "引导页_3.png"; sourceTree = "<group>"; };
+		0AF116791CBF615000FB9813 /* jieSuanView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jieSuanView.h; sourceTree = "<group>"; };
+		0AF1167A1CBF615000FB9813 /* jieSuanView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = jieSuanView.m; sourceTree = "<group>"; };
+		0AF1167C1CBF617300FB9813 /* jieSuanView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = jieSuanView.xib; sourceTree = "<group>"; };
+		0AF1167F1CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = My_pocket_jiaoyijilu_ViewController.m; sourceTree = "<group>"; };
+		0AF116801CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = My_pocket_jiaoyijilu_ViewController.xib; sourceTree = "<group>"; };
+		0AF116841CC0EA7700FB9813 /* My_pocket_jiaoyijilu_ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = My_pocket_jiaoyijilu_ViewController.h; sourceTree = "<group>"; };
+		0AF1168C1CC0ED4100FB9813 /* TiXianDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TiXianDetailViewController.h; sourceTree = "<group>"; };
+		0AF1168D1CC0ED4100FB9813 /* TiXianDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TiXianDetailViewController.m; sourceTree = "<group>"; };
+		0AF1168E1CC0ED4100FB9813 /* TiXianDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TiXianDetailViewController.xib; sourceTree = "<group>"; };
+		0AF116931CC22AFF00FB9813 /* PayInfoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PayInfoModel.h; sourceTree = "<group>"; };
+		0AF116941CC22AFF00FB9813 /* PayInfoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PayInfoModel.m; sourceTree = "<group>"; };
 		0AF55EA61CACFCAA00C9F2A0 /* BaoZhengJinViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaoZhengJinViewController.h; sourceTree = "<group>"; };
 		0AF55EA71CACFCAA00C9F2A0 /* BaoZhengJinViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaoZhengJinViewController.m; sourceTree = "<group>"; };
 		0AF5762B1CAA256A008340CB /* ReGeocodeAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReGeocodeAnnotation.h; sourceTree = "<group>"; };
@@ -1322,9 +1340,9 @@
 		04E4A8951C1529BF0069E4F4 /* 交易记录 */ = {
 			isa = PBXGroup;
 			children = (
-				04E4A8961C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.h */,
-				04E4A8971C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.m */,
-				04E4A8981C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.xib */,
+				0AF116841CC0EA7700FB9813 /* My_pocket_jiaoyijilu_ViewController.h */,
+				0AF1167F1CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.m */,
+				0AF116801CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.xib */,
 			);
 			path = "交易记录";
 			sourceTree = "<group>";
@@ -1332,9 +1350,8 @@
 		04E4A8991C1529BF0069E4F4 /* 交易记录详情 */ = {
 			isa = PBXGroup;
 			children = (
-				04E4A89A1C1529BF0069E4F4 /* JiaoyiDetil.storyboard */,
-				04E4A89B1C1529BF0069E4F4 /* My_pocket_jiaoyijiluDetil_ViewController.h */,
-				04E4A89C1C1529BF0069E4F4 /* My_pocket_jiaoyijiluDetil_ViewController.m */,
+				0AF116861CC0EB3400FB9813 /* 保证金 提现 */,
+				0AF116851CC0EAB400FB9813 /* 支付 充值 */,
 			);
 			path = "交易记录详情";
 			sourceTree = "<group>";
@@ -1555,10 +1572,9 @@
 		0A4D46991C3E002C00FE8DD4 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0AEB1DF71CC63C6400FCE281 /* 抢单失败 */,
+				0AEB1DF61CC63C5400FCE281 /* 抢单成功 */,
 				0A4D469F1C3E14A700FE8DD4 /* 抢单cell */,
-				0A3017F71CA773C900809672 /* grabOrderResult.h */,
-				0A3017F81CA773C900809672 /* grabOrderResult.m */,
-				0A3017FA1CA773E000809672 /* grabOrderResult.xib */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -1684,8 +1700,8 @@
 		0A8BC1E51CA0F04E004FA429 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				0A7B05651CB3994400C7429F /* DetialUserInfoM.h */,
-				0A7B05661CB3994400C7429F /* DetialUserInfoM.m */,
+				0AF116921CC22A8400FB9813 /* 支付信息 */,
+				0AF116911CC22A6C00FB9813 /* 工人信息 */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -2200,6 +2216,74 @@
 				0AE99F7F1CABE06E0029EA7A /* MyMoney.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		0AEB1DF61CC63C5400FCE281 /* 抢单成功 */ = {
+			isa = PBXGroup;
+			children = (
+				0A3017F71CA773C900809672 /* grabOrderResult.h */,
+				0A3017F81CA773C900809672 /* grabOrderResult.m */,
+				0A3017FA1CA773E000809672 /* grabOrderResult.xib */,
+			);
+			name = "抢单成功";
+			sourceTree = "<group>";
+		};
+		0AEB1DF71CC63C6400FCE281 /* 抢单失败 */ = {
+			isa = PBXGroup;
+			children = (
+				0AEB1DFE1CC63CFA00FCE281 /* FileOrderResult.h */,
+				0AEB1DFF1CC63CFA00FCE281 /* FileOrderResult.m */,
+				0AEB1E001CC63CFA00FCE281 /* FileOrderResult.xib */,
+			);
+			name = "抢单失败";
+			sourceTree = "<group>";
+		};
+		0AF116781CBF4D6D00FB9813 /* 结算 */ = {
+			isa = PBXGroup;
+			children = (
+				0AF116791CBF615000FB9813 /* jieSuanView.h */,
+				0AF1167A1CBF615000FB9813 /* jieSuanView.m */,
+				0AF1167C1CBF617300FB9813 /* jieSuanView.xib */,
+			);
+			path = "结算";
+			sourceTree = "<group>";
+		};
+		0AF116851CC0EAB400FB9813 /* 支付 充值 */ = {
+			isa = PBXGroup;
+			children = (
+				04E4A89A1C1529BF0069E4F4 /* JiaoyiDetil.storyboard */,
+				04E4A89B1C1529BF0069E4F4 /* My_pocket_jiaoyijiluDetil_ViewController.h */,
+				04E4A89C1C1529BF0069E4F4 /* My_pocket_jiaoyijiluDetil_ViewController.m */,
+			);
+			name = "支付 充值";
+			sourceTree = "<group>";
+		};
+		0AF116861CC0EB3400FB9813 /* 保证金 提现 */ = {
+			isa = PBXGroup;
+			children = (
+				0AF1168C1CC0ED4100FB9813 /* TiXianDetailViewController.h */,
+				0AF1168D1CC0ED4100FB9813 /* TiXianDetailViewController.m */,
+				0AF1168E1CC0ED4100FB9813 /* TiXianDetailViewController.xib */,
+			);
+			name = "保证金 提现";
+			sourceTree = "<group>";
+		};
+		0AF116911CC22A6C00FB9813 /* 工人信息 */ = {
+			isa = PBXGroup;
+			children = (
+				0A7B05651CB3994400C7429F /* DetialUserInfoM.h */,
+				0A7B05661CB3994400C7429F /* DetialUserInfoM.m */,
+			);
+			name = "工人信息";
+			sourceTree = "<group>";
+		};
+		0AF116921CC22A8400FB9813 /* 支付信息 */ = {
+			isa = PBXGroup;
+			children = (
+				0AF116931CC22AFF00FB9813 /* PayInfoModel.h */,
+				0AF116941CC22AFF00FB9813 /* PayInfoModel.m */,
+			);
+			path = "支付信息";
 			sourceTree = "<group>";
 		};
 		0AF55EA51CACFC7100C9F2A0 /* 保证金纪录 */ = {
@@ -3169,6 +3253,7 @@
 		F6F756041C12C30D00AD835E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0AF116781CBF4D6D00FB9813 /* 结算 */,
 				F6F756071C12C35700AD835E /* ADOrderViewCell.h */,
 				F6F756081C12C35700AD835E /* ADOrderViewCell.m */,
 				F6F756091C12C35700AD835E /* ADOrderViewCell.xib */,
@@ -3327,6 +3412,7 @@
 				F6E7F65C1C473C0400C91232 /* UMSShareListController.xib in Resources */,
 				186DEB951C1510E800F65CE7 /* xing1.png in Resources */,
 				185AEF491C1521DB00ABE00C /* DWConfirmCheckViewController.xib in Resources */,
+				0AF1167D1CBF617300FB9813 /* jieSuanView.xib in Resources */,
 				0AF802561C3D1C880003B989 /* new_feature_1@2x.png in Resources */,
 				04B5B14A1C11FC5B00B4B5F3 /* My_NoLogin_UserInfo_Cell.xib in Resources */,
 				0AF801D11C3B6B720003B989 /* MySearch.xib in Resources */,
@@ -3349,6 +3435,7 @@
 				0A8FF8101C4CEC34009771BF /* MJRefresh.bundle in Resources */,
 				0A2269731C57A778008598FD /* phone.png in Resources */,
 				0AF802181C3BC21B0003B989 /* nav_bg.png in Resources */,
+				0AF116901CC0ED4100FB9813 /* TiXianDetailViewController.xib in Resources */,
 				0AF801FC1C3BC1300003B989 /* SVProgressHUD.bundle in Resources */,
 				0AFAEE6F1C3F4BDA00C7C728 /* PushConfig.plist in Resources */,
 				186DEB991C1510E800F65CE7 /* 充值anniu.png in Resources */,
@@ -3388,6 +3475,7 @@
 				F6EC89011C48A2C8008F24A2 /* PersonalGongRenController.xib in Resources */,
 				F6EC89181C48B9DF008F24A2 /* PersonalGuZhuController.xib in Resources */,
 				04E4A8C41C1529DA0069E4F4 /* My_pocket_tixianInput_ViewCell.xib in Resources */,
+				0AEB1E021CC63CFA00FCE281 /* FileOrderResult.xib in Resources */,
 				0AF8025F1C3D1C880003B989 /* new_feature_share_false@2x.png in Resources */,
 				186DEB9D1C1510E800F65CE7 /* 订单详情4.png in Resources */,
 				186DEB891C1510E800F65CE7 /* DWEmployerDetailController.xib in Resources */,
@@ -3397,6 +3485,7 @@
 				0A7B05641CB35A6200C7429F /* My_pocket_Pay_Controller.xib in Resources */,
 				F6E7F6571C473C0400C91232 /* UMSCommentInputControlleriPad.xib in Resources */,
 				0AF8025B1C3D1C880003B989 /* new_feature_4-568h@2x.png in Resources */,
+				0AF116821CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.xib in Resources */,
 				18FAAC511C11A1F000728BD6 /* employersInMy.storyboard in Resources */,
 				040BAE901C16EB0900CAE4F9 /* My_jidanshezhi_Controller.xib in Resources */,
 				F6E7F6591C473C0400C91232 /* UMShareEditViewControlleriPad.xib in Resources */,
@@ -3434,7 +3523,6 @@
 				F6F7564C1C149F1C00AD835E /* RithtViewController.xib in Resources */,
 				0A22697D1C59F10C008598FD /* 协议.html in Resources */,
 				1845130D1C141BEE001C6082 /* SZCalendarPicker.xib in Resources */,
-				04E4A8AC1C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.xib in Resources */,
 				18FAAAFC1C1194D800728BD6 /* Main.storyboard in Resources */,
 				186DEB871C1510E800F65CE7 /* DWQuitReasionCell.xib in Resources */,
 				0AB689991C9BA03300F5082E /* FriendPrompt.xib in Resources */,
@@ -3479,7 +3567,6 @@
 				0AE6083F1C92A473009195B2 /* PersonalMakeSureCell.m in Sources */,
 				0AC5A92B1CAD06BB00633604 /* List.m in Sources */,
 				18033C511C17113C00D3DF99 /* MainMyMessageTableViewCell.m in Sources */,
-				04E4A8AB1C1529BF0069E4F4 /* My_pocket_jiaoyijilu_ViewController.m in Sources */,
 				0AFAEEB91C3F8D8400C7C728 /* SDWebImageCompat.m in Sources */,
 				186DEB8C1C1510E800F65CE7 /* DWOrderCell.m in Sources */,
 				040BAE841C16BFEB00CAE4F9 /* My_Login_logo_Cell.m in Sources */,
@@ -3588,6 +3675,7 @@
 				0AF801F01C3BC1040003B989 /* AFHTTPRequestOperationManager.m in Sources */,
 				0A2269811C59F153008598FD /* ViewController.m in Sources */,
 				18FAAC591C11A2CF00728BD6 /* employersOrderViewController.m in Sources */,
+				0AF1168F1CC0ED4100FB9813 /* TiXianDetailViewController.m in Sources */,
 				0AD2CED51C45FD7700774278 /* MyResignViewController.m in Sources */,
 				0AC5A9281CAD069700633604 /* dataModel.m in Sources */,
 				F6E3D9821C43E04300256E9B /* RSADataVerifier.m in Sources */,
@@ -3618,6 +3706,7 @@
 				0A9C7B211C9FC6C000A0786E /* NSArray+PureLayout.m in Sources */,
 				0AF5763F1CAA8272008340CB /* MyInfoGz.m in Sources */,
 				F6F756351C1489B800AD835E /* UIView+Extension.m in Sources */,
+				0AF116811CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.m in Sources */,
 				F6F756411C1499A600AD835E /* AccessController.m in Sources */,
 				185AEF431C1517A700ABE00C /* DWEvaluateListCell.m in Sources */,
 				0A4D469D1C3E006300FE8DD4 /* QiangDanTableViewCell.m in Sources */,
@@ -3645,6 +3734,7 @@
 				0A9C7B221C9FC6C000A0786E /* NSLayoutConstraint+PureLayout.m in Sources */,
 				0AFAEEC41C3F8D8400C7C728 /* UIImageView+WebCache.m in Sources */,
 				0AFAEE8F1C3F8D5F00C7C728 /* NSObject+MJClass.m in Sources */,
+				0AF116951CC22AFF00FB9813 /* PayInfoModel.m in Sources */,
 				0AF55EA81CACFCAA00C9F2A0 /* BaoZhengJinViewController.m in Sources */,
 				0AFAEE901C3F8D5F00C7C728 /* NSObject+MJCoding.m in Sources */,
 				0A7B05631CB35A6200C7429F /* My_pocket_Pay_Controller.m in Sources */,
@@ -3659,6 +3749,7 @@
 				0AF576421CAB843A008340CB /* MyAlllication.m in Sources */,
 				0AFAEE911C3F8D5F00C7C728 /* NSObject+MJKeyValue.m in Sources */,
 				1845130C1C141BEE001C6082 /* SZCalendarPicker.m in Sources */,
+				0AEB1E011CC63CFA00FCE281 /* FileOrderResult.m in Sources */,
 				185AEF521C15266F00ABE00C /* EvaluateCell.m in Sources */,
 				0AF801CB1C3B659B0003B989 /* UIBarButtonItem+Extension.m in Sources */,
 				0A9C7B0C1C9BFC9E00A0786E /* PlaceholdertextView.m in Sources */,
@@ -3666,6 +3757,7 @@
 				186DEB841C1510E800F65CE7 /* DWOrderDetailCell.m in Sources */,
 				186DEB881C1510E800F65CE7 /* DWEmployerDetailController.m in Sources */,
 				0AF801F11C3BC1040003B989 /* AFHTTPSessionManager.m in Sources */,
+				0AF1167B1CBF615000FB9813 /* jieSuanView.m in Sources */,
 				0A8FF8121C4CEC34009771BF /* UIScrollView+MJExtension.m in Sources */,
 				186DEB8E1C1510E800F65CE7 /* DWOrderDetailTableViewController.m in Sources */,
 				04B5B1491C11FC5B00B4B5F3 /* My_NoLogin_UserInfo_Cell.m in Sources */,

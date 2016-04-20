@@ -34,6 +34,7 @@
 
 #import "Function.h"
 
+#import "PureLayout/PureLayout.h"
 //易装修接口
 #import "YzxPostHeader.h"
 

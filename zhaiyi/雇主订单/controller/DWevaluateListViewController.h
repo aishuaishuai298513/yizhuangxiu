@@ -11,5 +11,5 @@
 
 @interface DWevaluateListViewController : UITableViewController
 
-@property (nonatomic, strong)ADAccount *userAcount;
+@property (nonatomic, strong) NSString *userid;
 @end

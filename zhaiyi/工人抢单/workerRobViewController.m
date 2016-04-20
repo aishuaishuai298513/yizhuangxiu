@@ -164,8 +164,12 @@
         [parm setObject:acount.userid forKey:@"userid"];
         [parm setObject:acount.token forKey:@"token"];
     }
-    [parm setObject:lon forKey:@"lng"];
-    [parm setObject:lat forKey:@"lat"];
+    if (lon) {
+     [parm setObject:lon forKey:@"lng"];
+    }
+    if (lat) {
+      [parm setObject:lat forKey:@"lat"];
+    }
     
     //[parm setObject:@"1" forKey:@"pageindex"];
      //NSLog(@"%@",parm);

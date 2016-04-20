@@ -91,6 +91,8 @@
 #define YZX_tixianyemian @"/api/index/tixianyemian"
 //交易记录
 #define YZX_jiaoyijilu @"/api/index/jiaoyijilu"
+//交易纪录详情
+#define YZX_jiaoyijiluxiangqing @"/api/index/jiaoyijiluxiangqing"
 //切换身份
 #define YZX_qiehuan @"/api/index/qiehuanshenfen"
 //个人资料（工人端
@@ -99,17 +101,31 @@
 #define YZX_gerenzhiliao_gr_baocun @"/api/index/gerenzhiliao_gr_baocun"
 //订单（工人端）
 #define YZX_dingdan_gr @"/api/index/dingdan"
-
-//
-
-//
-//
-//
-//
-//
-
-//
-
-//
+//取消订单（工人端）
+#define YZX_quxiaodingdan_gr @"/api/index/quxiaodingdan"
+//实时结算页面（工人端）
+#define YZX_shishijiesuan_gr @"/api/index/shishijiesuanpage"
+//实时结算（工人端）
+#define YZX_jiesuan_gr @"/api/index/shishijiesuan"
+//删除订单（工人端）
+#define YZX_shanchudingdan_gr @"/api/index/shanchudingdan"
+//评价列表（雇主端）
+#define YZX_pingjialiebiao_gr @"/api/index/pingjialiebiao_gr"
+//支付工资页面（雇主端）
+#define YZX_zhifugongzipage @"/api/index/zhifugongzipage"
+//支付工资-余额支付（雇主端）
+#define YZX_zhifugongzi_yue @"/api/index/zhifugongzi_yue"
+//拒绝支付（雇主端）
+#define YZX_jujuezhifu @"/api/index/jujuezhifu"
+//确认收款（工人端）
+#define YZX_querenshoukuan @"/api/index/querenshoukuan"
+//评价工人
+#define YZX_pingjiagongren @"/api/index/pingjiagongren"
+//取消订单（雇主端）
+#define YZX_quxiaodingdan_gz @"/api/index/quxiaodingdan_gz"
+//工种列表
+#define YZX_gongzhongliebiao @"/api/index/gongzhonglist"
+//删除个人资料资质证书（工人端）
+#define YZX_shanchuzizhi @"/api/index/shanchuzizhi"
 
 #endif /* Header_h */

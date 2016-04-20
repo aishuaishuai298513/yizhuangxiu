@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "DWOrderModel.h"
+#import "DetialUserInfoM.h"
 
 @interface EvaluateViewController : UITableViewController
 
@@ -16,7 +17,7 @@
 @property (nonatomic, strong)NSArray *UserDataSource;
 
 
-@property (nonatomic, strong)DWOrderModel *OrderModel;
+@property (nonatomic, strong)DetialUserInfoM *UserInfoM;
 
 @property (nonatomic, assign) int TypeFrom;
 

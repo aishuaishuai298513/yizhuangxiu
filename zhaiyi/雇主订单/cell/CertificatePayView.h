@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "PayInfoModel.h"
 @interface CertificatePayView : UIView
+
+@property (nonatomic, strong)PayInfoModel *payinfoModel;
 
 //初始化
 +(instancetype)loadView;
