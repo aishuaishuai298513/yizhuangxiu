@@ -160,6 +160,9 @@
     [parm setObject:self.gongZuoNengLi forKey:@"gongzuonengli"];
     [parm setObject:self.gongZuoXiaoLv forKey:@"gongzuoxiaolv"];
     [parm setObject:self.tuanDuiHeZuo forKey:@"tuanduihezuo"];
+    [parm setObject:self.UserInfoM.ID forKey:@"orderid"];
+
+    NSLog(@"%@",parm);
     
     [NetWork postNoParm:YZX_pingjiagongren params:parm success:^(id responseObj) {
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {

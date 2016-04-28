@@ -31,4 +31,6 @@
 
 @property (nonatomic, strong) DWOrderModel *MOdel ;
 
+@property (nonatomic, assign)CGFloat rowHeit;
+
 @end

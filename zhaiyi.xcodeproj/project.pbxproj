@@ -51,6 +51,10 @@
 		04E4A8EA1C1530A30069E4F4 /* contactMeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A8E51C1530A30069E4F4 /* contactMeButton.m */; };
 		04EB7D8F1C15685C00B21492 /* My_pocket_qiehuan_View.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EB7D8E1C15685C00B21492 /* My_pocket_qiehuan_View.m */; };
 		04EB7D911C1568F100B21492 /* My_pocket_qiehuan_View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04EB7D901C1568F100B21492 /* My_pocket_qiehuan_View.xib */; };
+		0A067FB51CC9E64E00870935 /* UIFont+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A067FB41CC9E64E00870935 /* UIFont+Extension.m */; };
+		0A0CC19F1CCB1CDF001DC959 /* tuiChuTixing.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CC19D1CCB1CDF001DC959 /* tuiChuTixing.m */; };
+		0A0CC1A01CCB1CDF001DC959 /* tuiChuTixing.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A0CC19E1CCB1CDF001DC959 /* tuiChuTixing.xib */; };
+		0A0CC1A91CCB4554001DC959 /* libPaymentControl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A0CC1A81CCB4554001DC959 /* libPaymentControl.a */; };
 		0A19A7181CBE367F0022168A /* DWEmployerImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A19A7161CBE367F0022168A /* DWEmployerImageCell.m */; };
 		0A19A7191CBE367F0022168A /* DWEmployerImageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A19A7171CBE367F0022168A /* DWEmployerImageCell.xib */; };
 		0A2269691C51D1AE008598FD /* NSDate+ITTAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A2269681C51D1AE008598FD /* NSDate+ITTAdditions.m */; };
@@ -82,6 +86,8 @@
 		0A813A131CA4DBEB00733248 /* CardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A813A111CA4DBEB00733248 /* CardViewController.xib */; };
 		0A8BC1F01CA11E62004FA429 /* My_pocket_Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8BC1EE1CA11E61004FA429 /* My_pocket_Controller.m */; };
 		0A8BC1F11CA11E62004FA429 /* My_pocket_Controller.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A8BC1EF1CA11E61004FA429 /* My_pocket_Controller.xib */; };
+		0A8ED1621CC8C07D00B239E8 /* MyMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8ED1601CC8C07D00B239E8 /* MyMessageCell.m */; };
+		0A8ED1631CC8C07D00B239E8 /* MyMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A8ED1611CC8C07D00B239E8 /* MyMessageCell.xib */; };
 		0A8FF8021C4CEC34009771BF /* MJRefreshAutoFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8FF7D81C4CEC34009771BF /* MJRefreshAutoFooter.m */; };
 		0A8FF8031C4CEC34009771BF /* MJRefreshBackFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8FF7DA1C4CEC34009771BF /* MJRefreshBackFooter.m */; };
 		0A8FF8041C4CEC34009771BF /* MJRefreshComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8FF7DC1C4CEC34009771BF /* MJRefreshComponent.m */; };
@@ -482,6 +488,13 @@
 		04EB7D8D1C15685C00B21492 /* My_pocket_qiehuan_View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = My_pocket_qiehuan_View.h; sourceTree = "<group>"; };
 		04EB7D8E1C15685C00B21492 /* My_pocket_qiehuan_View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = My_pocket_qiehuan_View.m; sourceTree = "<group>"; };
 		04EB7D901C1568F100B21492 /* My_pocket_qiehuan_View.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = My_pocket_qiehuan_View.xib; sourceTree = "<group>"; };
+		0A067FB31CC9E64E00870935 /* UIFont+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+Extension.h"; sourceTree = "<group>"; };
+		0A067FB41CC9E64E00870935 /* UIFont+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+Extension.m"; sourceTree = "<group>"; };
+		0A0CC19C1CCB1CDF001DC959 /* tuiChuTixing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tuiChuTixing.h; sourceTree = "<group>"; };
+		0A0CC19D1CCB1CDF001DC959 /* tuiChuTixing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tuiChuTixing.m; sourceTree = "<group>"; };
+		0A0CC19E1CCB1CDF001DC959 /* tuiChuTixing.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = tuiChuTixing.xib; sourceTree = "<group>"; };
+		0A0CC1A61CCB4472001DC959 /* UPPaymentControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPPaymentControl.h; sourceTree = "<group>"; };
+		0A0CC1A81CCB4554001DC959 /* libPaymentControl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPaymentControl.a; sourceTree = "<group>"; };
 		0A19A7151CBE367F0022168A /* DWEmployerImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DWEmployerImageCell.h; sourceTree = "<group>"; };
 		0A19A7161CBE367F0022168A /* DWEmployerImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DWEmployerImageCell.m; sourceTree = "<group>"; };
 		0A19A7171CBE367F0022168A /* DWEmployerImageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DWEmployerImageCell.xib; sourceTree = "<group>"; };
@@ -531,6 +544,9 @@
 		0A8BC1ED1CA11E61004FA429 /* My_pocket_Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = My_pocket_Controller.h; sourceTree = "<group>"; };
 		0A8BC1EE1CA11E61004FA429 /* My_pocket_Controller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = My_pocket_Controller.m; sourceTree = "<group>"; };
 		0A8BC1EF1CA11E61004FA429 /* My_pocket_Controller.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = My_pocket_Controller.xib; sourceTree = "<group>"; };
+		0A8ED15F1CC8C07D00B239E8 /* MyMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyMessageCell.h; sourceTree = "<group>"; };
+		0A8ED1601CC8C07D00B239E8 /* MyMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyMessageCell.m; sourceTree = "<group>"; };
+		0A8ED1611CC8C07D00B239E8 /* MyMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyMessageCell.xib; sourceTree = "<group>"; };
 		0A8FF7D71C4CEC34009771BF /* MJRefreshAutoFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJRefreshAutoFooter.h; sourceTree = "<group>"; };
 		0A8FF7D81C4CEC34009771BF /* MJRefreshAutoFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJRefreshAutoFooter.m; sourceTree = "<group>"; };
 		0A8FF7D91C4CEC34009771BF /* MJRefreshBackFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJRefreshBackFooter.h; sourceTree = "<group>"; };
@@ -1149,6 +1165,7 @@
 				0AFAEE5D1C3F497700C7C728 /* CFNetwork.framework in Frameworks */,
 				F6E3D9781C43E04300256E9B /* libcrypto.a in Frameworks */,
 				0AE7713D1C8030CB008B277D /* AMapSearchKit.framework in Frameworks */,
+				0A0CC1A91CCB4554001DC959 /* libPaymentControl.a in Frameworks */,
 				0AFAEE5B1C3F494500C7C728 /* libPushSDK-1.8.8.a in Frameworks */,
 				F6E7F6611C473C0400C91232 /* libSocialWechat.a in Frameworks */,
 				180DCE6C1C197E65009984D0 /* MapKit.framework in Frameworks */,
@@ -1482,6 +1499,25 @@
 			path = "账户切换";
 			sourceTree = "<group>";
 		};
+		0A0CC1961CCB1A7F001DC959 /* 退出登陆提醒 */ = {
+			isa = PBXGroup;
+			children = (
+				0A0CC19C1CCB1CDF001DC959 /* tuiChuTixing.h */,
+				0A0CC19D1CCB1CDF001DC959 /* tuiChuTixing.m */,
+				0A0CC19E1CCB1CDF001DC959 /* tuiChuTixing.xib */,
+			);
+			name = "退出登陆提醒";
+			sourceTree = "<group>";
+		};
+		0A0CC1A41CCB444E001DC959 /* yinLianPay */ = {
+			isa = PBXGroup;
+			children = (
+				0A0CC1A81CCB4554001DC959 /* libPaymentControl.a */,
+				0A0CC1A61CCB4472001DC959 /* UPPaymentControl.h */,
+			);
+			name = yinLianPay;
+			sourceTree = "<group>";
+		};
 		0A19A70E1CBE35820022168A /* 辞退 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1717,6 +1753,16 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		0A8ED15E1CC8C04D00B239E8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				0A8ED15F1CC8C07D00B239E8 /* MyMessageCell.h */,
+				0A8ED1601CC8C07D00B239E8 /* MyMessageCell.m */,
+				0A8ED1611CC8C07D00B239E8 /* MyMessageCell.xib */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
 		0A8FF7C81C48C378009771BF /* 订单详情 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1936,6 +1982,7 @@
 		0A8FF8151C4D0A5D009771BF /* 我的消息 */ = {
 			isa = PBXGroup;
 			children = (
+				0A8ED15E1CC8C04D00B239E8 /* View */,
 				18033C4C1C17113C00D3DF99 /* MainMyMessageViewController.h */,
 				18033C4D1C17113C00D3DF99 /* MainMyMessageViewController.m */,
 			);
@@ -2361,6 +2408,7 @@
 		0AF801D71C3BB6F70003B989 /* 3rd */ = {
 			isa = PBXGroup;
 			children = (
+				0A0CC1A41CCB444E001DC959 /* yinLianPay */,
 				0A9C7B161C9FC6C000A0786E /* PureLayout */,
 				0AE7713B1C802DF3008B277D /* 高德地图 */,
 				0A8FF8281C4F4E55009771BF /* isr */,
@@ -2466,6 +2514,7 @@
 		0AF8022C1C3D0E9E0003B989 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				0A0CC1961CCB1A7F001DC959 /* 退出登陆提醒 */,
 				0A9779411CA2344F00B79714 /* 余额支付密码框 */,
 				0AD2CEE01C464FAA00774278 /* 大头针 */,
 				0AF8022D1C3D0EAB0003B989 /* 自定义搜索框 */,
@@ -2498,6 +2547,8 @@
 				0AF801C71C3B659B0003B989 /* UIImage+Extension.m */,
 				0AF801C81C3B659B0003B989 /* UIView+Extension.h */,
 				0AF801C91C3B659B0003B989 /* UIView+Extension.m */,
+				0A067FB31CC9E64E00870935 /* UIFont+Extension.h */,
+				0A067FB41CC9E64E00870935 /* UIFont+Extension.m */,
 			);
 			name = category;
 			path = ../Main/Other;
@@ -3470,6 +3521,7 @@
 				185AEF3F1C15164200ABE00C /* DWevaluateListViewController.xib in Resources */,
 				186DEBA11C1510E800F65CE7 /* 邓军2.png in Resources */,
 				F6E7F65B1C473C0400C91232 /* UMSnsAccountViewController.xib in Resources */,
+				0A8ED1631CC8C07D00B239E8 /* MyMessageCell.xib in Resources */,
 				04E4A8B31C1529BF0069E4F4 /* My_pocket_Hongbao_ViewController.xib in Resources */,
 				186DEB961C1510E800F65CE7 /* xing2.png in Resources */,
 				F6EC89011C48A2C8008F24A2 /* PersonalGongRenController.xib in Resources */,
@@ -3512,6 +3564,7 @@
 				040BAE8A1C16D02300CAE4F9 /* My_Login_input_Cell.xib in Resources */,
 				18FD2FAB1C194B450070259C /* 删除订单3.png in Resources */,
 				F6F7563D1C1493F900AD835E /* ADFinishController.xib in Resources */,
+				0A0CC1A01CCB1CDF001DC959 /* tuiChuTixing.xib in Resources */,
 				F6E7F6551C473C0400C91232 /* UMSCommentDetailController.xib in Resources */,
 				184513131C1420AD001C6082 /* iconfont-youjiantou-2.png in Resources */,
 				188AB1FA1C21099D00156E3A /* Images.xcassets in Resources */,
@@ -3649,6 +3702,7 @@
 				0AE771FC1C8836FF008B277D /* CustomCalloutView.m in Sources */,
 				F6E3D97E1C43E04300256E9B /* MD5DataSigner.m in Sources */,
 				0AD2CEE31C464FD600774278 /* HMAnnotationView.m in Sources */,
+				0A067FB51CC9E64E00870935 /* UIFont+Extension.m in Sources */,
 				186DEB821C1510E800F65CE7 /* DWEmployerDetailCell.m in Sources */,
 				04B5B14F1C11FFDA00B4B5F3 /* My_Login_UserInfo_Cell.m in Sources */,
 				04E4A8C91C152E950069E4F4 /* UIView+Extension.m in Sources */,
@@ -3657,6 +3711,7 @@
 				0AFAEEB61C3F8D8400C7C728 /* MKAnnotationView+WebCache.m in Sources */,
 				0A8FF8311C4F4E55009771BF /* IATConfig.m in Sources */,
 				F6EC89051C48A56A008F24A2 /* PersonalDetails2Cell.m in Sources */,
+				0A8ED1621CC8C07D00B239E8 /* MyMessageCell.m in Sources */,
 				0A8FF8341C4F4E55009771BF /* ISRDataHelper.m in Sources */,
 				0A8FF8141C4CEC34009771BF /* UIView+MJExtension.m in Sources */,
 				18FAAAF31C1194D800728BD6 /* main.m in Sources */,
@@ -3688,6 +3743,7 @@
 				F6E3D97C1C43E04300256E9B /* DataSigner.m in Sources */,
 				F6F756321C1488F700AD835E /* ADTextView.m in Sources */,
 				0AF576471CABA858008340CB /* Select_ID.m in Sources */,
+				0A0CC19F1CCB1CDF001DC959 /* tuiChuTixing.m in Sources */,
 				0AF801EF1C3BC1040003B989 /* AFHTTPRequestOperation.m in Sources */,
 				0A8139FF1CA3FA6300733248 /* CardTableViewCell.m in Sources */,
 				0AF802351C3D10250003B989 /* ADAccountTool.m in Sources */,
@@ -3877,7 +3933,7 @@
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/zhaiyi/PayFrameWork";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "05028cd4-111e-4c39-bb27-2b718fd0891c";
+				PROVISIONING_PROFILE = "2b140044-c254-4f6e-89aa-084b1adb5899";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3918,7 +3974,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/zhaiyi/PayFrameWork";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "05028cd4-111e-4c39-bb27-2b718fd0891c";
+				PROVISIONING_PROFILE = "2b140044-c254-4f6e-89aa-084b1adb5899";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -3930,8 +3986,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Zhaiyi  (Beijing) technology Co., Ltd. (Y2243K7GU4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Zhaiyi  (Beijing) technology Co., Ltd. (Y2243K7GU4)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: jun wang (EUAAL454BJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: jun wang (EUAAL454BJ)";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3949,7 +4005,7 @@
 					"\"$(SRCROOT)/zhaiyi/PayFrameWork/Util\"",
 				);
 				INFOPLIST_FILE = zhaiyi/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3961,12 +4017,13 @@
 					"$(PROJECT_DIR)/zhaiyi/WeiXinSDK",
 					"$(PROJECT_DIR)/zhaiyi/WeiXinPay/WxPay/SDKExport",
 					"$(PROJECT_DIR)/zhaiyi/weiXinPay/SDKExport",
+					"$(PROJECT_DIR)/zhaiyi",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhaiyi.xiaomujiang;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "05028cd4-111e-4c39-bb27-2b718fd0891c";
+				PROVISIONING_PROFILE = "";
 				STRIP_PNG_TEXT = NO;
 				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/极光推送/lib";
@@ -3978,8 +4035,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Zhaiyi  (Beijing) technology Co., Ltd. (Y2243K7GU4)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Zhaiyi  (Beijing) technology Co., Ltd. (Y2243K7GU4)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: jun wang (EUAAL454BJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: jun wang (EUAAL454BJ)";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3997,7 +4054,7 @@
 					"\"$(SRCROOT)/zhaiyi/PayFrameWork/Util\"",
 				);
 				INFOPLIST_FILE = zhaiyi/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4009,12 +4066,13 @@
 					"$(PROJECT_DIR)/zhaiyi/WeiXinSDK",
 					"$(PROJECT_DIR)/zhaiyi/WeiXinPay/WxPay/SDKExport",
 					"$(PROJECT_DIR)/zhaiyi/weiXinPay/SDKExport",
+					"$(PROJECT_DIR)/zhaiyi",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhaiyi.xiaomujiang;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "05028cd4-111e-4c39-bb27-2b718fd0891c";
+				PROVISIONING_PROFILE = "";
 				STRIP_PNG_TEXT = NO;
 				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/极光推送/lib";
@@ -4029,6 +4087,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "-11.zhaiyiTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "2b140044-c254-4f6e-89aa-084b1adb5899";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/zhaiyi.app/zhaiyi";
 			};
 			name = Debug;
@@ -4041,6 +4100,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "-11.zhaiyiTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "2b140044-c254-4f6e-89aa-084b1adb5899";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/zhaiyi.app/zhaiyi";
 			};
 			name = Release;

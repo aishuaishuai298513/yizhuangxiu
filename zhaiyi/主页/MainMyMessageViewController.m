@@ -9,11 +9,18 @@
 #import "MainMyMessageViewController.h"
 #import "MainMyMessageTableViewCell.h"
 #import "MainMessageDetailViewController.h"
+
+#import "MyMessageCell.h"
+
 @interface MainMyMessageViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 
 @property (nonatomic, strong) NSMutableArray *dataSource;
 @property (nonatomic, strong)NSString *ceshi;
+
+@property (nonatomic, assign)CGFloat rowheight;
+
+@property (nonatomic ,assign) int pageIndex;
 
 @end
 
@@ -37,25 +44,116 @@
     UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
     
     [self.tableView setTableFooterView:v];
+    self.tableView.backgroundColor = huiseColor;
     
     //self.tableView.backgroundColor = [UIColor colorWithRed:245/255.0 green:245/255.0 blue:245/255.0 alpha:1];
+    
+    _pageIndex = 1;
+    [self MJRefreachHeader];
+    [self MJRefreachFooter];
+}
+
+//header
+-(void)MJRefreachHeader
+{
+    //    [self.dataSource removeAllObjects];
+    // 设置回调（一旦进入刷新状态，就调用target的action，也就是调用self的loadNewData方法）
+    MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(netWorkHeader)];
+    // 设置自动切换透明度(在导航栏下面自动隐藏)
+    header.automaticallyChangeAlpha = YES;
+    // 隐藏时间
+    header.lastUpdatedTimeLabel.hidden = YES;
+    // 马上进入刷新状态
+    [header beginRefreshing];
+    // 设置header
+    self.tableView.mj_header = header;
+}
+
+//footer
+-(void)MJRefreachFooter
+{
+    __unsafe_unretained __typeof(self) weakSelf = self;
+    // 设置回调（一旦进入刷新状态就会调用这个refreshingBlock）
+    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        
+        _pageIndex++;
+        [weakSelf netWorkFotter];
+        //[weakSelf loadMoreData];
+    }];
+    
 }
 
 
--(void)netWork
+
+-(void)netWorkHeader
 {
     ADAccount *acount = [ADAccountTool account];
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:acount.userid forKey:@"user_id"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex] forKey:@"page"];
     
-    [NetWork postNoParm:wodexiaoxi params:parm success:^(id responseObj) {
+    [NetWork postNoParm:YZX_wodexiaoxi_gz params:parm success:^(id responseObj) {
         
         NSLog(@"%@",responseObj);
-        self.dataSource = [responseObj objectForKey:@"data"];
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+             self.dataSource = [responseObj objectForKey:@"data"];
+            
+        }
+        //self.dataSource = [responseObj objectForKey:@"data"];
         [self.tableView reloadData];
+        
+        [self.tableView.mj_footer endRefreshing];
+        [self.tableView.mj_header endRefreshing];
+        
+        if (self.dataSource.count<=0) {
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+        }
         
     } failure:^(NSError *error) {
         
+        [self.tableView.mj_footer endRefreshing];
+        [self.tableView.mj_header endRefreshing];
+        NSLog(@"%@",error);
+    }];
+    
+}
+
+-(void)netWorkFotter
+{
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:[NSString stringWithFormat:@"%d",_pageIndex]forKey:@"page"];
+    
+    [NetWork postNoParm:YZX_wodexiaoxi_gz params:parm success:^(id responseObj) {
+        
+        //NSLog(@"%@",responseObj);
+        NSArray *array;
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            array = [NSArray array];
+            array =[responseObj objectForKey:@"data"];
+            
+            if (array.count>0) {
+                
+                 [self.dataSource addObjectsFromArray:array];
+            }
+
+        }
+        //self.dataSource = [responseObj objectForKey:@"data"];
+        [self.tableView reloadData];
+        [self.tableView.mj_footer endRefreshing];
+        [self.tableView.mj_header endRefreshing];
+        
+        if (!array.count) {
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+        }
+        
+    } failure:^(NSError *error) {
+        [self.tableView.mj_footer endRefreshing];
+        [self.tableView.mj_header endRefreshing];
         NSLog(@"%@",error);
     }];
     
@@ -63,7 +161,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-  [self netWork];
+  //[self netWork];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -80,33 +178,40 @@
     return 1;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 20;
-}
+
 
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    MainMyMessageTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"MainMyMessageTableViewCell" forIndexPath:indexPath];
-    
+    MyMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    if (!cell) {
+        
+        cell = [[[NSBundle mainBundle]loadNibNamed:@"MyMessageCell" owner:nil options:nil]lastObject];
+    }
+    cell.contentView.backgroundColor = huiseColor;
     cell.selectionStyle = UITableViewCellAccessoryNone;
+    cell.time.text = [self.dataSource[indexPath.row]objectForKey:@"createtime"];
+    cell.contentLabel.text = [self.dataSource[indexPath.row]objectForKey:@"content"];
+    cell.XiaoxiID = [self.dataSource[indexPath.row]objectForKey:@"id"];
     
-    cell.time.text = [self.dataSource[indexPath.section]objectForKey:@"updatetime"];
-    cell.neirong.text = [self.dataSource[indexPath.section]objectForKey:@"news_content"];
+    self.rowheight = (float)cell.time.y+(float)cell.time.height+20;
     
-//    cell.contentView.layer.borderColor = [[UIColor colorWithRed:0.5 green:0.5 blue:0.3 alpha:1]CGColor];
-//    cell.contentView.layer.borderWidth = 1;
-//    
-//    cell.contentView.layer.cornerRadius = 5;
-//    cell.contentView.clipsToBounds = YES;
+    __weak __typeof(self)weakSelf = self;
     
-   // NSLog(@"%@",self.dataSource);
-    //NSLog(@"%@",self.dataSource[indexPath.section]);
+    [cell setDelMessageBlock:^{
+        [weakSelf netWorkHeader];
+    }];
     
     return cell;
 }
 
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //return _rowheight;
+    return 220;
+}
 
 
 #pragma mark - Navigation

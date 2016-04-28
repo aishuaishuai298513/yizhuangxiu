@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -58,7 +58,7 @@
                         <constraint firstAttribute="width" constant="15" id="lt7-ct-ej8"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="正在招工..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NhV-fX-4oV">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="正在招工···" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NhV-fX-4oV">
                     <rect key="frame" x="41" y="5" width="61" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="25" id="AQ2-w8-vhb"/>
@@ -112,7 +112,7 @@
             </variation>
             <connections>
                 <outlet property="datouzhenTopImageView" destination="7Qd-Z9-7Ag" id="bbf-hQ-F9Q"/>
-                <outlet property="gongZhong" destination="CXV-Wp-Ol6" id="aTH-iT-cBn"/>
+                <outlet property="gongzhong" destination="CXV-Wp-Ol6" id="Q9P-6v-0nz"/>
                 <outlet property="renShu" destination="mzE-sI-h9k" id="cYn-Hy-i34"/>
                 <outlet property="zhaoGongZhungTai" destination="NhV-fX-4oV" id="0J8-Mg-4jX"/>
             </connections>

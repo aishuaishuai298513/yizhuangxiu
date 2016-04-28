@@ -99,8 +99,11 @@ return self; \
 
 
 
-#define  WX_APP_ID          @"wx2863d9247c321b5c"               //APPID
-#define  WX_APP_SECRET      @"e5cf3a3ed66f1090275eb2bb997b2076" //appsecret
+//#define  WX_APP_ID          @"wx2863d9247c321b5c"               //APPID
+#define  WX_APP_ID          @"wx05c7d1017ae4ebdb"
+
+//#define  WX_APP_SECRET      @"e5cf3a3ed66f1090275eb2bb997b2076" //appsecret
+#define  WX_APP_SECRET      @"f1bfd3a7eb4465fcb3dc151e8656b359"
 //商户号，填写商户对应参数
 #define WX_MCH_ID          @"1303015401"
 //商户API密钥，填写相应参数

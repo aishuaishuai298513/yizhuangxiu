@@ -35,6 +35,7 @@
 
 #import "Select_ID.h"
 
+
 typedef NS_ENUM(NSInteger,daTouZhenType)
 {
     GongRentype,
@@ -87,12 +88,37 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 @property (nonatomic, assign) daTouZhenType *datouzhenType;
 //纪录当前工人类型
 @property (nonatomic, strong) NSString *gongRenLeiXing;
+//雇主工人位置
+@property (nonatomic, strong) NSMutableArray *dataSourceLocation;
+//单个工人／雇主信息
+@property (nonatomic, strong) NSMutableDictionary *userLocation;
+//记录搜索位置
+@property (nonatomic, strong) NSString *SearchString;
+
+//控制地图定不需要定位到当前位置
+@property (nonatomic, assign) BOOL NoUserLoction;
 
 #define kCalloutViewMargin          -8
 
 @end
 
 @implementation MainViewController
+
+-(NSMutableDictionary *)userLocation
+{
+    if (!_userLocation) {
+        _userLocation = [NSMutableDictionary dictionary];
+    }
+    return _userLocation;
+}
+
+-(NSMutableArray *)dataSourceLocation
+{
+    if (!_dataSourceLocation) {
+        _dataSourceLocation = [NSMutableArray array];
+    }
+    return _dataSourceLocation;
+}
 
 -(NSMutableArray *)anncoationArray
 {
@@ -124,28 +150,18 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
     
+    
    window = [[UIApplication sharedApplication] keyWindow];
+    //刷新地图
+    if (self.mapView) {
+
+         _mapView.showsUserLocation = YES;
+    }
     
     //选择身份
     [self SelectViewType];
-    //刷新地图
-    if (self.mapView) {
-        if (GetUserDefaultsGR) {
-            
-            if ([self.gongRenLeiXing isEqualToString: @"79"]) {
-                _mapView.showsUserLocation = YES;
-            }
-            self.gongRenLeiXing = @"78";
-            
-        }else
-        {
-            if ([self.gongRenLeiXing isEqualToString: @"78"]) {
-                _mapView.showsUserLocation = YES;
-            }
-            self.gongRenLeiXing = @"79";
-        }
-        
-    }
+    //jpush注册别名
+    [self setTagsAlias];
     
 }
 
@@ -187,6 +203,9 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     [self initMapView];
     [self initSearch];
    //[self addAction];
+    //定时器
+    [self setTimer];
+    //
     
     [self.navigationController.navigationBar setTitleTextAttributes:
      @{NSFontAttributeName:[UIFont systemFontOfSize:21],
@@ -194,6 +213,123 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     
     AnnCount =0;
 }
+
+#pragma mark 定时器
+-(void)setTimer
+{
+    NSTimer *timer = [NSTimer  scheduledTimerWithTimeInterval:20.0 target:self selector:@selector(TimerFunction) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:timer forMode: NSDefaultRunLoopMode];
+    
+    //[timer fire];
+    //[timer invalidate];
+}
+
+-(void)TimerFunction
+{
+    _NoUserLoction = YES;
+    _mapView.showsUserLocation = YES;
+    NSLog(@"123");
+}
+
+#pragma mark注册别名
+-(void)setTagsAlias
+{
+    
+    ADAccount *acount = [ADAccountTool account];
+    if (!acount) {
+        return;
+    }
+    
+    NSString  *bieming = acount.userid;
+    NSString *biaoqian = @"123";
+    NSLog(@"%@",bieming);
+    
+    __autoreleasing NSMutableSet *tags = [NSMutableSet set];
+    if (![biaoqian isEqualToString:@""] && biaoqian) {
+        [self setTags:&tags addTag:biaoqian];
+    }
+    if (![bieming isEqualToString:@""] && bieming) {
+        [self setTags:&tags addTag:biaoqian];
+    }
+    
+    __autoreleasing NSString *alias = bieming;
+    [self analyseInput:&alias tags:&tags];
+    
+    [APService setTags:tags
+                 alias:alias
+      callbackSelector:@selector(tagsAliasCallback:tags:alias:)
+                target:self];
+    
+
+}
+
+//回调
+- (void)tagsAliasCallback:(int)iResCode
+                     tags:(NSSet *)tags
+                    alias:(NSString *)alias {
+    NSString *callbackString =
+    [NSString stringWithFormat:@"%d, \ntags: %@, \nalias: %@\n", iResCode,
+     [self logSet:tags], alias];
+    //    if ([_callBackTextView.text isEqualToString:@"服务器返回结果"]) {
+    //        _callBackTextView.text = callbackString;
+    //    } else {
+    //        _callBackTextView.text = [NSString
+    //                                  stringWithFormat:@"%@\n%@", callbackString, _callBackTextView.text];
+    //    }
+    NSLog(@"TagsAlias回调:%@", callbackString);
+}
+
+- (NSString *)logSet:(NSSet *)dic {
+    if (![dic count]) {
+        return nil;
+    }
+    NSString *tempStr1 =
+    [[dic description] stringByReplacingOccurrencesOfString:@"\\u"
+                                                 withString:@"\\U"];
+    NSString *tempStr2 =
+    [tempStr1 stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+    NSString *tempStr3 =
+    [[@"\"" stringByAppendingString:tempStr2] stringByAppendingString:@"\""];
+    NSData *tempData = [tempStr3 dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *str =
+    [NSPropertyListSerialization propertyListFromData:tempData
+                                     mutabilityOption:NSPropertyListImmutable
+                                               format:NULL
+                                     errorDescription:NULL];
+    return str;
+}
+
+
+- (void)setTags:(NSMutableSet **)tags addTag:(NSString *)tag {
+    //  if ([tag isEqualToString:@""]) {
+    // }
+    [*tags addObject:tag];
+}
+- (void)analyseInput:(NSString **)alias tags:(NSSet **)tags {
+    // alias analyse
+    if (![*alias length]) {
+        // ignore alias
+        *alias = nil;
+    }
+    // tags analyse
+    if (![*tags count]) {
+        *tags = nil;
+    } else {
+        __block int emptyStringCount = 0;
+        [*tags enumerateObjectsUsingBlock:^(NSString *tag, BOOL *stop) {
+            if ([tag isEqualToString:@""]) {
+                emptyStringCount++;
+            } else {
+                emptyStringCount = 0;
+                *stop = YES;
+            }
+        }];
+        if (emptyStringCount == [*tags count]) {
+            *tags = nil;
+        }
+    }
+}
+
 #pragma mark 未登陆选择身份
 -(void)SelectShenFen
 {
@@ -206,6 +342,7 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
         select.selectShenFen=^()
         {
             [weakSelf SelectViewType];
+             weakSelf.mapView.showsUserLocation = YES;
         };
         //说明第一次登陆身份
         select.ifFirstLogin = YES;
@@ -220,9 +357,6 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 - (void)initMapView
 {
     
-   // self.mapView = [[MAMapView alloc] initWithFrame:self.view.bounds];
-   // self.mapView = [[MAMapView alloc] init];
-   // self.mapView.visibleMapRect = MAMapRectMake(220880104, 101476980, 272496, 466656);
     [MAMapServices sharedServices].apiKey = (NSString *)APIKey;
     
     [AMapSearchServices sharedServices].apiKey = (NSString *)APIKey;
@@ -239,7 +373,6 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 
     [self.view insertSubview:_mapView atIndex:0];
     
-   // [self addAnnotationWithCooordinate:self.mapView.centerCoordinate];
     
 }
 /* 初始化search. */
@@ -263,18 +396,29 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
         {
             annotationView = [[CusAnnotationView alloc] initWithAnnotation:annotation
                                                            reuseIdentifier:customReuseIndetifier];
+            
+            
+            if (self.datouzhenType == GongRentype) {
+                annotationView.userinfo = self.userLocation;
+                annotationView.datouzhentype = 1;
+                
+                //NSLog(@"工人%@",self.userLocation);
+            }
+            else
+            {
+                annotationView.userinfo = self.userLocation;
+                annotationView.datouzhentype = 2;
+                
+                //NSLog(@"雇主%@",self.userLocation);
+            }
+            
+            
+            //NSLog(@"%@",self.userLocation);
+            annotationView.canShowCallout   = NO;
+            annotationView.backgroundColor = [UIColor clearColor];
         }
-        if (self.datouzhenType == GongRentype) {
-            annotationView.datouzhentype = 1;
-        }
-        else
-        {
-            annotationView.datouzhentype = 2;
-        }
-        // must set to NO, so we can show the custom callout view.
-        annotationView.canShowCallout   = NO;
-        annotationView.TypeGongRen = @"油工";
-        annotationView.backgroundColor = [UIColor clearColor];
+            // must set to NO, so we can show the custom callout view.
+        
         
         return annotationView;
     }
@@ -289,15 +433,14 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
             poiAnnotationView = [[MANaviAnnotationView alloc] initWithAnnotation:annotation
                                                                  reuseIdentifier:invertGeoIdentifier];
         }
-        poiAnnotationView.animatesDrop   = YES;
+        poiAnnotationView.animatesDrop   = NO;
         poiAnnotationView.canShowCallout = YES;
         poiAnnotationView.draggable      = YES;
         
-        //show detail by right callout accessory view.
-        //poiAnnotationView.rightCalloutAccessoryView     = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+
         poiAnnotationView.rightCalloutAccessoryView.tag = 1;
         
-        //call online navi by left accessory.
+
         poiAnnotationView.leftCalloutAccessoryView.tag  = 2;
         
         return poiAnnotationView;
@@ -310,8 +453,8 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 
 - (void)mapView:(MAMapView *)mapView didUpdateUserLocation:(MAUserLocation *)userLocation updatingLocation:(BOOL)updatingLocation
 {
-    [self clear];
     
+    [self clear];
     //坐标
     CLLocationCoordinate2D coord2D = userLocation.location.coordinate;
     
@@ -325,8 +468,8 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     [self searchReGeocodeWithCoordinate:coord2D];
     
     
-    NSLog(@"%@",lon);
-    NSLog(@"%@",lat);
+//    NSLog(@"%@",lon);
+//    NSLog(@"%@",lat);
     
     //保存经纬度
     [[NSUserDefaults standardUserDefaults]setObject:lon forKey:@"lon"];
@@ -334,7 +477,12 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     
     
     //标注我的位置
-    [self.mapView setCenterCoordinate:coord2D];
+    
+    if (!_NoUserLoction) {
+     [self.mapView setCenterCoordinate:coord2D];
+    }
+    
+    //[self.mapView setCenterCoordinate:coord2D];
     
     ReGeocodeAnnotation *reGeocodeAnnotation = [[ReGeocodeAnnotation alloc]init];
     reGeocodeAnnotation.coordinate = coord2D;
@@ -359,7 +507,6 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     _mapView.showsUserLocation = NO;
     
     //[self fujin:lon lat:lat];
-
     
 }
 
@@ -455,15 +602,15 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     searchView.layer.borderWidth = 1;
     searchView.layer.borderColor = [[UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0.2]CGColor];
     
-    //[searchView SearchAddTarget:self action:@selector(Search)];
+    [searchView SearchAddTarget:self action:@selector(Search)];
     [searchView YuYinAddTarget:self action:@selector(YuYin)];
     searchView.textFiled.delegate = self;
+    [searchView.textFiled addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     
     //searchView.height = 10;
     
     //searchView.frame = CGRectMake(0, 0, 320, 100);
     [self.view addSubview:searchView];
-    
 }
 #pragma mark 导航栏
 -(void)updateNav
@@ -485,24 +632,63 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     
 }
 
-#pragma mark textFiledd代理
--(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+-(void)textFieldDidChange:(UITextField*)textfiled
 {
-    NSLog(@"%@",string);
     
-    NSString *AllStr = [searchView.textFiled.text stringByAppendingString:string];
+    NSLog(@"%@",textfiled.text);
+    NSString *AllStr  = textfiled.text;
     
-    NSLog(@"%@",searchView.textFiled.text);
-    
-    //此处判断输入框为空的情况
-    if (searchView.textFiled.text.length ==1 && string.length == 0) {
+    if ([AllStr isEqualToString:@""]||!AllStr) {
         
         [self ClearSearchtableView];
+        return;
     }else
     {
-       [self searchTipsWithKey:AllStr];
+        [self searchTipsWithKey:AllStr];
     }
     
+    //[self searchTipsWithKey:AllStr];
+    
+
+}
+#pragma mark textFiledd代理
+//-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+//{
+//    NSLog(@"%@",string);
+//    
+//    NSString *AllStr = [searchView.textFiled.text stringByAppendingString:string];
+//    
+//    NSLog(@"%@",searchView.textFiled.text);
+//    
+//    //此处判断输入框为空的情况
+//    if (searchView.textFiled.text.length ==1 && string.length == 0) {
+//        
+//        [self ClearSearchtableView];
+//    }else
+//    {
+//       [self searchTipsWithKey:AllStr];
+//    }
+//    
+//    return YES;
+//}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    NSLog(@"123");
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    NSLog(@"123");
+}
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    NSLog(@"123");
+    return YES;
+}
+-(BOOL)textFieldShouldClear:(UITextField *)textField
+{
+    NSLog(@"1234");
     return YES;
 }
 
@@ -543,6 +729,7 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 //清楚View
 -(void)ClearSearchtableView
 {
+    
     [_searchTableView removeFromSuperview];
     _searchTableView.delegate = nil;
     _searchTableView.dataSource = nil;
@@ -592,7 +779,22 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     
    // self.searchBar.placeholder = tip.name;
 }
+#pragma mark  点解搜索按钮
+-(void)Search
+{
+    [self ClearSearchtableView];
+    if ([searchView.textFiled.text isEqualToString:@""]) {
+        [ITTPromptView showMessage:@"搜索地点不能为空"];
+        return;
+    }
+    //地理编码
+    self.SearchString =searchView.textFiled.text;
+    [self tapAction:searchView.textFiled.text];
+    
+    
+}
 
+#pragma mark 点击地点后显示位置信息
 - (void)clearAndShowAnnotationWithTip:(AMapTip *)tip
 {
     
@@ -622,11 +824,12 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
         
         //雇主端搜索工人/
         if (GetUserDefaultsGZ) {
-            self.datouzhenType = GongRentype;
+
+            self.datouzhenType = GuZhutype;
             [self searchGonRen_gz:[NSString stringWithFormat:@"%f",tip.location.latitude] lon:[NSString stringWithFormat:@"%f",tip.location.longitude]];
         }else if(GetUserDefaultsGR)
         {
-            self.datouzhenType = GuZhutype;
+            self.datouzhenType = GongRentype;
             [self searchGuZhu_gr:[NSString stringWithFormat:@"%f",tip.location.latitude] lon:[NSString stringWithFormat:@"%f",tip.location.longitude]];
         }
         
@@ -635,6 +838,39 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
         //[self searchReGeocodeWithCoordinate:coordinate];
 
     }
+}
+
+#pragma mark 点击搜索按钮后显示位置信息
+-(void)clearAndShowAnnotationWithCoordinate2D:(CLLocationCoordinate2D)Coordinate2D AnnotationTitle:(NSString*)Title Annotationsubtitle :(NSString *)subtitle
+{
+        [self clear];
+    
+    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(Coordinate2D.latitude, Coordinate2D.longitude);
+    [self.mapView setCenterCoordinate:coordinate];
+    
+    ReGeocodeAnnotation *reGeocodeAnnotation = [[ReGeocodeAnnotation alloc]init];
+    reGeocodeAnnotation.coordinate = coordinate;
+    reGeocodeAnnotation.title = Title;
+    reGeocodeAnnotation.subtitle = subtitle;
+    
+    [self.mapView addAnnotation:reGeocodeAnnotation];
+    [self.mapView selectAnnotation:reGeocodeAnnotation animated:YES];
+    // self.mapView.zoomLevel = 10;
+    [self.mapView setZoomLevel:15 animated:YES];
+    
+    
+    //雇主端搜索工人/
+    if (GetUserDefaultsGZ) {
+        
+        self.datouzhenType = GuZhutype;
+        [self searchGonRen_gz:[NSString stringWithFormat:@"%f",Coordinate2D.latitude] lon:[NSString stringWithFormat:@"%f",Coordinate2D.longitude]];
+    }else if(GetUserDefaultsGR)
+    {
+        self.datouzhenType = GongRentype;
+        [self searchGuZhu_gr:[NSString stringWithFormat:@"%f",Coordinate2D.latitude] lon:[NSString stringWithFormat:@"%f",Coordinate2D.longitude]];
+    }
+
+
 }
 
 #pragma mark 反地理编码
@@ -693,24 +929,59 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 {
     if (response.geocodes.count == 0)
     {
+        [ITTPromptView showMessage:@"未找到该位置"];
         return;
     }
-    NSMutableArray *annotations = [NSMutableArray array];
     
-    [response.geocodes enumerateObjectsUsingBlock:^(AMapGeocode *obj, NSUInteger idx, BOOL *stop) {
-        AMapGeoPoint *coor2D = obj.location;
-        [annotations addObject:coor2D];
-    }];
+//    NSMutableArray *annotations = [NSMutableArray array];
+//    NSMutableArray *anotationDistrict = [NSMutableArray array];
+//    NSMutableArray *anotationCity = [NSMutableArray array];
+//    NSMutableArray *anotationTownship = [NSMutableArray array];
+//    NSMutableArray *anotationNeighborhood = [NSMutableArray array];
     
-     AMapGeoPoint *coor2D = annotations[0];
-    NSLog(@"%f",coor2D.latitude);
-    NSLog(@"%f",coor2D.longitude);
+    
+    
+    AMapGeocode *obj = response.geocodes[0];
+    AMapGeoPoint *coor2D = obj.location;
+    NSString *District = obj.district;
+    NSString *City =obj.city;
+    NSString *township = obj.township;
+    NSString *neighborhood = obj.neighborhood;
+    
+//    [response.geocodes enumerateObjectsUsingBlock:^(AMapGeocode *obj, NSUInteger idx, BOOL *stop) {
+//        
+//        AMapGeoPoint *coor2D = obj.location;
+//        NSString *District = obj.district;
+//        NSString *City =obj.city;
+//        NSString *township = obj.township;
+//        NSString *neighborhood = obj.neighborhood;
+//        
+////        [annotations addObject:coor2D];
+////        [anotationDistrict addObject:District];
+////        [anotationCity addObject:City];
+////        [anotationTownship addObject:township];
+////        [anotationNeighborhood addObject:neighborhood];
+//    }];
+    
+    // AMapGeoPoint *coor2D = annotations[0];
     
     NSString *lat = [NSString stringWithFormat:@"%lf",coor2D.latitude];
      NSString *lng = [NSString stringWithFormat:@"%lf",coor2D.longitude];
     
+//    NSString *City = anotationCity[0];
+//    NSString *District = anotationDistrict[0];
+    
     [[NSUserDefaults standardUserDefaults]setObject:lat forKey:@"gongchengdidianlat"];
     [[NSUserDefaults standardUserDefaults]setObject:lng forKey:@"gongchengdidianlng"];
+    
+    
+    CLLocationCoordinate2D Coordinate2D =CLLocationCoordinate2DMake([lat doubleValue], [lng doubleValue]);
+    
+    //显示位置
+   // NSLog(@"%@",City);
+    //NSLog(@"%@",District);
+
+    [self clearAndShowAnnotationWithCoordinate2D:Coordinate2D AnnotationTitle:[NSString stringWithFormat:@"%@%@",City,District] Annotationsubtitle:[NSString stringWithFormat:@"%@%@",township,neighborhood]];
 
 }
 
@@ -719,8 +990,6 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 {
     [self.mapView removeAnnotations:self.mapView.annotations];
 }
-
-
 // 抢单
 //1属于工人,0属于雇主
 #pragma mark找工人 抢单
@@ -731,9 +1000,19 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     //工人抢单
     if (GetUserDefaultsGR)
     {
+        
+//        [[NSUserDefaults standardUserDefaults]setObject:lon forKey:@"lon"];
+//        [[NSUserDefaults standardUserDefaults]setObject:lat forKey:@"lat"];
+        
+        if (![[NSUserDefaults standardUserDefaults]objectForKey:@"lon"]||![[NSUserDefaults standardUserDefaults]objectForKey:@"lon"]) {
+            [ITTPromptView showMessage:@"未获取到您的位置，请先打开您的位置共享"];
+        }
+        
         UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"workerRob" bundle:nil];
         UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"workerRob"];
         [self.navigationController pushViewController:test2obj animated:YES];
+        
+        
     }else
     {
         UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"employersLooking" bundle:nil];
@@ -793,14 +1072,15 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     
     //
     //[self IfLogin];
-    ADAccount *account = [ADAccountTool account];
-    if (!account) {
-        
-        My_Login_In_ViewController *Login = [[My_Login_In_ViewController alloc]init];
-        
-        [self.navigationController pushViewController:Login animated:YES];
-        return;
-    }
+    
+//    ADAccount *account = [ADAccountTool account];
+//    if (!account) {
+//        
+//        My_Login_In_ViewController *Login = [[My_Login_In_ViewController alloc]init];
+//        
+//        [self.navigationController pushViewController:Login animated:YES];
+//        return;
+//    }
     
     UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"employersInMy" bundle:nil];
     
@@ -892,6 +1172,7 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     }
     
     NSMutableDictionary *parms = [NSMutableDictionary dictionary];
+
     [parms setObject:account.userid forKey:@"userid"];
     [parms setObject:account.token forKey:@"token"];
     [parms setObject:lat forKey:@"lat"];
@@ -899,7 +1180,7 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     
     NSLog(@"%@",parms);
     [NetWork postNoParmForMap:YZX_shangchuanjingweidu params:parms success:^(id responseObj) {
-        NSLog(@"%@",responseObj);
+       // NSLog(@"%@",responseObj);
     } failure:^(NSError *error) {
         
     }];
@@ -910,25 +1191,53 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 {
     
     ADAccount *account = [ADAccountTool account];
-    if (!account) {
-        return;
-    }
+//    if (!account) {
+//        return;
+//    }
     
     NSMutableDictionary *parms = [NSMutableDictionary dictionary];
     
-    [parms setObject:account.userid forKey:@"userid"];
-    [parms setObject:account.token forKey:@"token"];
+//    [parms setObject:account.userid forKey:@"userid"];
+//    [parms setObject:account.token forKey:@"token"];
+    
+    if (!account) {
+        
+        [parms setObject:@"" forKey:@"userid"];
+        [parms setObject:@"" forKey:@"token"];
+        
+    }else
+    {
+        [parms setObject:account.userid forKey:@"userid"];
+        [parms setObject:account.token forKey:@"token"];
+    }
     [parms setObject:lat forKey:@"lat"];
     [parms setObject:lon forKey:@"lng"];
     
-    NSLog(@"%@",parms);
+    //NSLog(@"%@",parms);
     [NetWork postNoParmForMap:YZX_search_gz params:parms success:^(id responseObj) {
         
-        NSLog(@"%@",responseObj);
+       // NSLog(@"%@",responseObj);
         
-        for (int i = 0; i<3; i++) {
-            [self addAction];
+        self.dataSourceLocation = [responseObj objectForKey:@"data"];
+        
+        for (int i = 0; i<self.dataSourceLocation.count; i++) {
+            
+            
+            self.userLocation = self.dataSourceLocation[i];
+            
+            CLLocationCoordinate2D randomCoordinate =  CLLocationCoordinate2DMake([[self.dataSourceLocation[i] objectForKey:@"lat"] doubleValue], [[self.dataSourceLocation[i] objectForKey:@"lng"] doubleValue]);
+            
+            MAPointAnnotation *annotation = [[MAPointAnnotation alloc] init];
+            annotation.coordinate = randomCoordinate;
+            annotation.title    = @"AutoNavi";
+            annotation.subtitle = @"CustomAnnotationView";
+            
+            [self.mapView addAnnotation:annotation];
+            //[self addAction];
+            
+            
         }
+
         
     } failure:^(NSError *error) {
         
@@ -940,24 +1249,49 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 {
     
     ADAccount *account = [ADAccountTool account];
-    if (!account) {
-        return;
-    }
+//    if (!account) {
+//        return;
+//    }
+
     
     NSMutableDictionary *parms = [NSMutableDictionary dictionary];
     
-    [parms setObject:account.userid forKey:@"userid"];
-    [parms setObject:account.token forKey:@"token"];
+    if (!account) {
+        
+        [parms setObject:@"" forKey:@"userid"];
+        [parms setObject:@"" forKey:@"token"];
+        
+    }else
+    {
+        [parms setObject:account.userid forKey:@"userid"];
+        [parms setObject:account.token forKey:@"token"];
+    }
+    
     [parms setObject:lat forKey:@"lat"];
     [parms setObject:lon forKey:@"lng"];
     
-    NSLog(@"%@",parms);
+    //NSLog(@"%@",parms);
     [NetWork postNoParmForMap:YZX_search_gr params:parms success:^(id responseObj) {
         
-        NSLog(@"%@",responseObj);
+       // NSLog(@"%@",responseObj);
         
-        for (int i = 0; i<3; i++) {
-            [self addAction];
+        self.dataSourceLocation = [responseObj objectForKey:@"data"];
+        
+        for (int i = 0; i<self.dataSourceLocation.count; i++) {
+            
+            self.userLocation = self.dataSourceLocation[i];
+            
+            CLLocationCoordinate2D randomCoordinate =  CLLocationCoordinate2DMake([[self.dataSourceLocation[i] objectForKey:@"lat"] doubleValue], [[self.dataSourceLocation[i] objectForKey:@"lng"] doubleValue]);
+            
+            MAPointAnnotation *annotation = [[MAPointAnnotation alloc] init];
+            annotation.coordinate = randomCoordinate;
+            annotation.title    = @"AutoNavi";
+            annotation.subtitle = @"CustomAnnotationView";
+            
+            [self.mapView addAnnotation:annotation];
+           //[self addAction];
+            
+            
         }
         
     } failure:^(NSError *error) {
@@ -1043,7 +1377,7 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
                                 title, content, [self logDic:extra]];
     NSLog(@"%@", currentContent);
     
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title message: content delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"通知消息" message: content delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
     
     [alert show];
     

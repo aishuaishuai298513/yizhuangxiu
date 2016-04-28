@@ -27,6 +27,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *starTimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *endTimeLabel;
 @property (weak, nonatomic) IBOutlet UIView *sureView;
+@property (weak, nonatomic) IBOutlet UIButton *addMoneyBtn;
+@property (weak, nonatomic) IBOutlet UIButton *reduceMoneyBtn;
 
 //工程地点
 @property (weak, nonatomic) IBOutlet UITextField *GongChengDiDian;
@@ -182,7 +184,26 @@
     self.LianXIRen.delegate = self;
     self.LianXiDianHua.delegate = self;
     self.BeiZhu.delegate = self;
+    self.GongChengDiDian.delegate = self;
+    self.GongZuoNeiRong.delegate = self;
+    self.XuQiuRenShu.delegate = self;
+    self.tianshu.delegate = self;
+    
+    self.XuQiuRenShu.keyboardType = UIKeyboardTypeNumberPad;
+    self.tianshu.keyboardType =UIKeyboardTypeNumberPad;
+    self.LianXiDianHua.keyboardType =UIKeyboardTypeNumberPad;
+    
+    self.GongZuoNeiRong.tag = 101;
+    self.XuQiuRenShu.tag = 102;
+    self.tianshu.tag = 103;
+    self.LianXiDianHua.tag = 104;
+    
+    //设置日期
+    self.starTimeLabel.text = [NSDate stringWithNowData];
 
+
+
+    
     //初始化地图搜索
     [self initSearch];
 }
@@ -194,26 +215,19 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    
-    
-    _account = [ADAccountTool account];
-    //是否登陆了
-    if (_account.userid) {
-        
-     [self refreshMoney];
-    }
 }
 
 
 //开工/竣工日期
 - (IBAction)calendarAction:(id)sender {
+    [self IfLogin];
+    
     UIButton *butt = sender;
     NSInteger tag1 = butt.tag;
     _calendarPicker = [SZCalendarPicker showOnView:self.view];
     _calendarPicker.today = [NSDate date];
     _calendarPicker.date = _calendarPicker.today;
-    _calendarPicker.frame = CGRectMake(20, 140, self.view.frame.size.width-40, 400);
-    
+    _calendarPicker.frame = CGRectMake(20, 140, self.view.frame.size.width-40, ScreenH-200);
     
     switch (tag1) {
             
@@ -279,14 +293,22 @@
     }
 }
 
+#pragma mark 钱数加减方法
 - (IBAction)addOrSubMoney:(id)sender {
 
+    [self IfLogin];
+    
     UIButton *button = sender;
     NSInteger number = [_moenyLabel.text intValue];
     if (button.tag == 20) {
         number = number +5;
+        
     }else{
+
         number = number -5;
+        if (number<=0) {
+            return;
+        }
     }
     _moenyLabel.text = [NSString stringWithFormat:@"%ld",(long)number];
     
@@ -295,6 +317,40 @@
 
 #pragma mark 填写完毕发布按钮
 - (IBAction)commintAction:(id)sender {
+    
+    ADAccount *account = [ADAccountTool account];
+    
+    if (!account) {
+        My_Login_In_ViewController *login = [[My_Login_In_ViewController alloc]init];
+        [self.navigationController pushViewController:login animated:YES];
+        
+        return;
+    }
+    
+    if ([self.GongChengDiDian.text isEqualToString:@""]) {
+        [ITTPromptView showMessage:@"请输入工程地点"];
+        return;
+    }
+    if ([self.GongZuoNeiRong.text isEqualToString:@""]) {
+        [ITTPromptView showMessage:@"请输入工作内容"];
+        return;
+    }
+    if ([self.XuQiuRenShu.text isEqualToString:@""]) {
+        [ITTPromptView showMessage:@"请输入需求人数"];
+        return;
+    }
+    if ([self.tianshu.text isEqualToString:@""]) {
+        [ITTPromptView showMessage:@"请输入预计天数"];
+        return;
+    }
+    if ([self.LianXIRen.text isEqualToString:@""]) {
+        [ITTPromptView showMessage:@"请输入联系人"];
+        return;
+    }
+    if ([self.LianXiDianHua.text isEqualToString:@""]) {
+        [ITTPromptView showMessage:@"请输入联系电话"];
+        return;
+    }
     
     //添加遮盖
     self.backView = [Function createBackView:self action:@selector(backClicked)];
@@ -305,16 +361,10 @@
         
         [[NSUserDefaults standardUserDefaults]setObject:nil forKey:@"gongchengdidianlat"];
         [[NSUserDefaults standardUserDefaults]setObject:nil forKey:@"gongchengdidianlat"];
-        
-        _diLiBianMa(self.topGongZuoDiDian.text);
-    }
     
-    ADAccount *account = [ADAccountTool account];
-    
-    if (!account) {
-        My_Login_In_ViewController *login = [[My_Login_In_ViewController alloc]init];
-        
-      return;   
+//        NSLog(@"%@",self.topGongZuoDiDian.text);
+//        NSLog(@"%@",self.GongChengDiDian.text);
+        _diLiBianMa(self.GongChengDiDian.text);
     }
     
     self.sureView.hidden = NO;
@@ -340,6 +390,7 @@
     self.lianxidianhua.text = self.LianXiDianHua.text;
     //备注
     self.beizhu.text = self.BeiZhu.text;
+
     
     //获取保证金数
     if (self.isChongXinFaBu) {
@@ -368,7 +419,9 @@
 #pragma mark 提交订单／跳转支付页
 - (void)toVC:(UIButton *)button{
     
-    _sureView.hidden = YES;
+    [self backClicked];
+    
+   // _sureView.hidden = YES;
     
     ADAccount *account = [ADAccountTool account];
     
@@ -377,7 +430,7 @@
     [parm setObject:account.token forKey:@"token"];
     [parm setObject:self.Id forKey:@"gongzhongid"];
     [parm setObject:self.GongChengDiDian.text forKey:@"adr"];
-    [parm setObject:self.tianshu.text forKey:@"n"];
+    [parm setObject:self.XuQiuRenShu.text forKey:@"n"];
     [parm setObject:self.starTimeLabel.text forKey:@"kaigongriqi"];
     [parm setObject:self.tianshu.text forKey:@"yuji"];
     [parm setObject:self.moenyLabel.text forKey:@"price"];
@@ -385,6 +438,7 @@
     [parm setObject:self.LianXiDianHua.text forKey:@"lianxidianhua"];
     [parm setObject:self.BeiZhu.text forKey:@"beizhu"];
     [parm setObject:self.zhiabaojin.text forKey:@"baozhengjin"];
+    [parm setObject:self.GongZuoNeiRong.text forKey:@"gongzuoneirong"];
     
 
     if ([[NSUserDefaults standardUserDefaults]objectForKey:@"gongchengdidianlat"]&&[[NSUserDefaults standardUserDefaults]objectForKey:@"gongchengdidianlng"]) {
@@ -393,7 +447,7 @@
         [parm setObject:[[NSUserDefaults standardUserDefaults]objectForKey:@"gongchengdidianlng"] forKey:@"lng"];
     }
     
-    NSLog(@"%@",parm);
+    //NSLog(@"%@",parm);
     //提交订单
     __weak typeof (self)weakSelf = self;
     [NetWork postNoParm:YZX_tijiaodingdan params:parm success:^(id responseObj) {
@@ -464,7 +518,7 @@
 -(void)backClicked
 {
     [self TopBack:nil];
-    [self.backView removeFromSuperview];
+    //[self.backView removeFromSuperview];
 
 }
 
@@ -500,6 +554,7 @@
     rechargeController.Yue = self.Yue;
     rechargeController.ZhiFuJinE = self.ZhiFuJinE;
     rechargeController.orderCode = orderCode;
+    rechargeController.zhiFuNeirong = @"支付保证金";
     
     [self.navigationController pushViewController:rechargeController animated:YES];
 }
@@ -600,7 +655,7 @@
     self.LianXiDianHua.text = [self.dataSourceChongXinFaBu objectForKey:@"lianxidianhua"];
     self.LianXiDianHua.userInteractionEnabled = NO;
     
-    self.moenyLabel.text = [self.dataSourceChongXinFaBu objectForKey:@"price"];
+    self.moenyLabel.text = [NSString stringWithFormat:@"%@元",[self.dataSourceChongXinFaBu objectForKey:@"price"]];
 
     
     
@@ -608,6 +663,8 @@
 #pragma mark 正常工种分类
 -(void)UpdateFenLei
 {
+    
+    
     int colNum = 3;
     int rowNum;
     if (self.dataSourceFenLei.count % colNum == 0) {
@@ -662,6 +719,12 @@
         self.moenyLabel.text =[NSString stringWithFormat:@"%ld",money];
         
         self.Id = [self.dataSourceFenLei[0] objectForKey:@"id"];
+        
+        if(ScreenW<=320)
+        {
+            self.GongChengDiDian.font = [UIFont systemFontOfSize:12];
+            self.BeiZhu.font = [UIFont systemFontOfSize:12];
+        }
     }
 }
 #pragma mark 点击工种
@@ -677,9 +740,10 @@
     self.classId = [NSString stringWithFormat:@"%ld",_SelectLabel.tag];
     self.GongZhongType = _SelectLabel.text;
     
-    NSInteger money = [[self.dataSourceFenLei[_SelectLabel.tag -1] objectForKey:@"price"] integerValue];
+    //NSInteger money = [[self.dataSourceFenLei[_SelectLabel.tag -1] objectForKey:@"price"] integerValue];
+    NSString *money = [self.dataSourceFenLei[_SelectLabel.tag -1] objectForKey:@"price"];
    //self.baoxianFei.text =[NSString stringWithFormat:@"%ld",money];
-    self.moenyLabel.text =[NSString stringWithFormat:@"%ld",money];
+    self.moenyLabel.text =money;
     
     self.Id =[self.dataSourceFenLei[_SelectLabel.tag -1] objectForKey:@"id"];
 
@@ -733,9 +797,12 @@
         
         NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
-            self.zhiabaojin.text = [[responseObj objectForKey:@"data"]objectForKey:@"zhibaojin"];
-            self.ZhiFuJinE = self.zhiabaojin.text;
+            self.zhiabaojin.text =[NSString stringWithFormat:@"%@元",[[responseObj objectForKey:@"data"]objectForKey:@"zhibaojin"]];
+            self.ZhiFuJinE = [[responseObj objectForKey:@"data"]objectForKey:@"zhibaojin"];
             self.Yue = [[responseObj objectForKey:@"data"]objectForKey:@"yue"];
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
         }
         
     } failure:^(NSError *error) {
@@ -768,21 +835,73 @@
 //
 - (IBAction)touchs:(id)sender {
     
-//    
-//    for (UITextField *text in self.FatherView.subviews) {
-//        
-//        [text resignFirstResponder];
-//    }
-    
     [self.FatherView endEditing:YES];
 }
 
+
+#pragma mark TextFiledDelegate
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if ([string isEqualToString:@""]) {
+        return YES;
+    }
+    
+    switch (textField.tag) {
+        case 101://工作内容
+            return YES;
+            break;
+        case 102://需求人数
+            if (textField.text.length>=4) {
+                return NO;
+            }else
+            {
+                return YES;
+            }
+            break;
+        case 103://天数
+            if (textField.text.length>=3) {
+                return NO;
+            }else
+            {
+                return YES;
+            }
+            break;
+        case 104://联系电话
+            return YES;
+            break;
+            
+        default:
+            break;
+    }
+    return YES;
+}
+
+
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    
+    switch (textField.tag) {
+        case 101://工作内容
+            
+            break;
+        case 102://需求人数
+            
+            break;
+        case 103://天簌
+            
+            break;
+        case 104://联系电话
+            
+            break;
+            
+        default:
+            break;
+    }
+    
+    [self IfLogin];
     _TextFiled = textField;
-    
     //监听键盘
-    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     
@@ -797,9 +916,9 @@
     
     CGRect keyBoardRect=[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGFloat deltaY=keyBoardRect.origin.y;
-    NSLog( @"%lf",ScreenH);
-    NSLog(@"%lf",self.TextFiled.y);
-    NSLog(@"%lf",deltaY);
+//    NSLog( @"%lf",ScreenH);
+//    NSLog(@"%lf",self.TextFiled.y);
+//    NSLog(@"%lf",deltaY);
     
     // NSLog(@"%lf",self.TableView.y);
     
@@ -807,10 +926,14 @@
     
     [UIView animateWithDuration:[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
         
-        NSLog(@"%lf",deltaY-(_TextFiled.y-self.ScrrolView.contentOffset.y+64+64+_TextFiled.height)+20);
-        NSLog(@"%lf",deltaY);
+//        NSLog(@"%lf",deltaY-(_TextFiled.y-self.ScrrolView.contentOffset.y+64+64+_TextFiled.height)+20);
+//        NSLog(@"%lf",deltaY);
 
-        self.view.y = deltaY-(_TextFiled.y-self.ScrrolView.contentOffset.y+64+64+_TextFiled.height)+20;
+        if ((deltaY-(_TextFiled.y-self.ScrrolView.contentOffset.y+64+_TextFiled.height)+20)<=0) {
+            self.view.y = deltaY-(_TextFiled.y-self.ScrrolView.contentOffset.y+64+_TextFiled.height)+2;
+            [self.ScrrolView setContentOffset:CGPointMake(0, self.ScrrolView.contentOffset.y+64) animated:YES];
+        }
+
        // self.view.y = deltaY-ScreenH+20;
     }];
 }
@@ -824,6 +947,7 @@
     
     [UIView animateWithDuration:[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
         self.view.y = 0;
+        //[self.ScrrolView setContentOffset:CGPointMake(0, self.ScrrolView.contentOffset.y-64) animated:YES];
     } completion:^(BOOL finished) {
         //
     }];
@@ -833,34 +957,17 @@
 }
 
 
-#pragma mark 更新钱币
--(void)refreshMoney{
-    
-//    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-//    [params setObject:_account.type forKey:@"type"];
-//    [params setObject:_account.userid forKey:@"user_id"];
-//    [NetWork postNoParm:POST_REMAIN_MONEY params:params success:^(id responseObj) {
-//        
-//        NSLog(@"最新余额  %@",responseObj);
-//
-//        NSDictionary *dict = responseObj[@"data"];
-//        _needCost  = [dict[@"recharge_money"] floatValue];
-//        
-//    } failure:^(NSError *error) {
-//    }];
-}
-
-
 -(void)viewWillDisappear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+
 #pragma mark 是否登陆
 -(void)IfLogin
 {
     ADAccount *acount = [ADAccountTool account];
-    if (! acount.userid) {
+    if (!acount) {
         
         //初始化一个弹框控制器（标题部分）
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"需要登录" message:nil preferredStyle:UIAlertControllerStyleAlert];
@@ -883,7 +990,6 @@
         //把动作添加到控制器
         [alertController addAction:cancel];
         [alertController addAction:sure];
-        
         
         [self presentViewController:alertController animated:YES completion:^{
             

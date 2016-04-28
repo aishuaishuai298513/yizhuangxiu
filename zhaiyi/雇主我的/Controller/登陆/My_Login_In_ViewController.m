@@ -21,6 +21,7 @@
 #import "Select_ID.h"
 @interface My_Login_In_ViewController ()<LoginOrRegin,ReginDelegate>
 {
+  My_Login_logo_Cell * cell;
   My_Login_input_Cell * cell2;
     
     BOOL isSuccessEnter;
@@ -69,9 +70,14 @@
     
     NSLog(@"%lf",[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue]);
     
+    if ((ScreenH-64-(cell2.y+cell2.height-100))<keyBoardRect.origin.y) {
+        
         [UIView animateWithDuration:[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
-            self.view.y = deltaY-ScreenH+20;
+            self.view.y = deltaY-(cell2.y+cell2.height-40);
         }];
+        
+    }
+    
     
 }
 
@@ -105,7 +111,7 @@
     
     tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     if (indexPath.row==0) {
-        My_Login_logo_Cell * cell;
+       
         if (!cell) {
             cell=[[[NSBundle mainBundle]loadNibNamed:@"My_Login_logo_Cell" owner:self options:nil]lastObject];
             cell.selectionStyle=UITableViewCellSelectionStyleNone;
@@ -117,12 +123,12 @@
             
         cell2=[[[NSBundle mainBundle]loadNibNamed:@"My_Login_input_Cell" owner:self options:nil]lastObject];
         cell2.selectionStyle=UITableViewCellSelectionStyleNone;
-           cell2.delegate = self;
+        cell2.delegate = self;
             
         }
         //显示保存的帐号信息
         NSUserDefaults * defaults=[NSUserDefaults standardUserDefaults];
-       NSDictionary *dict = [defaults objectForKey:@"enter_user_info"];
+        NSDictionary *dict = [defaults objectForKey:@"enter_user_info"];
         cell2.userNameTF.text = [dict objectForKey:@"mobile"];
         
         return cell2;
@@ -130,13 +136,13 @@
     else
     {
         //注册
-        ReginTextViewCell * cell;
-        if (!cell) {
-            cell=[[[NSBundle mainBundle]loadNibNamed:@"ReginTextViewCell" owner:self options:nil]lastObject];
-            cell.delegate = self;
-            cell.selectionStyle=UITableViewCellSelectionStyleNone;
+        ReginTextViewCell * cell3;
+        if (!cell3) {
+            cell3=[[[NSBundle mainBundle]loadNibNamed:@"ReginTextViewCell" owner:self options:nil]lastObject];
+            cell3.delegate = self;
+            cell3.selectionStyle=UITableViewCellSelectionStyleNone;
         }
-        return cell;
+        return cell3;
     
     }
     
@@ -146,13 +152,27 @@
 {
     if (indexPath.row==0) {
         return (ScreenH-64) *0.4;
+        //return ScreenH *0.4;
     }
     else if(indexPath.row==1)
     {
-        return (ScreenH-64)*0.4;
+        //return ScreenH *0.3;
+        if (ScreenH<=480) {
+             return 188;
+        }else
+        {
+            return (ScreenH-64) *0.4;
+        }
     }else
     {
-        return (ScreenH-64)*(1-0.87);
+        
+        if (ScreenH<=480) {
+            return (ScreenH-64-188)-(ScreenH-64) *0.4;
+        }else
+        {
+            return ScreenH *(1-0.87);
+        }
+
     }
 }
 
@@ -193,13 +213,7 @@
                 
             }];
             
-            //切换页面 选择身份
-//            UIStoryboard *MainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//            UINavigationController* MainCotroller = [MainStoryboard instantiateViewControllerWithIdentifier:@"MainNav"];
-//            // 设置窗口的根控制器
-//            UIWindow *keyWindow = [[UIApplication sharedApplication]keyWindow];
-//            keyWindow.rootViewController = MainCotroller;
-           // [self.navigationController popViewControllerAnimated:YES];
+
             
         }else
         {
@@ -246,6 +260,8 @@
     [self.view endEditing:YES];
     
 }
+
+
 
 
 

@@ -7,6 +7,7 @@
 //
 
 #import "AssNavigationController.h"
+#import "SVProgressHUD.h"
 
 @interface AssNavigationController ()
 
@@ -48,14 +49,20 @@
     
     [super pushViewController:viewController animated:YES];
     
+    [SVProgressHUD dismiss];
+    
+}
+
+-(UIViewController *)popViewControllerAnimated:(BOOL)animated
+{
+    [SVProgressHUD dismiss];
+    return [super popViewControllerAnimated:YES];
 }
 
 -(void)back
 {
     [self popViewControllerAnimated:YES];
 }
-
-
 
 
 

@@ -14,6 +14,7 @@
 //合作者身份 ID
 #define PARTNER_ID @"2088121763064257"
 //商家
-#define SELLER @"2022443997@qq.com"
+//#define SELLER @"2022443997@qq.com"
+#define SELLER @"xiaomujiang5783@sina.com"
 //回调
 #define REBACK_URL @"http://zhaiyi.bjqttd.com/api/recharge/alipay"

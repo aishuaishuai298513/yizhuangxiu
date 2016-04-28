@@ -27,4 +27,13 @@
     [self.datouzhenTopImageView addGestureRecognizer:tap];
 }
 
+-(void)setUserInfo:(NSDictionary *)userInfo
+{
+    _userInfo = userInfo;
+    NSLog(@"%@",_userInfo);
+    self.gongzhong.text = [userInfo objectForKey:@"gzname"];
+    self.renShu.text = [userInfo objectForKey:@"n"];
+
+}
+
 @end

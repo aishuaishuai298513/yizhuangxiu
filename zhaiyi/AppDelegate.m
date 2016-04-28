@@ -17,11 +17,18 @@
 
 #import <MAMapKit/MAMapKit.h>
 #import <AMapSearchKit/AMapSearchKit.h>
+#import "tuiChuTixing.h"
+#import "UPPaymentControl.h"
 
 @interface AppDelegate ()
 <
 WXApiDelegate
 >
+{
+    tuiChuTixing *tixing ;
+    UIView *backView;
+
+}
 @end
 
 @implementation AppDelegate
@@ -68,9 +75,55 @@ WXApiDelegate
     //高德地图
     [self configureAPIKey];
     
+    //监听退出
+    [self tuichu];
     
     return YES;
 }
+
+//////////////////////////////////////////其他账号登陆相关操作／／／／／／／／／／／／／／／／／／／／／／／／
+-(void)tuichu
+{
+    //获取通知中心单例对象
+    NSNotificationCenter * center = [NSNotificationCenter defaultCenter];
+    //添加当前类对象为一个观察者，name和object设置为nil，表示接收一切通知
+    [center addObserver:self selector:@selector(notice:) name:@"tuichu" object:nil];
+
+}
+-(void)notice:(id)sender
+{
+    tixing = [tuiChuTixing LoadView];
+    
+    [tixing YesBtnAddTarget:self action:@selector(tuichuMakeSure) forControlEvents:UIControlEventTouchUpInside];
+    tixing.x = (ScreenW-tixing.width)/2;
+    tixing.y = (ScreenH-tixing.height)/2;
+    
+    
+    
+    backView = [Function createBackView:self action:@selector(backClicked)];
+    
+    [[UIApplication sharedApplication].keyWindow addSubview:backView];
+    [[UIApplication sharedApplication].keyWindow addSubview:tixing];
+
+}
+-(void)tuichuMakeSure
+{
+    [tixing removeFromSuperview];
+    [backView removeFromSuperview];
+    
+    UIStoryboard *MainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UINavigationController* MainCotroller = [MainStoryboard instantiateViewControllerWithIdentifier:@"MainNav"];
+    // 设置窗口的根控制器
+    UIWindow *keyWindow = [[UIApplication sharedApplication]keyWindow];
+    keyWindow.rootViewController = MainCotroller;
+
+    [ADAccountTool deleteAccount];
+}
+-(void)backClicked
+{
+    
+}
+//////////////////////////////////////--end--其他账号登陆////////////////////////////////////////
 #pragma mark 高德地图
 - (void)configureAPIKey
 {
@@ -95,7 +148,7 @@ WXApiDelegate
 
 #pragma mark 微信支付
 -(void)weiXinPay{
-    [WXApi registerApp:WX_APP_ID withDescription:@"小木匠支付"];
+    [WXApi registerApp:WX_APP_ID withDescription:@"亿装支付"];
 }
 //微信支付回调
 -(void)onResp:(BaseResp *)resp{
@@ -137,6 +190,8 @@ WXApiDelegate
     [UMSocialWechatHandler setWXAppId:@"wx2863d9247c321b5c" appSecret:@"e5cf3a3ed66f1090275eb2bb997b2076" url:SHARE_URL];
     
 }
+
+
 //推送相关
 - (void)application:(UIApplication *)application
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -148,17 +203,23 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [APService handleRemoteNotification:userInfo];
+    
     NSLog(@"收到通知:%@", [self logDic:userInfo]);
     
     //[rootViewController addNotificationCount];
 }
 
+//点击通知进入app
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo
 fetchCompletionHandler:
 (void (^)(UIBackgroundFetchResult))completionHandler {
     [APService handleRemoteNotification:userInfo];
+    [APService resetBadge];
+    
     NSLog(@"收到通知:%@", [self logDic:userInfo]);
+    //设置角标
+    [UIApplication sharedApplication].applicationIconBadgeNumber=0;
     
     completionHandler(UIBackgroundFetchResultNewData);
 }
@@ -201,8 +262,11 @@ didRegisterUserNotificationSettings:
     return str;
 }
 
+
+
 -(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
     
+    NSLog(@"%@",url);
     //设置回调
     [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:nil];
     
@@ -211,17 +275,71 @@ didRegisterUserNotificationSettings:
 }
 -(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
     
+    NSLog(@"%@",url);
     
     BOOL result = [UMSocialSnsService handleOpenURL:url];
     if (result == FALSE) {
         
     }
+    
     if ([url.host isEqualToString:@"pay"]) {//微信支付
         return  [WXApi handleOpenURL:url delegate:self];
     }
+    
+    if ([url.host isEqualToString:@"safepay"]) {
+        //跳转支付宝钱包进行支付，处理支付结果
+        [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
+            NSLog(@"result = %@",resultDic);
+        }];
+        
+        return YES;
+    }
+    //银联支付
+    [[UPPaymentControl defaultControl] handlePaymentResult:url completeBlock:^(NSString *code, NSDictionary *data) {
+        
+        //结果code为成功时，先校验签名，校验成功后做后续处理
+        if([code isEqualToString:@"success"]) {
+            
+            //判断签名数据是否存在
+            if(data == nil){
+                //如果没有签名数据，建议商户app后台查询交易结果
+                return;
+            }
+            
+            //数据从NSDictionary转换为NSString
+            NSData *signData = [NSJSONSerialization dataWithJSONObject:data
+                                                               options:0
+                                                                 error:nil];
+            NSString *sign = [[NSString alloc] initWithData:signData encoding:NSUTF8StringEncoding];
+            
+            
+            
+            //验签证书同后台验签证书
+            //此处的verify，商户需送去商户后台做验签
+//            if([self verify:sign]) {
+//                //支付成功且验签成功，展示支付成功提示
+//            }
+//            else {
+//                //验签失败，交易结果数据被篡改，商户app后台查询交易结果
+//            }
+        }
+        else if([code isEqualToString:@"fail"]) {
+            //交易失败
+            [ITTPromptView showMessage:@"交易失败"];
+        }
+        else if([code isEqualToString:@"cancel"]) {
+            //交易取消
+            [ITTPromptView showMessage:@"交易取消"];
+
+        }
+    }];
+
+
+    
     return result;
     
 }
+
 
 
 - (void)applicationWillResignActive:(UIApplication *)application {

@@ -42,12 +42,19 @@
     
     NSRange range = NSMakeRange(2, attRstring.length-3);
     [ attRstring addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:range];
-
     self.date.text = MOdel.createtime;
+    self.date.font = [UIFont systemFontSizeWithScreen:15];
     self.Adress.text = MOdel.adr;
+    self.Adress.font = [UIFont systemFontSizeWithScreen:15];
     self.dingDanhao.text = MOdel.ordercode;
+    self.dingDanhao.font = [UIFont systemFontSizeWithScreen:13];
     self.yujitianshu.attributedText = attRstring;
+    self.yujitianshu.font = [UIFont systemFontSizeWithScreen:13];
     self.gongzhong.text = MOdel.gzname;
+    self.gongzhong.font = [UIFont systemFontSizeWithScreen:12];
+    
+    self.zhuangTai.font = [UIFont systemFontSizeWithScreen:13];
+
     
     if ([MOdel.baozhengjin intValue]>0) {
         [self.biaoZhiImageV setImage:[UIImage imageNamed:@"保"] forState:UIControlStateNormal];
@@ -64,6 +71,14 @@
     {
         self.jiesuanshuBtn.hidden = YES;
     }
+    
+//    if (self.deleteBtn.hidden) {
+//        self.rowHeit = self.frame.origin.y+10;
+//    }else
+//    {
+//        self.rowHeit = self.deleteBtn.frame.size.height +self.frame.origin.y+10;
+//    }
+    
 }
 
 @end

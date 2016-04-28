@@ -244,6 +244,8 @@
         }
         //雇主充值
         else{
+            //[ITTPromptView showMessage:@"维护中"];
+            
             My_pocket_recharge_Controller *recharge = [[My_pocket_recharge_Controller alloc]init];
             [self.navigationController pushViewController:recharge animated:YES];
         }

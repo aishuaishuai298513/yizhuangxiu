@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "left-拷贝.png",
+      "filename" : "left-拷贝-2.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "left-拷贝-1.png",
       "scale" : "2x"
     },
     {

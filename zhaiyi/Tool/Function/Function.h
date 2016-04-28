@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface Function : UIView
+@interface Function : UIView<UIAlertViewDelegate>
 
 /**
  *  自定义弹出
@@ -29,5 +29,6 @@
 //通过tag值设置星级
 +(void)xingji:(UIView *)view xingji:(int)xingji startTag:(int)starTag;
 
-
+//退出登陆
++(void)tuichuLogin;
 @end

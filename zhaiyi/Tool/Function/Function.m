@@ -8,9 +8,17 @@
 
 #import "Function.h"
 
+#import "My_Login_In_ViewController.h"
+
+#import "tuiChuTixing.h"
+
 #define  BLUE_COLOR [UIColor colorWithRed:80/255.0 green:210/255.0 blue:194/255.0 alpha:1]
 @interface Function ()
 
+{
+    tuiChuTixing *tixing ;
+    UIView *backView;
+}
 @end
 
 @implementation Function
@@ -140,18 +148,52 @@ UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:str delegate:
 //设置星级
 +(void)xingji:(UIView *)view xingji:(int)xingji startTag:(int)starTag
 {
+    
     for (int i = starTag; i<starTag+5; i++) {
-        UIImageView *imageV = (UIImageView *)[view viewWithTag:i];
-        imageV.image = [UIImage imageNamed:@"xing3"];
+        UIView *imageV = (UIView *)[view viewWithTag:i];
+        
+        if ([imageV isKindOfClass:[UIImageView class]]) {
+            
+            UIImageView *image = (UIImageView *)imageV;
+            
+             image.image = [UIImage imageNamed:@"xing3"];
+        }
+        
+        if ([imageV isKindOfClass:[UIButton class]]) {
+            UIButton *btn = (UIButton *)imageV;
+            //[btn setBackgroundImage:[UIImage imageNamed:@"xing3"] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:@"xing3"] forState:UIControlStateNormal];
+        }
         
     }
     
     for (int i = starTag; i<starTag+xingji; i++) {
-        UIImageView *imageV = (UIImageView *)[view viewWithTag:i];
         
-        imageV.image = [UIImage imageNamed:@"xing"];
+        UIView *imageV = (UIView *)[view viewWithTag:i];
+        
+        if ([imageV isKindOfClass:[UIImageView class]]) {
+            
+            UIImageView *image = (UIImageView *)imageV;
+            
+            image.image = [UIImage imageNamed:@"xing"];
+        }
+        
+        if ([imageV isKindOfClass:[UIButton class]]) {
+            UIButton *btn = (UIButton *)imageV;
+            //[btn setBackgroundImage:[UIImage imageNamed:@"xing"] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:@"xing3"] forState:UIControlStateNormal];
+        }
     }
 }
 
+
+//退出登陆
++(void)tuichuLogin
+{
+    //创建一个消息对象
+    NSNotification * notice = [NSNotification notificationWithName:@"tuichu" object:nil userInfo:nil];
+    //发送消息
+    [[NSNotificationCenter defaultCenter]postNotification:notice];
+}
 @end
 

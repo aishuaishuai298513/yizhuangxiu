@@ -80,7 +80,7 @@
     
     [_gongZhong setTitle:_cellModel.gzname forState:UIControlStateNormal];
     
-    if([_cellModel.baozhengjin intValue]<=0)
+    if([_cellModel.baozhengjin doubleValue]<=0)
     {
         self.BaoImage.hidden = YES;
     }else

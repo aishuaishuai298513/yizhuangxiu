@@ -31,7 +31,8 @@
 typedef NS_ENUM(NSUInteger, CellBtnState) {
     PAY,//支付
     DISCHARGE,//辞退
-    EVALUATE//评价
+    EVALUATE,//评价
+    NoButton
 };
 
 @interface DWOrderDetailTableViewController ()
@@ -77,6 +78,8 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 
 //遮盖
 @property (nonatomic, strong) UIView *BackView;
+
+@property (nonatomic, assign)CGFloat *headerHeight;
 @end
 
 @implementation DWOrderDetailTableViewController
@@ -92,12 +95,23 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.tableView.tableHeaderView = self.DWOrderHeaderView;
+    self.tableView.tableHeaderView.height =self.danRiGongzi.y+self.danRiGongzi.height+30;
     [self.navigationItem setTitle:@"订单详情"];
     [self.tableView registerNib:[UINib nibWithNibName:@"DWOrderDetailCell" bundle:nil] forCellReuseIdentifier:@"DWOrderDetailCell"];
     [self configueRightBtn];
     
     self.tableView.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
+    
+    if(iOS8)
+    {
+        self.tableView.estimatedRowHeight = 80;
+        self.tableView.rowHeight = UITableViewAutomaticDimension;
+    }else
+    {
+        self.tableView.rowHeight = 119;
+    }
    //[self creatOrderUi];
     
 }
@@ -112,18 +126,30 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 -(void)creatOrderUi
 {
     self.HeaderDate.text = self.OrderModel.createtime;
+    self.HeaderDate.font = [UIFont systemFontSizeWithScreen:14];
     
     self.headerDingdan.text = self.OrderModel.ordercode;
+    self.headerDingdan.font = [UIFont systemFontSizeWithScreen:12];
     
     self.HeaderAdress.text = self.OrderModel.adr;
+    self.HeaderAdress.font = [UIFont systemFontSizeWithScreen:15];
     
-    self.HeaderGongzuoneirong.text = self.OrderModel.gongzuoneirong;
+    self.HeaderGongzuoneirong.text = [NSString stringWithFormat:@"工作内容:%@",self.OrderModel.gongzuoneirong];
+    self.HeaderGongzuoneirong.font = [UIFont systemFontSizeWithScreen:14];
     
-    self.gongzhong.text = self.OrderModel.gzname;
+    self.gongzhong.text = [NSString stringWithFormat:@"工种:%@",self.OrderModel.gzname];
+    self.gongzhong.font = [UIFont systemFontSizeWithScreen:13];
+    
+    self.HeaderZhuangTai.font = [UIFont systemFontSizeWithScreen:13];
+    
+    [self.HeaderGongZhong setTitle:self.OrderModel.gzname forState:UIControlStateNormal];
     
     
-    self.danRiGongzi.text = [NSString stringWithFormat:@"单日工资:%d",[self.OrderModel.price intValue]];
+    self.danRiGongzi.text = [NSString stringWithFormat:@"单日工资:%.2f",[self.OrderModel.price floatValue]];
+    self.danRiGongzi.font = [UIFont systemFontSizeWithScreen:13];
+    
     self.HeaderRenshu.text = [NSString stringWithFormat:@"人数:%@",self.OrderModel.n];
+    self.HeaderRenshu.font = [UIFont systemFontSizeWithScreen:13];
     
     if ([self.OrderModel.baozhengjin intValue]>0) {
         [self.HeaderImageBtn setBackgroundImage:[UIImage imageNamed:@"保"] forState:UIControlStateNormal];
@@ -134,6 +160,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 }
 #pragma mark 设置右上角按钮状态
 - (void)configueRightBtn{
+    
     UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0,0, 80, 26)];
     self.rightButton = rightBtn;
     [rightBtn addTarget:self action:@selector(confirmCheck) forControlEvents:UIControlEventTouchUpInside];
@@ -142,7 +169,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     if (self.type == 1)
     {
         rightBtn.hidden = NO;
-         rightBtn.titleLabel.font = [UIFont systemFontOfSize:13];
+        rightBtn.titleLabel.font = [UIFont systemFontOfSize:13];
        [rightBtn setBackgroundImage:[UIImage imageNamed:@"确认开工.png"] forState:UIControlStateNormal];
        [rightBtn setTitle:@"确认开工" forState:UIControlStateNormal];
        [rightBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
@@ -169,6 +196,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     [self queRenZhaoYong];
 }
 
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     return self.UsersdataSource.count;
@@ -192,10 +220,12 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 //    13
     
     DetialUserInfoM *userInfoM = self.UsersdataSource[indexPath.row];
+    
     DWOrderDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWOrderDetailCell"];
     
     cell.yiCiTuiBtn.hidden = YES;
     cell.userInteractionEnabled = YES;
+    
 //    //已竣工
 //    if (self.type == 3) {
 //        
@@ -237,7 +267,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
             [cell.cellBtn setTitle:@"已辞退" forState:UIControlStateNormal];
             cell.cellBtn.userInteractionEnabled = NO;
             break;
-            //带结算
+            //待结算
         case 11:
             
             self.btnState = PAY;
@@ -280,18 +310,36 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     
     cell.cellBtn.tag = 100+indexPath.row;
     cell.typelb.text = userInfoM.gzname;
+    
+    //保证btn的位置
     cell.jieshao.text = userInfoM.ziwojieshao;
+    if (!cell.jieshao.text.length) {
+        cell.jieshao.text = @" ";
+    }
     cell.namelb.text = userInfoM.name;
+    
+    cell.namelb.font = [UIFont systemFontSizeWithScreen:17];
+    cell.typelb.font = [UIFont systemFontSizeWithScreen:16];
+    cell.jieshao.font = [UIFont systemFontSizeWithScreen:15];
+    NSLog(@"%@",userInfoM.xing);
+    [cell.iconImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YZX_BASY_URL,userInfoM.headpic]]];
+    cell.iconImage.layer.cornerRadius = cell.iconImage.width/2;
+    cell.iconImage.layer.masksToBounds = YES;
+    
+    [Function xingji:cell.contentView xingji:[userInfoM.xing intValue] startTag:1];
+
     return cell;
 }
 
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 72;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+//    return 72;
+//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    DetialUserInfoM *userInfoM = self.UsersdataSource[indexPath.row];
+    
     [self checkGongRenInfo:indexPath.row];
 }
 
@@ -394,16 +442,45 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     [self BackViewClicked];
 
 }
+#pragma mark 线下支付
+-(void)xianxiaPay
+{
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:_infoM.ID forKey:@"id"];
+    
+    [NetWork postNoParm:YZX_xianxia params:parm success:^(id responseObj) {
+        
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            [self BackViewClicked];
+            pop
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+}
 #pragma mark 支付凭证确认点击事件 去支付
 -(void)CertificateMakeSureClicked
 {
     [self BackViewClicked];
     
-    My_pocket_Controller *zhifu = [[My_pocket_Controller alloc]init];
-    zhifu.payInfoModel = self.payInfoModel;
-    zhifu.detilInfoModel = _infoM;
-    
-    [self.navigationController pushViewController:zhifu animated:YES];
+    if([self.payInfoModel.zhifufangshi isEqualToString:@"线下"])
+    {
+        [self xianxiaPay];
+        
+    }else
+    {
+        My_pocket_Controller *zhifu = [[My_pocket_Controller alloc]init];
+        zhifu.payInfoModel = self.payInfoModel;
+        zhifu.detilInfoModel = _infoM;
+        
+        [self.navigationController pushViewController:zhifu animated:YES];
+    }
     
 }
 
@@ -412,8 +489,10 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 {
         //工人信息
         DWEmployerDetailController *vc = [[DWEmployerDetailController alloc] initWithNibName:@"DWEmployerDetailController" bundle:nil];
-        
+    
+    
         vc.type = self.type;
+    
         vc.orderModel = self.UsersdataSource[indexpathRow];
         [self.navigationController pushViewController:vc animated:YES];
 

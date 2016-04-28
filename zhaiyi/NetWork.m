@@ -9,6 +9,7 @@
 #import "NetWork.h"
 #import "AFNetworking.h"
 #import "SVProgressHUD.h"
+#import "My_Login_In_ViewController.h"
 
 @implementation NetWork
 
@@ -529,6 +530,12 @@ static BOOL canUseNetWork =NO;
         
        [SVProgressHUD dismiss];
         if (success) {
+            
+            if([[responseObj objectForKey:@"result"]isEqualToString:@"-1"])
+            {
+                [Function tuichuLogin];
+                return ;
+            }
             success(responseObj);
         }
         NSLog(@"%@",responseObj);
@@ -542,6 +549,7 @@ static BOOL canUseNetWork =NO;
         }
     }];
 }
+
 
 
 //－－－－－－－－－－－－－－－－－－－－－－－－－－－－地图专用－－－－－－－－－－－－－－－－－－－－－－－－－－－－
@@ -563,6 +571,12 @@ static BOOL canUseNetWork =NO;
     [mgr POST:Url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObj) {
     
 
+        if([[responseObj objectForKey:@"result"]isEqualToString:@"-1"])
+        {
+            [Function tuichuLogin];
+            return ;
+        }
+        
         if (success) {
             success(responseObj);
         }

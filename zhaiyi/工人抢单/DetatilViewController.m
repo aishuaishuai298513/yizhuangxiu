@@ -172,7 +172,18 @@
     //星级
     self.xingji = _Model.xing;
     
+    self.iconImage.layer.cornerRadius = self.iconImage.width/2;
+    self.iconImage.layer.masksToBounds = YES;
     
+    //显示隐藏保证金
+
+    if ([_Model.baozhengjin doubleValue]>0) {
+        
+        self.baozhengjinBtn.hidden = NO;
+    }else
+    {
+       self.baozhengjinBtn.hidden = YES;
+    }
 }
 //设置星级
 -(void)setXingji:(NSString *)xingji
@@ -196,12 +207,13 @@
     
     [NetWork postNoParm:YZX_qiangdan params:parm success:^(id responseObj) {
         
-       // NSLog(@"%@",responseObj);
+        NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             
             //提示抢单成功
             grabOrderV = [grabOrderResult LoadView];
-            grabOrderV.frame = CGRectMake(50, 200, SCREEN_WIDTH -100, SCREEN_WIDTH -100);
+            //grabOrderV.frame = CGRectMake(50, 200, SCREEN_WIDTH -100, SCREEN_WIDTH -100);
+            grabOrderV.frame = CGRectMake((SCREEN_WIDTH-227)/2, 200, 227, 217);
             
            [grabOrderV YesBtnAddTarget:self action:@selector(makeSureClicked) forControlEvents:UIControlEventTouchUpInside];
             grabOrderV.info.text = [[responseObj objectForKey:@"data"]objectForKey:@"info"];
@@ -215,8 +227,16 @@
             
         }else
         {
+            //垃圾返回数据 需要判断data数组来判定信息类型
+            if([[responseObj objectForKey:@"data"] isKindOfClass:[NSArray class]]){
+                [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+                return ;
+            }
+            
             fileOrderV = [FileOrderResult LoadView];
-            fileOrderV.frame = CGRectMake(50, 200, SCREEN_WIDTH -100, SCREEN_WIDTH -100);
+            //fileOrderV.frame = CGRectMake(50, 200, SCREEN_WIDTH -100, SCREEN_WIDTH -100);
+            
+            fileOrderV.frame = CGRectMake((SCREEN_WIDTH-227)/2, 200, 227, 217);
             
             [fileOrderV YesBtnAddTarget:self action:@selector(makeSureClicked) forControlEvents:UIControlEventTouchUpInside];
             fileOrderV.info.text = [[responseObj objectForKey:@"data"]objectForKey:@"info"];
@@ -227,7 +247,7 @@
             [[[UIApplication sharedApplication]keyWindow]addSubview:backView];
             [[[UIApplication sharedApplication]keyWindow]addSubview:fileOrderV];
             
-            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            //[ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
         }
         
     } failure:^(NSError *error) {
@@ -247,6 +267,7 @@
     [backView removeFromSuperview];
     [grabOrderV removeFromSuperview];
     [fileOrderV removeFromSuperview];
+    pop
     
     self.baiBianBtn.userInteractionEnabled = NO;
     
@@ -274,7 +295,7 @@
     [parm setObject:self.orderModel.ID forKey:@"id"];
     
     [NetWork postNoParm:YZX_quxiaodingdan_gr params:parm success:^(id responseObj) {
-         NSLog(@"%@",responseObj);
+         //NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
         }

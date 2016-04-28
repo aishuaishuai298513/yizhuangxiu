@@ -19,5 +19,5 @@
 
 + (ITTPromptView *)showMessage:(NSString *)message;
 
-
+//+ (ITTPromptView *)showMessageWhitleColor:(NSString *)message;
 @end

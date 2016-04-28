@@ -184,7 +184,7 @@
 
 -(void)setTypeGongRen:(NSString *)TypeGongRen
 {
-    _MyAnnView.gongZhong.text = TypeGongRen;
+    _MyAnnView.gongzhong.text = TypeGongRen;
 }
 
 
@@ -200,9 +200,13 @@
         _MyAnnView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height+50);
         _MyAnnView.backgroundColor = [UIColor clearColor];
         
+        _MyAnnView.userInfo = self.userinfo;
+        
+        //NSLog(@"aaaasdsdadsd%@",_MyAnnView.userInfo);
         [_MyAnnView addTarget:self action:@selector(daTouZhenClicked)];
         
         [self addSubview:_MyAnnView];
+        
     }else if (datouzhentype == 2)
     {
         
@@ -214,8 +218,19 @@
         [_MyAnnViewGz removeFromSuperview];
         _MyAnnViewGz = [MyAnnotationViewWithGZ appView];
         _MyAnnViewGz.frame = CGRectMake(0, 0, 140, 47);
+        _MyAnnViewGz.userInfo = self.userinfo;
+        //SLog(@"％@",_MyAnnView.userInfo);
         //_MyAnnViewGz.backgroundColor = [UIColor clearColor];
          [self addSubview:_MyAnnViewGz];
     }
 }
+
+-(void)setUserinfo:(NSMutableDictionary *)userinfo
+{
+    _userinfo = userinfo;
+    //NSLog(@"%@",_userinfo);
+    
+    
+}
+
 @end

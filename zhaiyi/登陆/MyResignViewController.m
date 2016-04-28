@@ -11,7 +11,7 @@
 #import "ViewController.h"
 #import "APService.h"
 
-@interface MyResignViewController ()
+@interface MyResignViewController ()<UITextFieldDelegate>
 
 @property (nonatomic,assign)BOOL IsZhuCeXieYi;
 
@@ -24,10 +24,14 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *xieYiBtn;
 
+@property (nonatomic, strong)UITextField *TextFiled;
+
 //线
 @property (weak, nonatomic) IBOutlet UIView *guZhuLine;
 
 @property (weak, nonatomic) IBOutlet UIView *gongRenLine;
+
+
 
 - (IBAction)guZhuBtn:(id)sender;
 
@@ -53,7 +57,7 @@
     self.title = @"注册";
     self.isGhuZhu = YES;
     
-  self.navigationItem.leftBarButtonItem = [UIBarButtonItem itemWithImage:@"left" selectedImage:@"left" target:self action:@selector(back)];
+  self.navigationItem.leftBarButtonItem = [UIBarButtonItem itemWithImage:@"left红" selectedImage:@"left" target:self action:@selector(back)];
     
     self.xieYiBtn.userInteractionEnabled = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(XieYiBtnClicked)];
@@ -63,16 +67,23 @@
     //注册协议
     self.IsZhuCeXieYi = YES;
     
+    //注销第一响应
+    [self resignTheFirstResponser];
+    
+    self.telPhone.delegate = self;
+    self.yzmNum.delegate = self;
+    self.passWord.delegate = self;
+    
 }
 
 -(void)XieYiBtnClicked
 {
     _IsZhuCeXieYi = !_IsZhuCeXieYi;
     if (self.IsZhuCeXieYi) {
-        self.xieYiBtn.image = [UIImage imageNamed:@"找工人5"];
+        self.xieYiBtn.image = [UIImage imageNamed:@"check-1"];
     }else
     {
-        self.xieYiBtn.image = [UIImage imageNamed:@"找工人4"];
+        self.xieYiBtn.image = [UIImage imageNamed:@"矩形-1"];
     }
     
 }
@@ -88,29 +99,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
-//- (IBAction)guZhuBtn:(id)sender {
-//    
-//    self.isGhuZhu = YES;
-//    self.guZhuLine.alpha = 1;
-//    self.gongRenLine.alpha = 0.1;
-//}
-//
-//- (IBAction)gongRenBtn:(id)sender {
-//    
-//    self.isGhuZhu = NO;
-//    self.guZhuLine.alpha = 0.1;
-//    self.gongRenLine.alpha = 1;
-//}
 #pragma mark 获取验证码
 - (IBAction)getYzmbtn:(id)sender {
     
@@ -194,5 +182,60 @@
     }
     
    // [self resignFirstResponder];
+}
+
+//注销第一事件
+-(void)resignTheFirstResponser{
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapCancel:)];
+    [self.view addGestureRecognizer:tap];
+}
+-(void)tapCancel:(UITapGestureRecognizer *)sender{
+    
+    [self.view endEditing:YES];
+    
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    
+    _TextFiled = textField;
+    
+    //监听键盘
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+    NSLog(@"123");
+}
+
+-(void)keyboardShow:(NSNotification *)note
+{
+    
+    CGRect keyBoardRect=[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat deltaY=keyBoardRect.origin.y;
+
+    [UIView animateWithDuration:[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
+        
+        if ((deltaY-_TextFiled.y-_TextFiled.height)<0) {
+            self.view.y = deltaY-(_TextFiled.y+_TextFiled.height);
+        }
+    }];
+
+    
+}
+
+-(void)keyboardHide:(NSNotification *)note
+{
+    CGRect keyBoardRect=[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat deltaY=keyBoardRect.origin.y;
+    
+    // CGRect keyBoardRect=[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [UIView animateWithDuration:[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
+        self.view.y = 0;
+    } completion:^(BOOL finished) {
+        //
+    }];
 }
 @end

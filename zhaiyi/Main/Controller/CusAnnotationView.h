@@ -25,4 +25,6 @@
 //大头针类型
 @property (nonatomic, assign) int datouzhentype;
 
+@property (nonatomic, strong)NSMutableDictionary *userinfo;
+
 @end

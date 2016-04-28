@@ -229,4 +229,13 @@
      return [NSDate dateWithTimeIntervalSince1970:ts];
  }
 
++(NSString *)stringWithNowData
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    //设定时间格式,这里可以设置成自己需要的格式
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    //用[NSDate date]可以获取系统当前时间
+     return [dateFormatter stringFromDate:[NSDate date]];
+}
+
 @end

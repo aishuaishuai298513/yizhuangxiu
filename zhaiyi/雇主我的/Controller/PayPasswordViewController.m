@@ -82,7 +82,7 @@
 - (IBAction)getCode:(id)sender {
     
     NSString *mobil = _account.mobile;
-    NSLog(@"%@",mobil);
+    SLog(@"%@",mobil);
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     
     [parm setObject:mobil forKey:@"mobile"];

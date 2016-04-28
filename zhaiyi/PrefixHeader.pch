@@ -20,6 +20,9 @@
 #import "UIImage+Extension.h"
 #import "UIView+Extension.h"
 #import "NSString+ITTAddtion.h"
+#import "NSDate+ITTAdditions.h"
+//字体大小
+#import "UIFont+Extension.h"
 #import "NetWork.h"
 #import "MJExtension.h"
 #import "AFNetFirst.h"
@@ -60,6 +63,7 @@
 //颜色色值
 #define ZYgreenColor [UIColor myColorWithString:@"55D1C2"]
 #define  BLUE_COLOR [UIColor colorWithRed:80/255.0 green:210/255.0 blue:194/255.0 alpha:1]
+#define huiseColor [UIColor colorWithRed:246/255.0 green:246/255.0 blue:246/255.0 alpha:1]
 
 //代替nslog
 #ifdef DEBUG
@@ -68,5 +72,6 @@
 #define SLog(...)
 #endif
 
+#define iOS8 ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0)
 
 #endif /* PrefixHeader_pch */

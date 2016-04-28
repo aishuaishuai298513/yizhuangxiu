@@ -111,6 +111,10 @@ UIAlertViewDelegate
 -(void)MakeUI
 {
     self.view.backgroundColor=[UIColor whiteColor];
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
+    self.edgesForExtendedLayout = UIRectEdgeTop;
  
     _imageFilePath = nil;
     _em_imageFilePath = nil;
@@ -120,10 +124,11 @@ UIAlertViewDelegate
     passWord = [userDefaults objectForKey:@"passWord"];
 
 
-    tb=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, kU, Ga)];
+    tb=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, kU, Ga)];
     tb.delegate=self;
     tb.dataSource=self;
     tb.bounces=NO;
+    tb.scrollEnabled = YES;
     [self.view addSubview:tb];
     
 }
@@ -193,6 +198,7 @@ UIAlertViewDelegate
 
 
 -(void)initalData{
+    
     //获取用户信息
     //[self getUserInfo];
     //默认不显示切换
@@ -201,6 +207,7 @@ UIAlertViewDelegate
     _account = [ADAccountTool account];
     //获取登录信息
    // _imageUrl = _account.picture;
+    
     _id = _account.userid;
     
     userid = _account.userid;
@@ -393,7 +400,7 @@ UIAlertViewDelegate
         return 130;
     }else
     {
-        return 60;
+        return 55;
     }
 }
 
@@ -626,6 +633,9 @@ UIAlertViewDelegate
 {
     ADAccount *acount = [ADAccountTool account];
     
+    if (!acount) {
+        return;
+    }
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     [parm setObject:acount.userid forKey:@"userid"];
     [parm setObject:acount.token forKey:@"token"];

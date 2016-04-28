@@ -15,6 +15,8 @@
 @property (weak, nonatomic) IBOutlet UITextField *UserName;
 @property (weak, nonatomic) IBOutlet UITextField *passWord;
 
+
+
 //@property (weak, nonatomic) IBOutlet UIButton *Guzhu;
 //
 //@property (weak, nonatomic) IBOutlet UIButton *GongRen;
@@ -32,6 +34,8 @@
 - (void)awakeFromNib {
     // Initialization code
     _IsGuzhu = YES;
+    self.dengLuBtn.layer.cornerRadius = 8;
+    self.dengLuBtn.layer.masksToBounds = YES;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

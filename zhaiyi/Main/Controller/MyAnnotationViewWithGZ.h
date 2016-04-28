@@ -19,6 +19,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *name;
 @property (weak, nonatomic) IBOutlet UILabel *type;
 
+@property (nonatomic, strong)NSDictionary *userInfo;
+
 -(void)showXingxing :(int)num;
 
 @end

@@ -39,16 +39,25 @@
 
 -(void)setOrderModel:(DWOrderModel *)OrderModel
 {
-     self.yiCiTuiBtn.hidden = YES;
+    self.yiCiTuiBtn.hidden = YES;
     
     _OrderModel = OrderModel;
     
-     self.Timelabel.text = OrderModel.kaigongriqi;
+    self.Timelabel.text = OrderModel.kaigongriqi;
+    self.Timelabel.font = [UIFont systemFontSizeWithScreen:13];
 
-     self.orderNumlb.text = _OrderModel.ordercode;
-     self.AdressLb.text = _OrderModel.adr;
-     self.workNumLb.text = _OrderModel.n;
-    self.priceLb.text = [NSString stringWithFormat:@"价格:%d元／天",[_OrderModel.price intValue]];
+    self.orderNumlb.text = _OrderModel.ordercode;
+    self.orderNumlb.font = [UIFont systemFontSizeWithScreen:10];
+    
+    self.AdressLb.text = _OrderModel.adr;
+    self.AdressLb.font = [UIFont systemFontSizeWithScreen:15];
+    
+
+    self.workNumLb.text = [NSString stringWithFormat:@"工作人数:%@",_OrderModel.n];
+    self.workNumLb.font = [UIFont systemFontSizeWithScreen:13];
+    self.priceLb.text = [NSString stringWithFormat:@"价格%.2f元／天",[_OrderModel.price floatValue]];
+    self.priceLb.font = [UIFont systemFontSizeWithScreen:13];
+    
      [self.gongZhongLb setTitle:[NSString stringWithFormat:@"%@",_OrderModel.gzname] forState:
      UIControlStateNormal];
     
@@ -91,6 +100,7 @@
     if ([self.OrderModel.status isEqualToString:@"10"]) {
         self.yiCiTuiBtn.hidden = NO;
     }
+    
     
     
 }

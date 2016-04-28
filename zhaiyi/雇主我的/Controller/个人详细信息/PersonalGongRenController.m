@@ -56,9 +56,20 @@ UIAlertViewDelegate
     ADAccount *_account;
     
     CGFloat imageRowHeigh;
-    
     //黑色遮盖
     UIView *backView;
+    
+    //所需传参数
+//    NSString *name;
+//    NSString *sex;
+//    NSString *age;
+//    NSString *gzname;
+//    NSString *xianjuzhudi;
+//    NSString *huji;
+//    NSString *gongling;
+//    NSString *xueli;
+//    NSString *shenfenzheng;
+//    NSString *ziwojieshao;
 }
 
 @property (nonatomic, strong)UserInfoGr *userInfoGr;
@@ -181,8 +192,19 @@ UIAlertViewDelegate
 -(void)setData{
     
     NSArray *array = @[self.userInfoGr.name,self.userInfoGr.sex,self.userInfoGr.age,self.userInfoGr.gzname,self.userInfoGr.huji,self.userInfoGr.xianjuzhudi,self.userInfoGr.gongling,self.userInfoGr.xueli,self.userInfoGr.shenfenzheng,@"",self.userInfoGr.ziwojieshao];
+    
+//    name = self.userInfoGr.name;
+//    sex = self.userInfoGr.sex;
+//    age = self.userInfoGr.age;
+//    gzname = self.userInfoGr.gzname;
+//    xianjuzhudi = self.userInfoGr.xianjuzhudi;
+//    gongling = self.userInfoGr.gongling;
+//    xueli = self.userInfoGr.xueli;
+//    shenfenzheng = self.userInfoGr.shenfenzheng;
+//    ziwojieshao = self.userInfoGr.ziwojieshao;
+    
     _contentArr = [NSMutableArray array];
-    [_contentArr addObjectsFromArray:array];
+   [_contentArr addObjectsFromArray:array];
     
     //图片数组
     if(self.userInfoGr.zizhizhengshu)
@@ -202,16 +224,16 @@ UIAlertViewDelegate
 //tag 值用到  370 - 379 (378除外)
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    static NSString *reusID = @"personCell";
-    static NSString *reusID2 = @"personCell8";
-    static NSString *makeSureID = @"makeSureID";
-
+//    static NSString *reusID = @"personCell";
+//    static NSString *reusID2 = @"personCell8";
+//    static NSString *makeSureID = @"makeSureID";
+         PersonaldetailsCell *cell = [PersonaldetailsCell loadPersonaldetailsCell];
+    
     if (indexPath.row != 9&&indexPath.row !=_titleArr.count) {
 //        PersonaldetailsCell *cell = [tableView dequeueReusableCellWithIdentifier:reusID];
 //        if (!cell) {
 //           
 //        }
-         PersonaldetailsCell *cell = [PersonaldetailsCell loadPersonaldetailsCell];
           cell.textfield.text = _contentArr [indexPath.row];
           cell.nameLabel.text = _titleArr [indexPath.row];
         
@@ -247,23 +269,24 @@ UIAlertViewDelegate
             cell.textfield.enabled = YES;
             cell.textfield.keyboardType = UIKeyboardTypeNumberPad;
         }
+        
         cell.textfield.delegate = self;
         cell.textfield.tag = 371 + indexPath.row;
         return cell;
     }else if (indexPath.row ==_titleArr.count)
     {
-        PersonalMakeSureCell *cell = [tableView dequeueReusableCellWithIdentifier:makeSureID];
-        if (!cell) {
-            cell = [PersonalMakeSureCell cellLoad];
-        }
+        PersonalMakeSureCell *cell = [PersonalMakeSureCell cellLoad];
+//        if (!cell) {
+//            cell = [PersonalMakeSureCell cellLoad];
+//        }
         [cell addTarget:self action:@selector(clickFinish) forControlEvents:UIControlEventTouchUpInside];
         return cell;
     }
     else {
-        PersonalDetails2Cell *cell2 = [tableView dequeueReusableCellWithIdentifier:reusID2];
-        if (!cell2) {
-            cell2 = [PersonalDetails2Cell loadPersonaldetailsCell];
-        }
+        PersonalDetails2Cell *cell2 = [PersonalDetails2Cell loadPersonaldetailsCell];
+//        if (!cell2) {
+//            cell2 = [PersonalDetails2Cell loadPersonaldetailsCell];
+//        }
         cell2.selectionStyle = UITableViewCellSelectionStyleNone;
         cell2.nameLb.text = _titleArr[indexPath.row];
         [cell2.addPicBtn addTarget:self  action:@selector(addPicture:) forControlEvents:UIControlEventTouchUpInside];
@@ -356,36 +379,7 @@ UIAlertViewDelegate
                 
             }
         } else {
-//            for (int i = 0; i<_picArr.count+1; i++) {
-//                
-//                //行号
-//                hangNum = i/lieshu;
-//                //列号
-//                lieNum = i%lieshu;
-//                
-//                
-//                if (i==_picArr.count) {
-//                    
-//                    if(i==9)
-//                    {
-//                    imgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, 0);
-//                    }else
-//                    {
-//                    imgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, ImageWith);
-//                    }
-//                    [cell2.contentView addSubview:imgV];
-//                    imageRowHeigh =imgV.frame.origin.y+imgV.frame.size.height+10;
-//                }else
-//                {
-//                    UIImageView *svImgV = [[UIImageView alloc]init];
-//                    svImgV.backgroundColor = [UIColor orangeColor];
-//                    svImgV.frame = CGRectMake((cell2.nameLb.width+5)+lieNum*(ImageWith+colpan), 10+hangNum*(ImageHeigh+colpan), ImageWith, ImageHeigh);
-//                    
-//                    svImgV.image = [UIImage imageWithData:[_picArr objectAtIndex:i]];
-//                    [cell2.contentView addSubview:svImgV];
-//                }
-//            }
-            
+
             
         }
         
@@ -461,13 +455,16 @@ UIAlertViewDelegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 //
+    
+    PersonaldetailsCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+    
     switch (indexPath.row) {
         case 1:{
             NSLog(@"选择性别");
             
             _isSex = YES;
             
-           backView = [Function createBackView:self action:@selector(backClicked)];
+            backView = [Function createBackView:self action:@selector(backClicked)];
             backView.alpha = 0.8;
             
             _pView.height = 150;
@@ -482,13 +479,17 @@ UIAlertViewDelegate
             [UIView animateWithDuration:1 animations:^{
                 _pView.hidden = NO;
             }];
+            
+            cell.textfield.text =_sexTypeArr[0];
         }
             break;
         case 3:{
             _isSex = NO;
             
             //获得工种
-            [self networkGongZhong];
+            [self networkGongZhong:cell.textfield ];
+            
+            //[self.gongZongDataSource[row] objectForKey:@"gzname"]
 
                 }
             break;
@@ -498,7 +499,7 @@ UIAlertViewDelegate
 }
 
 #pragma mark 请求工种
--(void)networkGongZhong
+-(void)networkGongZhong :(UITextField *)textFiled
 {
     //获得工种
     ADAccount *acount = [ADAccountTool account];
@@ -511,6 +512,8 @@ UIAlertViewDelegate
             NSLog(@"%@",responseObj);
             self.gongZongDataSource = [responseObj objectForKey:@"data"];
             [weakSelf pickViewGongZhong];
+            //获取第一条数据
+            textFiled.text =[self.gongZongDataSource[0] objectForKey:@"gzname"];
         }
     } failure:^(NSError *error) {
         
@@ -669,29 +672,30 @@ UIAlertViewDelegate
 -(void)customPickerView{
     NSLog(@"customPickerView");
     _pView = [[UIView alloc]init];
-    UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _pView.frame = CGRectMake(60, 150, SCREEN_WIDTH-120, 100);
+    
+    UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     leftBtn.frame = CGRectMake(10, 0, 60, 30);
-    [leftBtn setTitle:@"取消" forState:UIControlStateNormal];
+    [leftBtn setTitle:@"确定" forState:UIControlStateNormal];
     leftBtn.titleLabel.font = [UIFont systemFontOfSize:17];
-    [leftBtn setTitleColor:BLUE_COLOR forState:UIControlStateNormal];
+    [leftBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [leftBtn addTarget:self action:@selector(cancelChoosePicker) forControlEvents:UIControlEventTouchUpInside];
     [_pView addSubview:leftBtn];
     
-    UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    rightBtn.frame = CGRectMake(_pView.width - 70, 0, 60, 30);
-    [rightBtn setTitle:@"确定" forState:UIControlStateNormal];
-    rightBtn.titleLabel.font = [UIFont systemFontOfSize:17];
-    [rightBtn setTitleColor:BLUE_COLOR forState:UIControlStateNormal];
-    [rightBtn addTarget:self action:@selector(ensureChoosePicker) forControlEvents:UIControlEventTouchUpInside];
-    [_pView addSubview:rightBtn];
+//    UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    rightBtn.frame = CGRectMake(_pView.width - 70, 0, 60, 30);
+//    [rightBtn setTitle:@"确定" forState:UIControlStateNormal];
+//    rightBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+//    [rightBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+//    [rightBtn addTarget:self action:@selector(ensureChoosePicker) forControlEvents:UIControlEventTouchUpInside];
+//    [_pView addSubview:rightBtn];
     
     _pView.backgroundColor = [UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1.0];
     _pickerView.frame = CGRectMake(0, 30, _pView.width, _pView.height);
     _pickerView.backgroundColor = [UIColor whiteColor];
     [_pView addSubview:_pickerView];
     
-   // [self.view addSubview:_pView];
+    [self.view addSubview:_pView];
     _pView.hidden = YES;
 }
 //
@@ -787,16 +791,20 @@ UIAlertViewDelegate
 -(void)getTextFieldText{
     //姓名
     UITextField *nameField = [self.view viewWithTag:371];
+    NSLog(@"%@",nameField.text);
     if ([nameField.text isEqualToString:@""]) {
+        
         [ITTPromptView showMessage:@"姓名不能为空"];
         return;
     }
+    
     if (nameField !=nil) {
         [_params setObject:nameField.text forKey:@"name"];
     }
     
     //性别
     UITextField *sexField = [self.view viewWithTag:372];
+    NSLog(@"%@",sexField.text);
     if ([sexField.text isEqualToString:@""]) {
         [ITTPromptView showMessage:@"性别不能为空"];
         return;
@@ -911,6 +919,13 @@ UIAlertViewDelegate
 
 #pragma mark 上传信息
 -(void)postData{
+    
+    if (([[_params objectForKey:@"age"]intValue]-13)<[[_params objectForKey:@"gongling"]intValue]) {
+        
+        [ITTPromptView showMessage:@"工龄不合法"];
+        return;
+    }
+    
    //[_params setObject:ID forKey:@"gongzhongid"];
     
     if (![_params objectForKey:@"gongzhongid"]) {
@@ -932,21 +947,21 @@ UIAlertViewDelegate
 //         [_picArr addObject:imageData];
 //    }
     
-    NSLog(@"%ld",_picArr.count);
-    
-    NSLog(@"上传图片数量: %ld",_picArr.count);
+//    NSLog(@"%ld",_picArr.count);
+//    
+//    NSLog(@"上传图片数量: %ld",_picArr.count);
     ADAccount *acount = [ADAccountTool account];
     [_params setObject:acount.userid forKey:@"userid"];
     [_params setObject:acount.token forKey:@"token"];
     [_params setObject:@"ios" forKey:@"apptype"];
-    NSLog(@"%@",_params);
+   // NSLog(@"%@",_params);
      [AFNetFirst typearrPicturePOST:YZX_gerenzhiliao_gr_baocun parameters:_params withPicureData:_picArr withKeyArray:keyArr finish:^(NSData *data, NSError *error) {
      
          NSDictionary * dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         
          [ITTPromptView showMessage:dict[@"message"]];
          if ([[dict objectForKey:@"result"]isEqualToString:@"1"]) {
-             NSLog(@"上传成功");
+             //NSLog(@"上传成功");
              [self.navigationController popViewControllerAnimated:YES];
          }
          NSLog(@"工人修改信息%@",dict);

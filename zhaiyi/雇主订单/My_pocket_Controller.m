@@ -13,6 +13,7 @@
 #import <AlipaySDK/AlipaySDK.h>
 #import "WXApi.h"
 #import "WXApiObject.h"
+#import "UPPaymentControl.h"
 //支付View
 #import "ZSDPaymentView.h"
 
@@ -50,6 +51,9 @@ UIAlertViewDelegate
 }
 //支付方式
 @property (nonatomic,assign)Paytype paytype;
+
+//银联支付参数
+@property(nonatomic, copy)NSString *tnMode;
 
 
 
@@ -198,7 +202,6 @@ UIAlertViewDelegate
     
                 return 1;
             };
-            
             payment.title = @"输入密码";
             //payment.goodsName = @"商品名称";
             payment.amount = [self.payInfoModel.gongji floatValue];
@@ -207,16 +210,16 @@ UIAlertViewDelegate
             return;
         }
         if (self.paytype == YINLIANPAY) {
-            NSLog(@"银联 充值金额为:%@",_moneyTF.text);
-            [ITTPromptView showMessage:@"银联支付暂未开通"];
-            //        [self orderDetail];
+          
+                   [self yilianOrder];
         }else if (self.paytype == WEIXINPAY){
-            NSLog(@"微信 充值金额为:%@",_moneyTF.text);
+        
             [self weixinPayDemo];
-            //        [self orderDetail];
+           
         } else if (self.paytype == ZHIFUBAOPAY){
             NSLog(@"支付宝充值金额为:%@",_moneyTF.text);
-            [self orderDetail];
+           
+            [self zhifubaoGetOrder];
         }else {
             [ITTPromptView showMessage:@"请选择支付方式" ];
         }
@@ -224,38 +227,76 @@ UIAlertViewDelegate
     }
     
 }
-//获取订单
--(void)orderDetail{
+-(void)yilianOrder
+{
+    ADAccount *acount = [ADAccountTool account];
     
-    if (self.paytype == ZHIFUBAOPAY) {
-        [_parames setObject:@"100" forKey:@"type"];
-    }
-    if (self.paytype == YINLIANPAY) {
-        [_parames setObject:@"101" forKey:@"type"];
-    }
-    if (self.paytype == WEIXINPAY) {
-        [_parames setObject:@"102" forKey:@"type"];
-    }
-    [_parames setObject:_moneyTF.text forKey:@"money"];
-    [NetWork postNoParm:PAY_POST_URL params:_parames success:^(id responseObj) {
-        NSLog(@"res : %@",responseObj);
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.payInfoModel.gongji forKey:@"money"];
+    [parm setObject:self.payInfoModel.jiaoyidanhao forKey:@"ordercode"];
+    
+    __weak typeof (self)weakSelf = self;
+    NSLog(@"银联 待上传信息 %@",parm);
+    
+    [NetWork postNoParm:YZX_yinlianzhifu params:parm success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            NSLog(@"%@",responseObj);
             _payResultDict = [responseObj objectForKey:@"data"];
-            
-            if (self.paytype == ZHIFUBAOPAY) {
-                [self alipay];
-            }
-//             else if (_wxBtn.selected){
-//                [self weiXinPay];
-//            }
+            [weakSelf yinlianPay];
         }
-        NSLog(@"订单生成: %@",_payResultDict);
+        NSLog(@"%@",responseObj);
         
-        } failure:^(NSError *error) {
-            NSLog(@"订单生成失败: %@",error.localizedDescription);
-        }];
+    } failure:^(NSError *error) {
+        
+    }];
+
 }
 
+-(void)zhifubaoGetOrder
+{
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.payInfoModel.gongji forKey:@"money"];
+    [parm setObject:self.payInfoModel.jiaoyidanhao forKey:@"ordercode"];
+    __weak typeof (self)weakSelf = self;
+     NSLog(@"支付宝支付 待上传信息 %@",parm);
+    
+    [NetWork postNoParm:YZX_zhifubaozhifu params:parm success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            _payResultDict = [responseObj objectForKey:@"data"];
+            [weakSelf alipay];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
+
+-(void)yinlianPay
+{
+    //当获得的tn不为空时，调用支付接口
+    NSString *tn =[_payResultDict objectForKey:@"tn"];
+    //self.tnMode = [_payResultDict objectForKey:@"merId"];
+    
+      self.tnMode = @"00";
+    //上线
+     //self.tnMode = @"01";
+    
+    if (tn != nil && tn.length > 0)
+    {
+        [[UPPaymentControl defaultControl]
+         startPay:tn
+         fromScheme:@"UPPayDemo"
+         mode:self.tnMode
+         viewController:self];
+    }
+}
 
 -(void)yuEpay:(NSString *)mima
 {
@@ -290,29 +331,33 @@ UIAlertViewDelegate
 //支付宝
 -(void)alipay{
     Order *order = [[Order alloc]init];
-    order.partner = PARTNER_ID;
+    // order.partner = PARTNER_ID;
+    order.partner = [_payResultDict objectForKey:@"pid"];
     order.seller = SELLER;
+    //order.seller = [_payResultDict objectForKey:@"pid"];
     //订单号
-    NSString *orderNum = [_payResultDict objectForKey:@"out_trade_no"];
+    NSString *orderNum = [_payResultDict objectForKey:@"ordercode"];
     NSLog(@"-------%@",orderNum);
     order.tradeNO = orderNum;
-    order.productName = @"充值";
-    order.productDescription = @"为小木匠充值";
+    order.productName = @"支付";
+    order.productDescription = @"支付工人工资";
     //交易金额
-    order.amount = _moneyTF.text;
+    order.amount = [_payResultDict objectForKey:@"money"];
     //回调
-    order.notifyURL = REBACK_URL;
+    //order.notifyURL = REBACK_URL;
+    order.notifyURL = [_payResultDict objectForKey:@"notifyurl"];
     order.service = @"mobile.securitypay.pay";
     order.paymentType = @"1";
     order.inputCharset = @"utf-8";
     order.itBPay = @"30m";
     order.showUrl = @"m.alipay.com";
     //App URL Scheme
-    NSString *appScheme = @"AliPayTest";//返回App的标识
+    //alisdkdemo
+    NSString *appScheme = @"alisdkdemo";//返回App的标识
     NSString *orderDes = [order description];
     //签名
-    id <DataSigner> dataSinger = CreateRSADataSigner(PRIVATE_ALIPAY_KEY);
-    
+    //id <DataSigner> dataSinger = CreateRSADataSigner(PRIVATE_ALIPAY_KEY);
+    id <DataSigner> dataSinger = CreateRSADataSigner([_payResultDict objectForKey:@"pkcs8"]);
     NSString *singerStr = [dataSinger signString:orderDes];
     NSString *orderString = nil;
     if (singerStr != nil) {
@@ -326,9 +371,11 @@ UIAlertViewDelegate
             NSInteger orderStatus = [[resultDic objectForKey:@"resultStatus"]integerValue];
             switch (orderStatus) {
                 case 9000:{
+                    
                     //支付成功
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:message delegate:self cancelButtonTitle:@"返回" otherButtonTitles:@"再次充值", nil];
-                [alert show];
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:message delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    
+                    [alert show];
 
                 }
                     break;
@@ -352,27 +399,48 @@ UIAlertViewDelegate
 //微信支付
 -(void)weixinPayDemo{
     
-    NSMutableDictionary *paramater = [NSMutableDictionary dictionary];
-    [paramater setObject:_account.userid forKey:@"user_id"];
-    [paramater setObject:_moneyTF.text forKey:@"money"];
-    //[paramater setObject:_account.nickname forKey:@"nickname"];
-    [paramater setObject:@"102" forKey:@"type"];
-    NSLog(@"微信支付 待上传信息 %@",paramater);
-    [NetWork postNoParm:PAY_POST_URL params:paramater success:^(id responseObj) {
-       
-        NSLog(@"微信生成信息: %@",responseObj);
-        if ([[responseObj objectForKey:@"code"]isEqualToString:@"1000"]) {
+    ADAccount *acount = [ADAccountTool account];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:self.payInfoModel.gongji forKey:@"money"];
+    [parm setObject:self.payInfoModel.jiaoyidanhao forKey:@"ordercode"];
+    
+    NSLog(@"微信支付 待上传信息 %@",parm);
+    [NetWork postNoParm:YZX_weixinzhifu params:parm success:^(id responseObj) {
+        
+        //NSLog(@"微信生成信息: %@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             PayReq *request = [[PayReq alloc]init];
             
             NSDictionary *dict = [responseObj objectForKey:@"data"];
             
-            request.partnerId = @"1303015401";
+            //request.partnerId = @"1303015401";
+            request.partnerId = [dict objectForKey:@"partnerid"];
             request.prepayId = [dict objectForKey:@"prepayid"];
-            request.package = @"Sign=WXPay";
+            //request.package = @"Sign=WXPay";
+            request.package = [dict objectForKey:@"package"];
             request.nonceStr = [dict objectForKey:@"noncestr"];
             request.timeStamp = (UInt32)[[dict objectForKey:@"timestamp"]longLongValue];
             request.sign = [dict objectForKey:@"sign"];
-            [WXApi sendReq:request];
+            
+            if([WXApi isWXAppInstalled])
+            {
+                if ([WXApi isWXAppSupportApi ]) {
+    
+                    [WXApi sendReq:request];
+                }else
+                {
+                    [ITTPromptView showMessage:@"微信客户端版本不支持"];
+                }
+                
+            }else
+            {
+                [ITTPromptView showMessage:@"微信客户端未安装"];
+            }
+            
+            
         }
     } failure:^(NSError *error) {
         

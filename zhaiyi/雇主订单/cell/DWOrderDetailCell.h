@@ -10,6 +10,8 @@
 
 @interface DWOrderDetailCell : UITableViewCell
 
+@property (weak, nonatomic) IBOutlet UIImageView *iconImage;
+
 @property (weak, nonatomic) IBOutlet UILabel *namelb;
 
 @property (weak, nonatomic) IBOutlet UILabel *typelb;

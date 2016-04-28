@@ -51,7 +51,7 @@
     CGFloat bgWidth = bgView.size.width;
     
     UILabel *titleLb = [[UILabel alloc]initWithFrame:CGRectMake((bgWidth-200)/2, 40,200, 20)];
-    titleLb.text = @"分享即赠送50积分";
+    titleLb.text = @"分享亿装给朋友";
     titleLb.textAlignment = NSTextAlignmentCenter;
     [bgView addSubview:titleLb];
 
@@ -124,7 +124,7 @@
 //    share_url.url = SHARE_URL;
     
     NSLog(@"QQ 分享");
-    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToQQ] content:@"小木匠" image:[UIImage imageNamed:@"水滴"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
+    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToQQ] content:@"亿装" image:[UIImage imageNamed:@"匠"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
         if (response.responseCode == UMSResponseCodeSuccess) {
             NSLog(@"分享成功");
             
@@ -139,7 +139,7 @@
     
     NSLog(@"QQ 空间分享");
     
-    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToQzone] content:@"小木匠" image:[UIImage imageNamed:@"水滴"]  location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
+    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToQzone] content:@"亿装" image:[UIImage imageNamed:@"匠"]  location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
         if (response.responseCode == UMSResponseCodeSuccess) {
             NSLog(@"分享成功");
             
@@ -156,7 +156,7 @@
     NSLog(@"微信分享");
     [UMSocialData defaultData].extConfig.wechatSessionData.url = SHARE_URL;
 
-    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToWechatSession] content:@"小木匠" image:[UIImage imageNamed:@"水滴"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
+    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToWechatSession] content:@"亿装" image:[UIImage imageNamed:@"匠"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
         if (response.responseCode == UMSResponseCodeSuccess) {
             NSLog(@"分享成功");
             
@@ -168,7 +168,7 @@
 //朋友圈
 -(void)WechatTimeline{
     NSLog(@"朋友圈分享");
-    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToWechatTimeline] content:@"小木匠" image:[UIImage imageNamed:@"水滴"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
+    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToWechatTimeline] content:@"亿装" image:[UIImage imageNamed:@"匠"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
         if (response.responseCode == UMSResponseCodeSuccess) {
             NSLog(@"分享成功");
             

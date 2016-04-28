@@ -228,19 +228,19 @@ UITextFieldDelegate
     
     _pView = [[UIView alloc]initWithFrame:CGRectMake(0, Ga-240, kU, 240)];
     _pickerView = [[UIPickerView alloc]initWithFrame:CGRectMake(0, 40, kU, 200)];
-    UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    leftBtn.frame = CGRectMake(10, 0, 60, 30);
-    [leftBtn setTitle:@"取消" forState:UIControlStateNormal];
-    leftBtn.titleLabel.font = [UIFont systemFontOfSize:17];
-    [leftBtn setTitleColor:BLUE_COLOR forState:UIControlStateNormal];
-    [leftBtn addTarget:self action:@selector(cancelChoosePicker) forControlEvents:UIControlEventTouchUpInside];
-    [_pView addSubview:leftBtn];
+//    UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    leftBtn.frame = CGRectMake(10, 0, 60, 30);
+//    [leftBtn setTitle:@"取消" forState:UIControlStateNormal];
+//    leftBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+//    [leftBtn setTitleColor:BLUE_COLOR forState:UIControlStateNormal];
+//    [leftBtn addTarget:self action:@selector(cancelChoosePicker) forControlEvents:UIControlEventTouchUpInside];
+//    [_pView addSubview:leftBtn];
     
     UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     rightBtn.frame = CGRectMake(kU - 70, 0, 60, 30);
     [rightBtn setTitle:@"确定" forState:UIControlStateNormal];
     rightBtn.titleLabel.font = [UIFont systemFontOfSize:17];
-    [rightBtn setTitleColor:BLUE_COLOR forState:UIControlStateNormal];
+    [rightBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [rightBtn addTarget:self action:@selector(ensureChoosePicker) forControlEvents:UIControlEventTouchUpInside];
     [_pView addSubview:rightBtn];
     

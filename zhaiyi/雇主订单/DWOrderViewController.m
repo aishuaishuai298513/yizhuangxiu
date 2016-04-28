@@ -43,6 +43,8 @@
 //订单列表
 @property (nonatomic, strong) NSMutableArray *dataSource;
 
+@property (nonatomic,assign) CGFloat rowHeit;
+
 @end
 
 @implementation DWOrderViewController
@@ -82,6 +84,24 @@
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    
+    self.publishLabel.font = [UIFont systemFontSizeWithScreen:17];
+    self.view1Num.font = [UIFont systemFontSizeWithScreen:17];
+    
+    self.constructionLabel.font = [UIFont systemFontSizeWithScreen:17];
+    self.view2num.font = [UIFont systemFontSizeWithScreen:17];
+    
+    self.complede.font = [UIFont systemFontSizeWithScreen:17];
+    self.viewNum3.font = [UIFont systemFontSizeWithScreen:17];
+    
+    if(iOS8)
+    {
+        self.tableView.estimatedRowHeight = 120;
+        self.tableView.rowHeight = UITableViewAutomaticDimension;
+    }else
+    {
+        self.tableView.rowHeight = 100;
+    }
     
 }
 
@@ -253,20 +273,49 @@
         cell.deleteBtn.hidden = YES;
         //预计天数
         cell.yujitianshu.hidden = YES;
+        //cell.zhuangTai.hidden = YES;
 
     }
     //已竣工
     else if(self.type == 3){
+        
         cell.confirmBtn.hidden = YES;
         cell.deleteBtn.hidden = NO;
         
         //预计天数
         cell.yujitianshu.hidden = YES;
+        
+        cell.zhuangTai.text = @"已竣工";
+        
+        cell.zhuangTai.textColor = [UIColor lightGrayColor];
+        
+        [cell.deleteBtn setTitle:@"删除订单" forState:UIControlStateNormal];
+        
         //cell.evaluateBtn.hidden = NO;
+        //    //删除    回调
+        [cell setDeleteBlock:^(UIButton *deleteBtn) {
+            
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确定删除订单？" message:nil preferredStyle:1];
+            
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+            
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                
+                //删除订单
+                [self shanchuNetWork:indexPath];
+                NSLog(@"123");
+            }];
+            
+            [alert addAction:cancelAction];
+            [alert addAction:okAction];
+            [self presentViewController:alert animated:YES completion:nil];
+            
+        }];
         
     }
     //发布中
     else{
+        
         cell.confirmBtn.hidden= YES;
         //[cell.confirmBtn setTitle:@"确认招用" forState:UIControlStateNormal];
         //[cell.confirmBtn addTarget:self action:@selector(queRenZhaoYong:) forControlEvents:UIControlEventTouchUpInside];
@@ -278,28 +327,30 @@
         cell.yujitianshu.hidden = NO;
         //结算数
         cell.jiesuanshuBtn.hidden = YES;
+        
+        [cell.deleteBtn setTitle:@"取消订单" forState:UIControlStateNormal];
+        
+        [cell setDeleteBlock:^(UIButton *deleteBtn) {
+            
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确定取消订单？" message:nil preferredStyle:1];
+            
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+            
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                
+                //取消订单
+                [self quXiaoNetWork:indexPath];
+                NSLog(@"123");
+            }];
+            
+            [alert addAction:cancelAction];
+            [alert addAction:okAction];
+            [self presentViewController:alert animated:YES completion:nil];
+            
+        }];
     }
     
-    
-//    //删除    回调
-    [cell setDeleteBlock:^(UIButton *deleteBtn) {
 
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确定取消订单？" message:nil preferredStyle:1];
-        
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            
-            //删除订单
-            [self shanchuNetWork:indexPath];
-            NSLog(@"123");
-        }];
-
-        [alert addAction:cancelAction];
-        [alert addAction:okAction];
-        [self presentViewController:alert animated:YES completion:nil];
-
-    }];
 //
 //    //评价
 //    [cell setEvaluateBlock:^(UIButton *evaluateBtn) {
@@ -318,6 +369,15 @@
     
         DWOrderModel *MOdel = self.dataSource[indexPath.row];
         cell.MOdel =MOdel;
+    
+//    if (cell.deleteBtn.hidden) {
+//        
+//         _rowHeit = cell.deleteBtn.frame.origin.y+10;
+//    }else
+//    {
+//         _rowHeit = cell.deleteBtn.frame.origin.y+cell.deleteBtn.frame.size.height+10;
+//    }
+    
    // cell.userInteractionEnabled = YES;
 
     
@@ -330,9 +390,13 @@
     return self.dataSource.count;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 100;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPat
+//{
+////    DWOrderCell *cell = [tableView cellForRowAtIndexPath:indexPat];
+////    return cell.rowHeit;
+//    
+//    return 200;
+//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     DWOrderModel *MOdel = self.dataSource[indexPath.row];
@@ -345,10 +409,6 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
--(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSLog(@"123");
-}
 
 //- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 //{
@@ -365,6 +425,38 @@
 
 //删除我的订单
 -(void)shanchuNetWork:(NSIndexPath *)indexpath
+{
+    
+    ADAccount *acount = [ADAccountTool account];
+    
+    DWOrderModel *MOdel = self.dataSource[indexpath.row];
+    
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    [parm setObject:MOdel.ID forKey:@"id"];
+    
+    [NetWork postNoParm:YZX_shanchudingdan_gz params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            
+            [self netWork];
+            
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
+#pragma mark 取消我的订单
+
+-(void)quXiaoNetWork:(NSIndexPath *)indexpath
 {
     
     ADAccount *acount = [ADAccountTool account];

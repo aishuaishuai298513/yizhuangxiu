@@ -29,5 +29,7 @@
 
 //订单号
 @property (nonatomic, strong) NSString *orderCode;
+//支付内容
+@property (nonatomic, strong)NSString *zhiFuNeirong;
 
 @end

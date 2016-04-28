@@ -183,12 +183,14 @@
             NSMutableArray *array = [NSMutableArray array];
             
             array = [DWOrderModel mj_objectArrayWithKeyValuesArray:[responseObj objectForKey:@"data"]];
-            
             [self.dataSource addObjectsFromArray:array];
             [self.tableView reloadData];
             
             [self.tableView.mj_footer endRefreshing];
             [self.tableView.mj_header endRefreshing];
+        }else
+        {
+            
         }
         
     } failure:^(NSError *error) {

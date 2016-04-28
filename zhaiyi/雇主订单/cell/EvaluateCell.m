@@ -37,7 +37,7 @@
     
     UIButton *btn = (UIButton *)sender;
     //NSLog(@"%d",btn.tag);
-    _xingji = btn.tag;
+    _xingji = (int)btn.tag;
     
     
     for (int i = 1; i<=5; i++) {
@@ -64,6 +64,7 @@
       }
     
     if (self.delegate) {
+        NSLog(@"%d",_xingji);
         [self.delegate cellXingClicked:_xingji row:self.row];
     }
 }

@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>小木匠</string>
+	<string>亿装</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -27,9 +27,11 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string></string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>AliPayTest</string>
+				<string>alisdkdemo</string>
 			</array>
 		</dict>
 		<dict>
@@ -53,7 +55,15 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>wx2863d9247c321b5c</string>
+				<string>wx05c7d1017ae4ebdb</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>UPPayDemo</string>
 			</array>
 		</dict>
 	</array>
@@ -78,6 +88,11 @@
 		<string>mqqwpa</string>
 		<string>wechat</string>
 		<string>weixin</string>
+		<string>uppaysdk</string>
+		<string>uppaywallet</string>
+		<string>uppayx1</string>
+		<string>uppayx2</string>
+		<string>uppayx3</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

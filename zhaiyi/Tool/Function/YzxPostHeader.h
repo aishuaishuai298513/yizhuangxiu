@@ -123,9 +123,24 @@
 #define YZX_pingjiagongren @"/api/index/pingjiagongren"
 //取消订单（雇主端）
 #define YZX_quxiaodingdan_gz @"/api/index/quxiaodingdan_gz"
+//删除订单（雇主端）
+#define YZX_shanchudingdan_gz @"/api/index/shanchudingdan_gz"
 //工种列表
 #define YZX_gongzhongliebiao @"/api/index/gongzhonglist"
 //删除个人资料资质证书（工人端）
 #define YZX_shanchuzizhi @"/api/index/shanchuzizhi"
+//支付工资  线下支付
+#define YZX_xianxia  @"/api/index/zhifugongzi_xianxia"
+//支付宝支付
+#define YZX_zhifubaozhifu @"/api/index/zhifubaozhifu"
+//微信支付
+#define YZX_weixinzhifu @"/api/index/weixinzhifu"
+//银联支付
+#define YZX_yinlianzhifu @"/api/index/yinlianzhifu"
+//我的消息
+#define YZX_wodexiaoxi_gz @"/api/index/wodexiaoxi"
+//删除消息
+#define YZX_delmessage @"/api/index/del_message"
+
 
 #endif /* Header_h */

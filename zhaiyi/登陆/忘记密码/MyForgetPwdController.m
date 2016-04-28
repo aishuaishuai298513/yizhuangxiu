@@ -27,6 +27,8 @@ UITextFieldDelegate
 @property (weak, nonatomic) IBOutlet UIButton *codeBtn;
 @property (weak, nonatomic) IBOutlet UITextField *pwdTF;
 
+@property (nonatomic, strong)UITextField *TextFiled;
+
 @end
 
 @implementation MyForgetPwdController
@@ -47,10 +49,11 @@ UITextFieldDelegate
     orignalFrame = _pwdTF.frame;
     self.title = @"忘记密码";
     _account = [ADAccountTool account];
-    _phoneTF.text = @"111";
+    _phoneTF.text = @"";
+    
     _pwdTF.delegate = self;
-   
-
+    _codeTF.delegate = self;
+    _pwdTF.delegate = self;
 }
 
 
@@ -169,49 +172,88 @@ UITextFieldDelegate
     } failure:^(NSError *error) {
         
     }];
-    
-
 }
 
--(void)keyBoardWillShow:(NSNotification *)notify{
-    
-     NSTimeInterval time=[[notify.userInfo objectForKey:@"UIKeyboardAnimationDurationUserInfoKey"] floatValue];
-    //获得键盘升起的高度
-    float height=[[notify.userInfo objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue].size.height;
-    [UIView animateWithDuration:time animations:^{
 
-        _pwdTF.frame = CGRectMake(orignalFrame.origin.x, Ga - height -orignalFrame.size.height, orignalFrame.size.width, orignalFrame.size.height);
-        
-        [self.view layoutIfNeeded];
-    }];
-    
-    
-
-    
-}
-
--(void)keyBoardWillHidden:(NSNotification *)notify{
-    
-    NSTimeInterval time=[[notify.userInfo objectForKey:@"UIKeyboardAnimationDurationUserInfoKey"] floatValue];
- 
-    [UIView animateWithDuration:time animations:^{
-        
-        _pwdTF.frame = orignalFrame;
-        
-        [self.view layoutIfNeeded];
-    }];
-    
-}
-
--(void)textFieldDidBeginEditing:(UITextField *)textField{
-    
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyBoardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyBoardWillHidden:) name:UIKeyboardWillHideNotification object:nil];
-    
-}
 -(void)textFieldDidEndEditing:(UITextField *)textField{
     
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
+
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [self.view endEditing:YES];
+}
+
+//注销第一事件
+-(void)resignTheFirstResponser{
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapCancel:)];
+    [self.view addGestureRecognizer:tap];
+}
+-(void)tapCancel:(UITapGestureRecognizer *)sender{
+    
+    [self.view endEditing:YES];
+    
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    
+    _TextFiled = textField;
+    
+    //监听键盘
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+    NSLog(@"123");
+}
+
+-(void)keyboardShow:(NSNotification *)note
+{
+    NSLog(@"%@",note);
+    
+    
+    CGRect keyBoardRect=[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat deltaY=keyBoardRect.origin.y;
+    NSLog( @"%lf",ScreenH);
+    NSLog(@"%lf",self.TextFiled.y+self.TextFiled.height);
+    NSLog(@"%lf",deltaY);
+    
+    // NSLog(@"%lf",self.TableView.y);
+    
+    NSLog(@"%lf",[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue]);
+    
+    [UIView animateWithDuration:[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
+        
+        NSLog(@"%lf",deltaY-(_TextFiled.y-self.view.y+64+64+_TextFiled.height));
+        NSLog(@"%lf",deltaY);
+        
+        if ((deltaY-_TextFiled.y-_TextFiled.height)<0) {
+            self.view.y = deltaY-(_TextFiled.y+_TextFiled.height);
+        }
+        
+        // self.view.y = deltaY-ScreenH+20;
+    }];
+    
+    
+}
+
+-(void)keyboardHide:(NSNotification *)note
+{
+    CGRect keyBoardRect=[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat deltaY=keyBoardRect.origin.y;
+    
+    // CGRect keyBoardRect=[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [UIView animateWithDuration:[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
+        self.view.y = 0;
+    } completion:^(BOOL finished) {
+        //
+    }];
+}
+
+
 
 @end

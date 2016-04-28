@@ -22,6 +22,8 @@
 - (NSDate *)relativedDateWithInterval:(NSInteger)interval ;
 ///12/03日期格式
 + (NSString *)stringWithData;
+
++(NSString *)stringWithNowData;
 /**
  *  年
  */

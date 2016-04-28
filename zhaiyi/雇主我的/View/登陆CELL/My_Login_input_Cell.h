@@ -25,5 +25,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *userNameTF;
 @property (weak, nonatomic) IBOutlet UITextField *passWordTF;
 
+@property (weak, nonatomic) IBOutlet UIButton *dengLuBtn;
 
 @end
