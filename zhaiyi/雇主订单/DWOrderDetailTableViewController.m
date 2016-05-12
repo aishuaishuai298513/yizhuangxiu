@@ -27,6 +27,8 @@
 #import "employersLookingViewController.h"
 
 #import "PayInfoModel.h"
+
+#import "GzJIeSuanView.h"
 //标志按钮状态
 typedef NS_ENUM(NSUInteger, CellBtnState) {
     PAY,//支付
@@ -36,6 +38,12 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 };
 
 @interface DWOrderDetailTableViewController ()
+
+{
+    NSTimer *timer;
+    //红点
+    UIImageView *RedimagV;
+}
 
 @property (strong, nonatomic) IBOutlet UIView *DWOrderHeaderView;
 @property (weak, nonatomic) IBOutlet UILabel *HeaderZhuangTai;
@@ -76,10 +84,17 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 //凭证提示框
 @property(nonatomic, strong) CertificatePayView *certificatePayView;
 
+//已结算凭证
+@property(nonatomic, strong) GzJIeSuanView *gzJIeSuanView;
+
 //遮盖
 @property (nonatomic, strong) UIView *BackView;
 
+//控制红日闪烁
+@property (nonatomic, assign) BOOL Statue;
+
 @property (nonatomic, assign)CGFloat *headerHeight;
+
 @end
 
 @implementation DWOrderDetailTableViewController
@@ -120,6 +135,11 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     //查询订单详情
     [self QiangDanYonghu];
 }
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [timer invalidate];
+    timer = nil;
+}
 
 
 //订单数据赋值
@@ -151,7 +171,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     self.HeaderRenshu.text = [NSString stringWithFormat:@"人数:%@",self.OrderModel.n];
     self.HeaderRenshu.font = [UIFont systemFontSizeWithScreen:13];
     
-    if ([self.OrderModel.baozhengjin intValue]>0) {
+    if ([self.OrderModel.baozhengjin floatValue]>0) {
         [self.HeaderImageBtn setBackgroundImage:[UIImage imageNamed:@"保"] forState:UIControlStateNormal];
     }else
     {
@@ -164,30 +184,66 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0,0, 80, 26)];
     self.rightButton = rightBtn;
     [rightBtn addTarget:self action:@selector(confirmCheck) forControlEvents:UIControlEventTouchUpInside];
+    //红点
+    RedimagV = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 4, 4)];
+    RedimagV.image = [UIImage imageNamed:@"dian"];
+
     
     //发布中
     if (self.type == 1)
     {
         rightBtn.hidden = NO;
+        RedimagV.hidden = NO;
+        
         rightBtn.titleLabel.font = [UIFont systemFontOfSize:13];
        [rightBtn setBackgroundImage:[UIImage imageNamed:@"确认开工.png"] forState:UIControlStateNormal];
-       [rightBtn setTitle:@"确认开工" forState:UIControlStateNormal];
+       [rightBtn setTitle:@"确认招用" forState:UIControlStateNormal];
        [rightBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        
+        //日一般的红点闪啊闪   呵呵
+        timer = [NSTimer  scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(redPointAppear) userInfo:nil repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:timer forMode: NSDefaultRunLoopMode];
     }
+    
     //施工中
     if (self.type == 2) {
         rightBtn.hidden = YES;
+        RedimagV.hidden = YES;
 
     }
+    
     //已竣工
     else if(self.type == 3)
     {
         rightBtn.hidden = YES;
+        RedimagV.hidden = YES;
+        self.HeaderZhuangTai.text = @"(已竣工)";
 
     }
     
     UIBarButtonItem *rightBarBtnItem = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
+    
+    UIBarButtonItem *redPointBtnItem = [[UIBarButtonItem alloc]initWithCustomView:RedimagV];
+    
+    
     self.navigationItem.rightBarButtonItem = rightBarBtnItem;
+   // [self.navigationItem setLeftBarButtonItems:[NSArrayarrayWithObjects: anotherButton,anotherButton2,nil]];
+    NSArray *array = @[rightBarBtnItem,redPointBtnItem];
+    [self.navigationItem setRightBarButtonItems:array];
+    
+    
+}
+
+-(void)redPointAppear
+{
+    if (_Statue) {
+        RedimagV.hidden = NO;
+    }else
+    {
+        RedimagV.hidden = YES;
+    }
+    
+    _Statue = !_Statue;
 }
 
 - (void)confirmCheck{
@@ -218,7 +274,6 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 //    12
 //    已确认收款
 //    13
-    
     DetialUserInfoM *userInfoM = self.UsersdataSource[indexPath.row];
     
     DWOrderDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWOrderDetailCell"];
@@ -248,23 +303,33 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     {
         cell.yiCiTuiBtn.hidden = NO;
     }
+    cell.cellBtn.enabled = YES;
     
     switch ([userInfoM.status intValue]) {
             //工作中
         case 9:
             [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
+            [cell.cellBtn setTitleColor:THEME_COLOR  forState:UIControlStateNormal];
             //[cell.cellBtn addTarget:self action:@selector(ciTui:) forControlEvents:UIControlEventTouchUpInside];
             cell.cellBtn.userInteractionEnabled = NO;
+            [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
             break;
         case 8:
             [cell.cellBtn setTitle:@"辞退" forState:UIControlStateNormal];
+            [cell.cellBtn setTitleColor:THEME_COLOR  forState:UIControlStateNormal];
+
             //[cell.cellBtn addTarget:self action:@selector(ciTui:) forControlEvents:UIControlEventTouchUpInside];
             cell.cellBtn.userInteractionEnabled = NO;
+            [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
             break;
             //已辞退
             //已辞退
         case 10:
+            cell.yiCiTuiBtn.hidden = NO;
             [cell.cellBtn setTitle:@"已辞退" forState:UIControlStateNormal];
+            [cell.cellBtn setTitleColor:THEME_COLOR  forState:UIControlStateNormal];
+
+            [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
             cell.cellBtn.userInteractionEnabled = NO;
             break;
             //待结算
@@ -273,15 +338,28 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
             self.btnState = PAY;
 
             [cell.cellBtn setTitle:@"去支付" forState:UIControlStateNormal];
-            [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-            [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
+            [cell.cellBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+
+            [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"红色圆形button"] forState:UIControlStateNormal];
             [cell.cellBtn addTarget:self action:@selector(goPay:) forControlEvents:UIControlEventTouchUpInside];
             break;
             //已结算
         case 12:
-            
+            if ([userInfoM.pingjia isEqualToString:@"1"]) {
+                
+               [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+            }else
+            {
+                [cell.cellBtn setTitle:@"已评价" forState:UIControlStateNormal];
+                 cell.cellBtn.enabled = NO;
+            }
             [cell.cellBtn removeTarget:self action:@selector(goPay:) forControlEvents:UIControlEventTouchUpInside];
-            [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+            
+            //[cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+            
+           // [cell.cellBtn setTitleColor:THEME_COLOR  forState:UIControlStateNormal];
+
+            [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
             [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             cell.cellBtn.tag = 100+indexPath.row;
             [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
@@ -289,8 +367,20 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
             
         case 13:
             
+            if ([userInfoM.pingjia isEqualToString:@"1"]) {
+                
+                [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+            }else
+            {
+                [cell.cellBtn setTitle:@"已评价" forState:UIControlStateNormal];
+                 cell.cellBtn.enabled = NO;
+            }
+            
             [cell.cellBtn removeTarget:self action:@selector(goPay:) forControlEvents:UIControlEventTouchUpInside];
-            [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+            //[cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+            //[cell.cellBtn setTitleColor:THEME_COLOR  forState:UIControlStateNormal];
+
+            [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
             [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
             cell.cellBtn.tag = 100+indexPath.row;
             [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
@@ -299,8 +389,24 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
         case 39:
             
             cell.cellBtn.userInteractionEnabled = NO;
-            [cell.cellBtn setTitle:@"已删除" forState:UIControlStateNormal];
+            
+            if ([userInfoM.pingjia isEqualToString:@"1"]) {
+                
+                [cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+            }else
+            {
+                [cell.cellBtn setTitle:@"已评价" forState:UIControlStateNormal];
+                cell.cellBtn.enabled = NO;
+            }
+            
+            //[cell.cellBtn setTitle:@"评价" forState:UIControlStateNormal];
+            //[cell.cellBtn setTitleColor:THEME_COLOR  forState:UIControlStateNormal];
+
+            [cell.cellBtn setBackgroundImage:[UIImage imageNamed:@"圆角矩形"] forState:UIControlStateNormal];
             [cell.cellBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+            cell.cellBtn.tag = 100+indexPath.row;
+            [cell.cellBtn addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
+
             break;
             
         default:
@@ -317,10 +423,16 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
         cell.jieshao.text = @" ";
     }
     cell.namelb.text = userInfoM.name;
+    cell.distanceL.text =[NSString stringWithFormat:@"距离%.1fkm",[userInfoM.juli floatValue]];
     
-    cell.namelb.font = [UIFont systemFontSizeWithScreen:17];
-    cell.typelb.font = [UIFont systemFontSizeWithScreen:16];
-    cell.jieshao.font = [UIFont systemFontSizeWithScreen:15];
+//    cell.namelb.font = [UIFont systemFontSizeWithScreen:17];
+//    cell.typelb.font = [UIFont systemFontSizeWithScreen:16];
+//    cell.jieshao.font = [UIFont systemFontSizeWithScreen:15];
+    
+    cell.namelb.font = [UIFont systemFontOfSize:17];
+    cell.typelb.font = [UIFont systemFontOfSize:16];
+    cell.jieshao.font = [UIFont systemFontOfSize:15];
+    
     NSLog(@"%@",userInfoM.xing);
     [cell.iconImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YZX_BASY_URL,userInfoM.headpic]]];
     cell.iconImage.layer.cornerRadius = cell.iconImage.width/2;
@@ -338,9 +450,46 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    DetialUserInfoM *userInfoM = self.UsersdataSource[indexPath.row];
+    _infoM = self.UsersdataSource[indexPath.row];
     
+    
+
+    //已竣工  跳出结算详情
+    if (self.type == 3) {
+       // NSLog(@"123");
+        //[self popJieSuanPingZheng:<#(PayInfoModel *)#> :<#(NSString *)#>]
+        
+        [self jiesuanPingZheng];
+        
+        
+        return;
+    }
+    
+    //DetialUserInfoM *userInfoM = self.UsersdataSource[indexPath.row];
     [self checkGongRenInfo:indexPath.row];
+}
+
+#pragma mark 弹出结算凭证
+-(void)popJieSuanPingZheng:(PayInfoModel *)payInfoModel :(NSString *)name
+{
+    
+    NSLog(@"%@",payInfoModel.gzname);
+    NSLog(@"123");
+    self.BackView = [Function createBackView:self action:@selector(BackViewClicked)];
+    
+    self.gzJIeSuanView = [GzJIeSuanView loadView];
+
+    self.gzJIeSuanView.payinfoModel = payInfoModel;
+    self.gzJIeSuanView.nameLa.text = name;
+    
+    [[UIApplication sharedApplication].keyWindow addSubview:self.BackView];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.gzJIeSuanView];
+    
+    //设置大小
+    [self.gzJIeSuanView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [self.gzJIeSuanView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [self.gzJIeSuanView autoSetDimension:ALDimensionWidth toSize:300];
+    [self.gzJIeSuanView autoSetDimension:ALDimensionHeight toSize:300];
 }
 
 
@@ -378,7 +527,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 //            NSLog(@"%@",[responseObj objectForKey:@"data"]);
 //            NSLog(@"%@",self.payInfoModel.gzname);
             
-            [weakSelf popZhiFukuang:weakSelf.payInfoModel];
+            [weakSelf popZhiFukuang:weakSelf.payInfoModel :_infoM.name];
         }
     } failure:^(NSError *error) {
         
@@ -386,7 +535,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 }
 
 #pragma mark 弹出支付框
--(void)popZhiFukuang:(PayInfoModel *)payInfoModel
+-(void)popZhiFukuang:(PayInfoModel *)payInfoModel :(NSString *)name
 {
     
     NSLog(@"%@",payInfoModel.gzname);
@@ -399,6 +548,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     //确定 去支付
     [self.certificatePayView addTargetWithMakeSureBtnClicked:self action:@selector(CertificateMakeSureClicked) forControlEvents:UIControlEventTouchUpInside];
     self.certificatePayView.payinfoModel = payInfoModel;
+    self.certificatePayView.nameLa.text = name;
     
     [[UIApplication sharedApplication].keyWindow addSubview:self.BackView];
     [[UIApplication sharedApplication].keyWindow addSubview:self.certificatePayView];
@@ -415,7 +565,37 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
 {
     [self.BackView removeFromSuperview];
     [self.certificatePayView removeFromSuperview];
+    [self.gzJIeSuanView removeFromSuperview]; 
 }
+#pragma mark 已结算凭证
+-(void)jiesuanPingZheng
+{
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+   [parm setObject:_infoM.ID forKey:@"id"];
+    //[parm setObject:self.OrderID forKey:@"id"];
+    
+    NSLog(@"%@",parm);
+    __weak typeof (self)weakSelf = self;
+    [NetWork postNoParm:YZX_jiesuanxiangqing params:parm success:^(id responseObj) {
+        NSLog(@"%@",responseObj);
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            weakSelf.payInfoModel = [PayInfoModel mj_objectWithKeyValues:[responseObj objectForKey:@"data"]];
+            
+            //            NSLog(@"%@",[responseObj objectForKey:@"data"]);
+            //            NSLog(@"%@",self.payInfoModel.gzname);
+            
+            [weakSelf popJieSuanPingZheng:weakSelf.payInfoModel :@"结算"];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+
+}
+
 #pragma mark 支付凭证取消按钮点击事件
 -(void)CertificateCnclebtnClicked
 {
@@ -494,6 +674,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
         vc.type = self.type;
     
         vc.orderModel = self.UsersdataSource[indexpathRow];
+         vc.OrderID = self.OrderID;
         [self.navigationController pushViewController:vc animated:YES];
 
 }
@@ -615,7 +796,7 @@ typedef NS_ENUM(NSUInteger, CellBtnState) {
     //底部大的透明View
     self.bg = [Function createBackView:self action:@selector(bgViewClicked)];
     //no按钮添加事件
-    [firendView NoBtnAddTarget:self action:@selector(bgViewClicked) forControlEvents:UIControlEventTouchUpInside];
+    [firendView NoBtnAddTarget:self action:@selector(queRenZhaoYong) forControlEvents:UIControlEventTouchUpInside];
     
     [firendView YesBtnAddTarget:self action:@selector(continueFaBu) forControlEvents:UIControlEventTouchUpInside];
     

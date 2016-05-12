@@ -31,4 +31,20 @@
 
 //退出登陆
 +(void)tuichuLogin;
+
+//保存通知数量
++(void)SaveFaBuZhaoGongRen:(NSString *)num;
+
++(void)SaveDingDanChangge_gongren:(NSString *)num;
+// 保存雇主订单通知
++(void)SaveDingDanChangge_guzhu:(NSString *)num;
+
++(void)qingLingDiangDan_gongRen;
+
++(void)qingLingDiangDan_guZhu;
+
++(void)qingLingQiangDan_gongRen;
+
++(int)getbageValue;
+
 @end

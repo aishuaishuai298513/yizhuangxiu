@@ -31,7 +31,7 @@
                             </mask>
                         </variation>
                     </label>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tvS-tn-1Wx" userLabel="底线上">
+                    <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tvS-tn-1Wx" userLabel="底线上">
                         <rect key="frame" x="48" y="34" width="277" height="1"/>
                         <color key="backgroundColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -48,32 +48,38 @@
                         <color key="textColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Epk-CL-WYU">
+                    <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Epk-CL-WYU">
                         <rect key="frame" x="48" y="73" width="277" height="1"/>
                         <color key="backgroundColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="btl-D4-npO"/>
                         </constraints>
                     </view>
-                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zWj-9P-u9T">
-                        <rect key="frame" x="96" y="43" width="229" height="30"/>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入密码" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zWj-9P-u9T">
+                        <rect key="frame" x="96" y="52" width="229" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="30" id="Nl6-8z-XMV"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <textInputTraits key="textInputTraits"/>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Nl6-8z-XMV"/>
+                            </mask>
+                        </variation>
                     </textField>
-                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QXt-za-feA">
-                        <rect key="frame" x="96" y="4" width="229" height="30"/>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入手机号" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QXt-za-feA">
+                        <rect key="frame" x="96" y="13" width="229" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="30" id="Jv3-ls-ioP"/>
                             <constraint firstAttribute="height" constant="30" id="csO-ho-c5l"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <textInputTraits key="textInputTraits"/>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="Jv3-ls-ioP"/>
+                                <exclude reference="csO-ho-c5l"/>
                             </mask>
                         </variation>
                     </textField>
@@ -85,7 +91,7 @@
                             <constraint firstAttribute="width" constant="125" id="gCk-lf-2QK"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                        <state key="normal" title="登陆">
+                        <state key="normal" title="登录">
                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
                         <variation key="default">
@@ -159,6 +165,7 @@
                     <constraint firstItem="0mp-V2-TwP" firstAttribute="trailing" secondItem="tvS-tn-1Wx" secondAttribute="trailing" id="Qoc-5h-SZ2"/>
                     <constraint firstItem="QXt-za-feA" firstAttribute="leading" secondItem="gQ5-cX-oJk" secondAttribute="leading" id="RUB-Bp-STn"/>
                     <constraint firstItem="zWj-9P-u9T" firstAttribute="top" secondItem="gsr-RA-V40" secondAttribute="bottom" constant="8" id="SJI-Wk-d9x"/>
+                    <constraint firstItem="QXt-za-feA" firstAttribute="height" secondItem="gQ5-cX-oJk" secondAttribute="height" id="Sjs-h0-1Hh"/>
                     <constraint firstAttribute="trailingMargin" secondItem="tvS-tn-1Wx" secondAttribute="trailing" constant="40" id="Skm-3T-Y3c"/>
                     <constraint firstAttribute="trailingMargin" secondItem="QXt-za-feA" secondAttribute="trailing" constant="40" id="XC5-3B-5Eu"/>
                     <constraint firstItem="gQ5-cX-oJk" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="Yb5-cL-Emt"/>
@@ -167,6 +174,7 @@
                     <constraint firstItem="QXt-za-feA" firstAttribute="top" secondItem="gQ5-cX-oJk" secondAttribute="bottom" constant="8" id="bBU-4B-O9X"/>
                     <constraint firstAttribute="trailingMargin" secondItem="zWj-9P-u9T" secondAttribute="trailing" constant="40" id="cTv-hk-BN7"/>
                     <constraint firstItem="QXt-za-feA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="cf9-BF-QdB"/>
+                    <constraint firstItem="zWj-9P-u9T" firstAttribute="height" secondItem="gsr-RA-V40" secondAttribute="height" id="dCd-WJ-aaV"/>
                     <constraint firstItem="QXt-za-feA" firstAttribute="leading" secondItem="gQ5-cX-oJk" secondAttribute="trailing" constant="8" id="dVL-qW-4nE"/>
                     <constraint firstItem="zWj-9P-u9T" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="e2C-Sg-tTT"/>
                     <constraint firstAttribute="trailing" secondItem="QXt-za-feA" secondAttribute="trailing" constant="8" id="e9G-HC-ozG"/>
@@ -196,11 +204,6 @@
                         <exclude reference="lgH-Vb-CgM"/>
                         <exclude reference="qdb-XC-hwP"/>
                         <exclude reference="gik-sA-wzR"/>
-                        <exclude reference="Ms6-Iw-8ZU"/>
-                        <exclude reference="SJI-Wk-d9x"/>
-                        <exclude reference="e2C-Sg-tTT"/>
-                        <exclude reference="gRd-YS-8si"/>
-                        <exclude reference="jib-y0-eLP"/>
                         <exclude reference="52p-mU-yqP"/>
                         <exclude reference="RUB-Bp-STn"/>
                         <exclude reference="a8U-1s-w2p"/>
@@ -208,6 +211,11 @@
                         <exclude reference="cf9-BF-QdB"/>
                         <exclude reference="e9G-HC-ozG"/>
                         <exclude reference="rU2-W5-88j"/>
+                        <exclude reference="Ms6-Iw-8ZU"/>
+                        <exclude reference="SJI-Wk-d9x"/>
+                        <exclude reference="e2C-Sg-tTT"/>
+                        <exclude reference="gRd-YS-8si"/>
+                        <exclude reference="jib-y0-eLP"/>
                         <exclude reference="DbV-PK-0Vo"/>
                         <exclude reference="Eo1-Cp-1sv"/>
                         <exclude reference="Qoc-5h-SZ2"/>
@@ -221,7 +229,7 @@
                 <outlet property="passWordTF" destination="zWj-9P-u9T" id="V2S-NQ-ZpR"/>
                 <outlet property="userNameTF" destination="QXt-za-feA" id="ch8-NK-1gi"/>
             </connections>
-            <point key="canvasLocation" x="442.5" y="108"/>
+            <point key="canvasLocation" x="363.5" y="79"/>
         </tableViewCell>
     </objects>
 </document>

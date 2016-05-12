@@ -195,5 +195,95 @@ UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:str delegate:
     //发送消息
     [[NSNotificationCenter defaultCenter]postNotification:notice];
 }
+
+//保存找工人通知数
++(void)SaveFaBuZhaoGongRen:(NSString *)num
+{
+//    [[NSUserDefaults standardUserDefaults]objectForKey:@"fadanTongZhi"];
+    
+    if ( ! [[NSUserDefaults standardUserDefaults]objectForKey:@"fadanTongZhi"]) {
+        [[NSUserDefaults standardUserDefaults]setObject:@"1" forKey:@"fadanTongZhi"];
+    }else
+    {
+      NSString *num = [[NSUserDefaults standardUserDefaults]objectForKey:@"fadanTongZhi"];
+        NSString *newNum = [NSString stringWithFormat:@"%ld",[num integerValue]+1];
+        
+        [[NSUserDefaults standardUserDefaults]setObject:newNum forKey:@"fadanTongZhi"];
+        
+    }
+}
+//保存工人订单通知
++(void)SaveDingDanChangge_gongren:(NSString *)num
+{
+//    [[NSUserDefaults standardUserDefaults]objectForKey:@"gongrendingdan"];
+    
+    if ( ! [[NSUserDefaults standardUserDefaults]objectForKey:@"gongrendingdan"]) {
+        [[NSUserDefaults standardUserDefaults]setObject:@"1" forKey:@"gongrendingdan"];
+    }else
+    {
+        NSString *num = [[NSUserDefaults standardUserDefaults]objectForKey:@"gongrendingdan"];
+        NSString *newNum = [NSString stringWithFormat:@"%ld",[num integerValue]+1];
+        
+        [[NSUserDefaults standardUserDefaults]setObject:newNum forKey:@"gongrendingdan"];
+        
+    }
+    
+    
+}
+// 保存雇主订单通知
++(void)SaveDingDanChangge_guzhu:(NSString *)num
+{
+//    [[NSUserDefaults standardUserDefaults]objectForKey:@"guzhudingdan"];
+    
+    if ( ! [[NSUserDefaults standardUserDefaults]objectForKey:@"guzhudingdan"]) {
+        [[NSUserDefaults standardUserDefaults]setObject:@"1" forKey:@"guzhudingdan"];
+    }else
+    {
+        NSString *num = [[NSUserDefaults standardUserDefaults]objectForKey:@"guzhudingdan"];
+        NSString *newNum = [NSString stringWithFormat:@"%ld",[num integerValue]+1];
+        
+        [[NSUserDefaults standardUserDefaults]setObject:newNum forKey:@"guzhudingdan"];
+        
+    }
+    
+    
+}
++(void)qingLingDiangDan_gongRen
+{
+    if ([[NSUserDefaults standardUserDefaults]objectForKey:@"gongrendingdan"]) {
+    
+        [[NSUserDefaults standardUserDefaults]setObject:@"0" forKey:@"gongrendingdan"];
+        }
+}
+
++(void)qingLingDiangDan_guZhu
+{
+    if ([[NSUserDefaults standardUserDefaults]objectForKey:@"guzhudingdan"]) {
+        
+          [[NSUserDefaults standardUserDefaults]setObject:@"0" forKey:@"guzhudingdan"];
+    }
+    
+
+}
++(void)qingLingQiangDan_gongRen
+{
+        if ([[NSUserDefaults standardUserDefaults]objectForKey:@"fadanTongZhi"])
+        {
+           [[NSUserDefaults standardUserDefaults]setObject:@"0" forKey:@"fadanTongZhi"];
+        }
+
+}
+
++(int)getbageValue
+{
+    if ( [[NSUserDefaults standardUserDefaults]objectForKey:@"guzhudingdan"]) {
+        
+      int num =  [[[NSUserDefaults standardUserDefaults]objectForKey:@"guzhudingdan"] intValue];
+        return num;
+    }else
+    {
+        return 0;
+    }
+}
 @end
 

@@ -17,7 +17,7 @@
 //
 //@property (nonatomic, strong) DWOrderModel *OrderModel;
 
-@property (nonatomic, strong) NSString *orderNum;
+@property (nonatomic, strong) NSString *orderID;
 @property (nonatomic, strong) NSString *userId;
 
 @end

@@ -19,6 +19,10 @@
 @property (nonatomic ,strong)NSString *status;//
 @property (nonatomic ,strong)NSString *shifoucitui;//是否辞退
 @property (nonatomic ,strong)NSString *gzname;
+@property (nonatomic ,strong)NSString *juli;
+@property (nonatomic ,strong)NSString *jiaoyidanhao;
+//是否评价 1.未评价 2.已评价
+@property (nonatomic ,strong)NSString *pingjia;
 
 
 @end

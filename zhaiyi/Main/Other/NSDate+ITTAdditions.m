@@ -238,4 +238,46 @@
      return [dateFormatter stringFromDate:[NSDate date]];
 }
 
++(NSString *)dateAddSomeNum
+{
+    NSInteger dis = 1; //前后的天数
+    
+    NSDate*nowDate = [NSDate date];
+    NSDate* theDate;
+    
+    if(dis!=0)
+        
+    {
+        NSTimeInterval  oneDay = 24*60*60*1;  //1天的长度
+        theDate = [nowDate initWithTimeIntervalSinceNow: +oneDay*dis];
+        //or
+       // theDate = [nowDate initWithTimeIntervalSinceNow: -oneDay*dis];
+    }
+    else
+    {
+        theDate = nowDate;
+    }
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    //设定时间格式,这里可以设置成自己需要的格式
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    //用[NSDate date]可以获取系统当前时间
+    return [dateFormatter stringFromDate:theDate];
+    
+}
+
++(NSInteger)numDayFromDate:(NSDate*)date
+{
+    NSDate *selectDate = date;
+    NSDate *nowDate = [NSDate date];
+    
+    NSTimeInterval  oneDay = 24*60*60*1;  //1天的长度
+    
+    NSInteger num =  ([selectDate timeIntervalSince1970]*1 - [nowDate timeIntervalSince1970]*1)/oneDay;
+    
+    //NSLog(@"%ld",num);
+    
+    return num;
+}
+
 @end

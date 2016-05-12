@@ -19,6 +19,11 @@
 
 @property (nonatomic, strong)DetialUserInfoM *UserInfoM;
 
+//
+@property (nonatomic, strong)DWOrderModel *OrderModel;
+
+
+//1.工人评价
 @property (nonatomic, assign) int TypeFrom;
 
 

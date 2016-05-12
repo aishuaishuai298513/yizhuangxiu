@@ -24,6 +24,10 @@
 + (NSString *)stringWithData;
 
 +(NSString *)stringWithNowData;
+
++(NSString *)dateAddSomeNum;
+
++(NSInteger)numDayFromDate:(NSDate*)date;
 /**
  *  年
  */

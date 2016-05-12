@@ -17,4 +17,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *userNameLb;
 @property (weak, nonatomic) IBOutlet UILabel *userAddressLb;
 
+@property (weak, nonatomic) IBOutlet UILabel *orderNum;
+
+
 @end

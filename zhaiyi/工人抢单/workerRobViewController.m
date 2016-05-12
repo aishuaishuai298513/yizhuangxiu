@@ -121,7 +121,7 @@
         //跳到抢单详情页
         UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"workerRob" bundle:nil];
         DetatilViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"qiangdanxiangqing"];
-        
+        test2obj.statue = 4;
         DWOrderModel *OrderModel = self.dataSource[indexPath.row];
         test2obj.orderId = OrderModel.ID;
         
@@ -143,6 +143,21 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    ADAccount *account = [ADAccountTool account];
+    if (!account) {
+        My_Login_In_ViewController *login = [[My_Login_In_ViewController alloc]init];
+        [self.navigationController pushViewController:login animated:YES];
+        return ;
+    }
+    //跳到抢单详情页
+    UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"workerRob" bundle:nil];
+    DetatilViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"qiangdanxiangqing"];
+    test2obj.statue = 4;
+    DWOrderModel *OrderModel = self.dataSource[indexPath.row];
+    test2obj.orderId = OrderModel.ID;
+    
+    [self.navigationController pushViewController:test2obj animated:YES];
     
 }
 
@@ -190,7 +205,9 @@
             [self.tableView.mj_header endRefreshing];
         }else
         {
-            
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            [self.tableView.mj_footer endRefreshing];
+            [self.tableView.mj_header endRefreshing];
         }
         
     } failure:^(NSError *error) {

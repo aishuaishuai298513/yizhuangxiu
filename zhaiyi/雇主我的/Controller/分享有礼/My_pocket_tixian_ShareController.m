@@ -10,6 +10,8 @@
 
 
 #define GET_RECORD @"http://zhaiyi.bjqttd.com/api/personal/share_with"
+
+#define shareTitle @"和我一起加入“亿装修”平台吧"
 @interface My_pocket_tixian_ShareController ()
 {
     NSString *isFirstShare;
@@ -124,14 +126,16 @@
 //    share_url.url = SHARE_URL;
     
     NSLog(@"QQ 分享");
-    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToQQ] content:@"亿装" image:[UIImage imageNamed:@"匠"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
+    [UMSocialData defaultData].extConfig.qqData.title = shareTitle;
+    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToQQ] content:@"加入亿装修,天南地北工作不发愁" image:[UIImage imageNamed:@"share"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
         if (response.responseCode == UMSResponseCodeSuccess) {
             NSLog(@"分享成功");
             
             [self judgeIsShared];
         }
     }];
-    [UMSocialData defaultData].extConfig.qqData.url = SHARE_URL;
+    
+    [UMSocialData defaultData].extConfig.qqData.url = YZX_shareUrl;
     [UMSocialData defaultData].extConfig.qqData = UMSocialQQMessageTypeDefault;
 }
 // qq空间
@@ -139,11 +143,12 @@
     
     NSLog(@"QQ 空间分享");
     
-    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToQzone] content:@"亿装" image:[UIImage imageNamed:@"匠"]  location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
+    [UMSocialData defaultData].extConfig.qzoneData.title = shareTitle;
+    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToQzone] content:@"加入亿装修,天南地北工作不发愁" image:[UIImage imageNamed:@"share"]  location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
         if (response.responseCode == UMSResponseCodeSuccess) {
             NSLog(@"分享成功");
             
-            [self judgeIsShared];
+           //[self judgeIsShared];
         }
     }];
   
@@ -154,13 +159,14 @@
 //    UMSocialUrlResource *share_url = [[UMSocialUrlResource alloc]init];
 //    share_url.url = SHARE_URL;
     NSLog(@"微信分享");
-    [UMSocialData defaultData].extConfig.wechatSessionData.url = SHARE_URL;
+    [UMSocialData defaultData].extConfig.wechatSessionData.url = YZX_shareUrl;
 
-    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToWechatSession] content:@"亿装" image:[UIImage imageNamed:@"匠"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
+    [UMSocialData defaultData].extConfig.wechatSessionData.title = shareTitle;
+    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToWechatSession] content:@"加入亿装修,天南地北工作不发愁" image:[UIImage imageNamed:@"share"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
         if (response.responseCode == UMSResponseCodeSuccess) {
             NSLog(@"分享成功");
             
-            [self judgeIsShared];
+            //[self judgeIsShared];
         }
     }];
     
@@ -168,11 +174,12 @@
 //朋友圈
 -(void)WechatTimeline{
     NSLog(@"朋友圈分享");
-    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToWechatTimeline] content:@"亿装" image:[UIImage imageNamed:@"匠"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
+    [UMSocialData defaultData].extConfig.wechatTimelineData.title = @"亿装修";
+    [[UMSocialDataService defaultDataService]postSNSWithTypes:@[UMShareToWechatTimeline] content:@"加入亿装修,天南地北工作不发愁" image:[UIImage imageNamed:@"share"] location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response) {
         if (response.responseCode == UMSResponseCodeSuccess) {
             NSLog(@"分享成功");
             
-            [self judgeIsShared];
+            //[self judgeIsShared];
         }
     }];
     

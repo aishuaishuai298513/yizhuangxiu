@@ -37,7 +37,7 @@
                             </mask>
                         </variation>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AK456123798663" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yFB-oJ-bJT" userLabel="编号">
+                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AK456123798663" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yFB-oJ-bJT" userLabel="编号">
                         <rect key="frame" x="232" y="13" width="88.5" height="15"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="120" id="1rE-vx-Xch"/>
@@ -217,6 +217,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="AdressLb" destination="3Hl-fj-rEE" id="eOI-UP-xMF"/>
+                <outlet property="Bao" destination="HXg-ST-x0r" id="QpZ-UG-wJg"/>
                 <outlet property="QueRenBtn" destination="hke-7f-XO7" id="5ks-kT-Qv9"/>
                 <outlet property="Timelabel" destination="ms4-hY-AEH" id="aWT-Yk-qT5"/>
                 <outlet property="gongZhongLb" destination="7he-3p-d4T" id="fP3-dI-19i"/>

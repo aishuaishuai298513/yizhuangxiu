@@ -194,16 +194,22 @@ UIAlertViewDelegate
         //
         if(self.paytype == YUEPAY)
         {
+            
+            if([_payInfoModel.yue floatValue]<[self.payInfoModel.gongji floatValue])
+            {
+                [ITTPromptView showMessage:@"余额不足"];
+                return;
+            }
+            
             __weak typeof (self)weakSelf = self;
             ZSDPaymentView *payment = [[ZSDPaymentView alloc]init];
             payment.getText =  ^int(NSString *textInput){
                 
                 [weakSelf yuEpay:textInput];
-    
                 return 1;
             };
             payment.title = @"输入密码";
-            //payment.goodsName = @"商品名称";
+            payment.goodsName = @"支付工资";
             payment.amount = [self.payInfoModel.gongji floatValue];
             [payment show];
             
@@ -211,13 +217,13 @@ UIAlertViewDelegate
         }
         if (self.paytype == YINLIANPAY) {
           
-                   [self yilianOrder];
+            [self yilianOrder];
         }else if (self.paytype == WEIXINPAY){
         
             [self weixinPayDemo];
            
         } else if (self.paytype == ZHIFUBAOPAY){
-            NSLog(@"支付宝充值金额为:%@",_moneyTF.text);
+           // NSLog(@"支付宝充值金额为:%@",_moneyTF.text);
            
             [self zhifubaoGetOrder];
         }else {

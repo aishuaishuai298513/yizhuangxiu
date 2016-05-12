@@ -60,16 +60,17 @@ UIAlertViewDelegate
     UIView *backView;
     
     //所需传参数
-//    NSString *name;
-//    NSString *sex;
-//    NSString *age;
-//    NSString *gzname;
-//    NSString *xianjuzhudi;
-//    NSString *huji;
-//    NSString *gongling;
-//    NSString *xueli;
-//    NSString *shenfenzheng;
-//    NSString *ziwojieshao;
+    NSString *gzName;
+    NSString *name;
+    NSString *sex;
+    NSString *age;
+    NSString *gzname;
+    NSString *xianjuzhudi;
+    NSString *huji;
+    NSString *gongling;
+    NSString *xueli;
+    NSString *shenfenzheng;
+    NSString *ziwojieshao;
 }
 
 @property (nonatomic, strong)UserInfoGr *userInfoGr;
@@ -100,11 +101,13 @@ UIAlertViewDelegate
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    [self initalData];
     [self createUI];
+    
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self initalData];
+//    [self initalData];
 
 }
 - (void)didReceiveMemoryWarning {
@@ -115,7 +118,7 @@ UIAlertViewDelegate
     _sv = [[UIScrollView alloc]init];
     _svImgV = [[UIImageView alloc]init];
     [self getGZTypeData];
-    _titleArr = @[@"*姓名",@"*性别",@"*年龄",@"*工种",@"*户籍",@"现居住地址",@"*工龄",@"学历",@"身份证号码",@"资质证书",@"自我介绍"];
+    _titleArr = @[@"*姓名",@"*性别",@"*年龄",@"*工种",@"*户籍",@"现居住地址",@"*工龄",@"学历",@"身份证号码",@"荣誉证书",@"自我介绍"];
     _sexTypeArr = @[@"男",@"女"];
     
     _tv.delegate = self;
@@ -136,7 +139,7 @@ UIAlertViewDelegate
     
     __weak typeof (self)weakSelf = self;
     [NetWork postNoParm:YZX_gerenziliaogr params:parm success:^(id responseObj) {
-        NSLog(@"%@",responseObj);
+       // NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             
             self.userInfoGr = [UserInfoGr mj_objectWithKeyValues:[responseObj objectForKey:@"data"]];
@@ -206,13 +209,32 @@ UIAlertViewDelegate
     _contentArr = [NSMutableArray array];
    [_contentArr addObjectsFromArray:array];
     
+    NSMutableArray *mutableArray = [NSMutableArray array];
+    //[mutableArray addObjectsFromArray:self.userInfoGr.zizhizhengshu];
+    
     //图片数组
     if(self.userInfoGr.zizhizhengshu)
     {
-        _webPicArr = self.userInfoGr.zizhizhengshu;
+        [self.userInfoGr.zizhizhengshu enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+            NSLog(@"--------%@",obj);
+            NSLog(@"++++++++%ld",idx);
+            
+            if (![obj isEqualToString:@""]) {
+                
+                NSLog(@"111111%@",self.userInfoGr.zizhizhengshu);
+                NSLog(@"222222%@",[self.userInfoGr.zizhizhengshu objectAtIndex:idx]);
+                
+                [mutableArray addObject:obj];
+            }
+            
+        }];
+        
+        //_webPicArr = self.userInfoGr.zizhizhengshu;
+          _webPicArr = mutableArray;
     }
     
-    NSLog(@"%@",self.userInfoGr.name);
+    //NSLog(@"%@",self.userInfoGr.name);
     
 }
 
@@ -234,8 +256,11 @@ UIAlertViewDelegate
 //        if (!cell) {
 //           
 //        }
-          cell.textfield.text = _contentArr [indexPath.row];
-          cell.nameLabel.text = _titleArr [indexPath.row];
+        
+        cell.textfield.text = _contentArr [indexPath.row];
+        cell.nameLabel.text = _titleArr [indexPath.row];
+        
+        [cell.textfield addTarget:self action:@selector(textDiDEndEding:) forControlEvents:UIControlEventEditingDidEnd];
         
         //设置文字颜色
         if ([[cell.nameLabel.text substringToIndex:1] isEqualToString:@"*"]) {
@@ -257,17 +282,67 @@ UIAlertViewDelegate
                 [imageV autoSetDimension:ALDimensionWidth toSize:20];
                 [imageV autoSetDimension:ALDimensionHeight toSize:15];
                 
+                gzName = cell.textfield.text;
+                
             }
+            if (indexPath.row == 1) {
+                sex = cell.textfield.text;
+            }
+            
+            cell.textfield.userInteractionEnabled = NO;
+            cell.textVScrool.userInteractionEnabled = NO;
             
         }
         if (indexPath.row == 0 ||indexPath.row == 4||indexPath.row == 5||indexPath.row == 7||indexPath.row == 10) {
+            
+            cell.textfield.userInteractionEnabled = YES;
+            cell.textVScrool.userInteractionEnabled = YES;
             cell.textfield.enabled = YES;
             cell.textfield.keyboardType = UIKeyboardTypeDefault;
+            
+            switch (indexPath.row) {
+                case 0:
+                    name = cell.textfield.text;
+                    cell.textfield.placeholder = @"请输入有效的姓名";
+                    break;
+                case 4:
+                    huji = cell.textfield.text;
+                    break;
+                case 5:
+                    xianjuzhudi = cell.textfield.text;
+                    break;
+                case 7:
+                    xueli = cell.textfield.text;
+                    break;
+                case 10:
+                    ziwojieshao = cell.textfield.text;
+                    break;
+                    
+                default:
+                    break;
+            }
         }
         
         if (indexPath.row == 6||indexPath.row == 8||indexPath.row == 2) {
+            cell.textfield.userInteractionEnabled = YES;
+            cell.textVScrool.userInteractionEnabled = YES;
             cell.textfield.enabled = YES;
             cell.textfield.keyboardType = UIKeyboardTypeNumberPad;
+            switch (indexPath.row) {
+                case 6:
+                    gongling = cell.textfield.text;
+                    break;
+                case 8:
+                    shenfenzheng = cell.textfield.text;
+                    break;
+                case 2:
+                    
+                    age = cell.textfield.text;
+                    break;
+                    
+                default:
+                    break;
+            }
         }
         
         cell.textfield.delegate = self;
@@ -275,14 +350,16 @@ UIAlertViewDelegate
         return cell;
     }else if (indexPath.row ==_titleArr.count)
     {
+        cell.textfield.userInteractionEnabled = YES;
+        cell.textVScrool.userInteractionEnabled = YES;
         PersonalMakeSureCell *cell = [PersonalMakeSureCell cellLoad];
-//        if (!cell) {
-//            cell = [PersonalMakeSureCell cellLoad];
-//        }
+
         [cell addTarget:self action:@selector(clickFinish) forControlEvents:UIControlEventTouchUpInside];
         return cell;
     }
     else {
+        cell.textfield.userInteractionEnabled = YES;
+        cell.textVScrool.userInteractionEnabled = YES;
         PersonalDetails2Cell *cell2 = [PersonalDetails2Cell loadPersonaldetailsCell];
 //        if (!cell2) {
 //            cell2 = [PersonalDetails2Cell loadPersonaldetailsCell];
@@ -310,6 +387,11 @@ UIAlertViewDelegate
         //图片
          if (_isWebImage) {
              NSLog(@"%d",_isWebImage);
+//             NSLog(@"%@",_webPicArr);
+//             NSLog(@"%@",_picArr);
+              NSLog(@"%ld",_picArr.count);
+             NSLog(@"%ld",_webPicArr.count);
+             
             for (int i = 0; i < _webPicArr.count+_picArr.count+1; i++) {
                 //行号
                 hangNum = i/lieshu;
@@ -388,6 +470,20 @@ UIAlertViewDelegate
 
  }
 
+#pragma mark textFiled修改
+-(void)textDiDEndEding:(UITextField*)textFiled
+{
+    NSLog(@"123");
+    NSLog(@"%@",textFiled.text);
+    //更换数据源
+    [_contentArr replaceObjectAtIndex:textFiled.tag-371 withObject:textFiled.text];
+    
+    //刷新单个数据源
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:textFiled.tag-371 inSection:0];
+    NSArray *indexPathArr = @[indexPath];
+    [self.tv reloadRowsAtIndexPaths:indexPathArr withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
 #pragma mark 删除图片
 -(void)removeImage:(id)sender
 {
@@ -404,7 +500,6 @@ UIAlertViewDelegate
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:9 inSection:0];
         NSArray *indexPathArr = @[indexPath];
         [self.tv reloadRowsAtIndexPaths:indexPathArr withRowAnimation:UITableViewRowAnimationAutomatic];
-    
     }
     
 }
@@ -418,6 +513,8 @@ UIAlertViewDelegate
     [parm setObject:acount.token forKey:@"token"];
     [parm setObject:_webPicArr[num] forKey:@"url"];
     
+    NSLog(@"%@",parm);
+    
     __weak typeof (self)weakSelf = self;
     [NetWork postNoParm:YZX_shanchuzizhi params:parm success:^(id responseObj) {
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
@@ -426,7 +523,9 @@ UIAlertViewDelegate
             NSMutableArray *array = [NSMutableArray array];
             [array addObjectsFromArray:_webPicArr];
             [array removeObjectAtIndex:num];
+            
             _webPicArr = array;
+            NSLog(@"%@",_webPicArr);
             
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:9 inSection:0];
             NSArray *indexPathArr = @[indexPath];
@@ -460,7 +559,7 @@ UIAlertViewDelegate
     
     switch (indexPath.row) {
         case 1:{
-            NSLog(@"选择性别");
+            //NSLog(@"选择性别");
             
             _isSex = YES;
             
@@ -481,6 +580,9 @@ UIAlertViewDelegate
             }];
             
             cell.textfield.text =_sexTypeArr[0];
+            
+            //更换数据源
+            [_contentArr replaceObjectAtIndex:cell.textfield.tag-371 withObject:cell.textfield.text];
         }
             break;
         case 3:{
@@ -509,17 +611,60 @@ UIAlertViewDelegate
     __weak typeof (self)weakSelf = self;
     [NetWork postNoParm:YZX_gongzhongliebiao params:parm success:^(id responseObj) {
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
-            NSLog(@"%@",responseObj);
+           // NSLog(@"%@",responseObj);
             self.gongZongDataSource = [responseObj objectForKey:@"data"];
             [weakSelf pickViewGongZhong];
+            
             //获取第一条数据
-            textFiled.text =[self.gongZongDataSource[0] objectForKey:@"gzname"];
+            if (textFiled) {
+              textFiled.text =[self.gongZongDataSource[0] objectForKey:@"gzname"];
+                //更换数据源
+              [_contentArr replaceObjectAtIndex:textFiled.tag-371 withObject:textFiled.text];
+            }
         }
     } failure:^(NSError *error) {
         
     }];
     
 }
+#pragma mark 获取工种id
+-(void)networkGongZhongId:(UITextField *)textFiled
+{
+    //获得工种
+    //NSLog(@"%@",textFiled.text);
+    //NSLog(@"%@",gzName);
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    __weak typeof (self)weakSelf = self;
+    [NetWork postNoParm:YZX_gongzhongliebiao params:parm success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+           // NSLog(@"%@",responseObj);
+            self.gongZongDataSource = [responseObj objectForKey:@"data"];
+            //[weakSelf pickViewGongZhong];
+            //获取第一条数据
+            for (int i = 0; i<self.gongZongDataSource.count; i++) {
+                
+                if ([gzName isEqualToString:[self.gongZongDataSource[i] objectForKey:@"gzname"]]) {
+                    //NSLog(@"＋＋＋＋＋%@",parm);
+                    [_params setObject:[self.gongZongDataSource[i] objectForKey:@"id"] forKey:@"gongzhongid"];
+                    break;
+                }
+            }
+            
+            [weakSelf postData];
+        }
+        else
+        {
+            [ITTPromptView showMessage:@"工种id获取失败"];
+        }
+    } failure:^(NSError *error) {
+         [ITTPromptView showMessage:@"网络错误"];
+    }];
+
+}
+
 #pragma 工种弹窗
 -(void)pickViewGongZhong
 {
@@ -544,7 +689,7 @@ UIAlertViewDelegate
 
 -(void)backClicked
 {
-
+    
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -555,7 +700,7 @@ UIAlertViewDelegate
         return 125;
     }
     else {
-        return 60;
+        return 70;
     }
 }
 
@@ -566,17 +711,19 @@ UIAlertViewDelegate
  
 }
 
--(BOOL)textFieldShouldEndEditing:(UITextField *)textField{
- 
-    NSInteger index = textField.tag-371;
-    //NSLog(@"%d",index);
-    [_contentArr replaceObjectAtIndex:index withObject:textField.text];
-
-      return YES;
-}
+//-(BOOL)textFieldShouldEndEditing:(UITextField *)textField{
+// 
+//    NSInteger index = textField.tag-371;
+//    //NSLog(@"%d",index);
+//    [_contentArr replaceObjectAtIndex:index withObject:textField.text];
+//
+//      return YES;
+//}
 
 //添加证书
 -(void)addPicture:(UIButton *)sender{
+    [self.view endEditing:YES];
+    
     UIActionSheet *myAction = [[UIActionSheet alloc]initWithTitle:@"上传证书" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"拍照",@"从相册选择", nil];
     [myAction showInView:self.view];
 }
@@ -603,6 +750,7 @@ UIAlertViewDelegate
             _picker = [[UIImagePickerController alloc]init];
             _picker.delegate = self;
             _picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            
             [self presentViewController:_picker animated:YES completion:^{
                 
             }];
@@ -629,6 +777,7 @@ UIAlertViewDelegate
             [self.tv reloadRowsAtIndexPaths:indexPathArr withRowAnimation:UITableViewRowAnimationAutomatic];
             NSLog(@"来自相册");
         }];
+        
     } else if (_picker.sourceType == UIImagePickerControllerSourceTypeCamera){
         UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];
         _imageData = UIImageJPEGRepresentation(image, 0.3);
@@ -760,7 +909,7 @@ UIAlertViewDelegate
     //更换数据源
     [_contentArr replaceObjectAtIndex:textFeild.tag-371 withObject:textFeild.text];
     
-    NSLog(@"%@",str);
+   //NSLog(@"%@",_contentArr);
 }
 -(UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
 
@@ -784,99 +933,145 @@ UIAlertViewDelegate
 #pragma mark  完成提交
 - (void)clickFinish{
     
+    [self.view endEditing:YES];
+    
     [self getTextFieldText];
     
 }
 //获取输入框文字
 -(void)getTextFieldText{
+    
+        NSArray *array = @[self.userInfoGr.name,self.userInfoGr.sex,self.userInfoGr.age,self.userInfoGr.gzname,self.userInfoGr.huji,self.userInfoGr.xianjuzhudi,self.userInfoGr.gongling,self.userInfoGr.xueli,self.userInfoGr.shenfenzheng,@"",self.userInfoGr.ziwojieshao];
+    
+    //NSLog(@"%@",_contentArr);
     //姓名
-    UITextField *nameField = [self.view viewWithTag:371];
-    NSLog(@"%@",nameField.text);
-    if ([nameField.text isEqualToString:@""]) {
-        
+    if ([[_contentArr objectAtIndex:0] isEqualToString:@""]) {
         [ITTPromptView showMessage:@"姓名不能为空"];
-        return;
+    }else
+    {
+        [_params setObject:[_contentArr objectAtIndex:0] forKey:@"name"];
     }
     
-    if (nameField !=nil) {
-        [_params setObject:nameField.text forKey:@"name"];
-    }
+//    UITextField *nameField = [self.view viewWithTag:371];
+//    NSLog(@"%@",nameField.text);
+//    if ([nameField.text isEqualToString:@""]) {
+//        
+//        [ITTPromptView showMessage:@"姓名不能为空"];
+//        return;
+//    }
+//    
+//    if (nameField !=nil) {
+//        [_params setObject:nameField.text forKey:@"name"];
+//    }
     
     //性别
-    UITextField *sexField = [self.view viewWithTag:372];
-    NSLog(@"%@",sexField.text);
-    if ([sexField.text isEqualToString:@""]) {
+    if ([[_contentArr objectAtIndex:1] isEqualToString:@""]) {
         [ITTPromptView showMessage:@"性别不能为空"];
-        return;
+    }else
+    {
+        [_params setObject:[_contentArr objectAtIndex:1] forKey:@"sex"];
     }
-    //NSString *sexStr = [self  getSexTypeCode:sexField.text];
-    if (sexField != nil) {
-        [_params setObject:sexField.text forKey:@"sex"];
-
-    }
+    
+    
+//    UITextField *sexField = [self.view viewWithTag:372];
+//    NSLog(@"%@",sexField.text);
+//    if ([sexField.text isEqualToString:@""]) {
+//        [ITTPromptView showMessage:@"性别不能为空"];
+//        return;
+//    }
+//    //NSString *sexStr = [self  getSexTypeCode:sexField.text];
+//    if (sexField != nil) {
+//        [_params setObject:sexField.text forKey:@"sex"];
+//
+//    }
     
     //年龄
-    UITextField *ageField = [self.view viewWithTag:373];
-    if ([ageField.text isEqualToString:@""]) {
+    if ([[_contentArr objectAtIndex:2] isEqualToString:@""]) {
         [ITTPromptView showMessage:@"年龄不能为空"];
-        return;
-    }
-    if (ageField != nil) {
-        [_params setObject:ageField.text forKey:@"age"];
+    }else
+    {
+        [_params setObject:[_contentArr objectAtIndex:2] forKey:@"age"];
     }
     
-    //工种
-    UITextField *gzTypeField = [self.view viewWithTag:374];
+    
+//    UITextField *ageField = [self.view viewWithTag:373];
+//    if ([ageField.text isEqualToString:@""]) {
+//        [ITTPromptView showMessage:@"年龄不能为空"];
+//        return;
+//    }
+//    if (ageField != nil) {
+//        [_params setObject:ageField.text forKey:@"age"];
+//    }
+    
 //    NSString *gzTypeStr = [self returnGZtype:gzTypeField.text];
 //    if (gzTypeStr !=  nil) {
 //        [_params setObject:gzTypeStr forKey:@"gongzhongid"];
 //    }
     
-    if (![_params objectForKey:@"gongzhongid"]) {
-        
-        for (int i = 0; i<self.gongZongDataSource.count; i++) {
-            if ([gzTypeField.text isEqualToString:[self.gongZongDataSource[i] objectForKey:@"gzname"]]) {
-                [_params setObject:[self.gongZongDataSource[i] objectForKey:@"id"] forKey:@"gongzhongid"];
-            }
-        }
-    }
+//    if (![_params objectForKey:@"gongzhongid"]||[[_params objectForKey:@"gongzhongid"]isEqualToString:@""]) {
+//        
+//        [self networkGongZhongId:gzTypeField];
+//    }
     
     //户籍
-    UITextField *cityField = [self.view viewWithTag:375];
-    if (cityField != nil) {
-        [_params setObject:cityField.text forKey:@"huji"];
-    }
+    
+    [_params setObject:[_contentArr objectAtIndex:4] forKey:@"huji"];
+    
+//    UITextField *cityField = [self.view viewWithTag:375];
+//    if (cityField != nil) {
+//        [_params setObject:cityField.text forKey:@"huji"];
+//    }
     
     //地址
-    UITextField *addressField = [self.view viewWithTag:376];
-    if (addressField != nil) {
-        [_params setObject:addressField.text forKey:@"xianjuzhudi"];
-
-    }
+    [_params setObject:[_contentArr objectAtIndex:5] forKey:@"xianjuzhudi"];
+    
+//    UITextField *addressField = [self.view viewWithTag:376];
+//    if (addressField != nil) {
+//        [_params setObject:addressField.text forKey:@"xianjuzhudi"];
+//
+//    }
     //工龄
-    UITextField *gongLingFile = [self.view viewWithTag:377];
-    if (gongLingFile != nil) {
-        [_params setObject:gongLingFile.text forKey:@"gongling"];
-    }
+    [_params setObject:[_contentArr objectAtIndex:6] forKey:@"gongling"];
+    
+//    UITextField *gongLingFile = [self.view viewWithTag:377];
+//    if (gongLingFile != nil) {
+//        [_params setObject:gongLingFile.text forKey:@"gongling"];
+//    }
     
     //学历
-    UITextField *educationField = [self.view viewWithTag:378];
-    if (educationField != nil) {
-        [_params setObject:educationField.text forKey:@"xueli"];    }
+    [_params setObject:[_contentArr objectAtIndex:7] forKey:@"xueli"];
+    
+//    UITextField *educationField = [self.view viewWithTag:378];
+//    if (educationField != nil) {
+//        [_params setObject:educationField.text forKey:@"xueli"];    }
     
     //身份证
-    UITextField *idCardField = [self.view viewWithTag:379];
-    if (idCardField != nil) {
-        [_params setObject:idCardField.text forKey:@"shenfenzheng"];
-    }
+    [_params setObject:[_contentArr objectAtIndex:8] forKey:@"shenfenzheng"];
+    
+//    UITextField *idCardField = [self.view viewWithTag:379];
+//    if (idCardField != nil) {
+//        [_params setObject:idCardField.text forKey:@"shenfenzheng"];
+//    }
     
     //自我介绍
-    UITextField *descField = [self.view viewWithTag:381];
-    if (descField.text != nil) {
-        [_params setObject:descField.text forKey:@"ziwojieshao"];
+    [_params setObject:[_contentArr objectAtIndex:9] forKey:@"ziwojieshao"];
+    
+//    UITextField *descField = [self.view viewWithTag:381];
+//    if (descField.text != nil) {
+//        [_params setObject:descField.text forKey:@"ziwojieshao"];
+//    }
+    
+    //工种
+    UITextField *gzTypeField = [self.view viewWithTag:374];
+
+    if (![_params objectForKey:@"gongzhongid"]||[[_params objectForKey:@"gongzhongid"]isEqualToString:@""]) {
+        
+     [self networkGongZhongId:gzTypeField];
+    }else
+    {
+      [self postData];
     }
     
-    [self postData];
     
 }
 
@@ -926,35 +1121,20 @@ UIAlertViewDelegate
         return;
     }
     
-   //[_params setObject:ID forKey:@"gongzhongid"];
-    
-    if (![_params objectForKey:@"gongzhongid"]) {
-        
-        [_params setObject:@"" forKey:@"gongzhongid"];
-    }
-    
     NSMutableArray *keyArr = [[NSMutableArray alloc]init];
     for (int i = 0; i <_picArr.count; i++) {
         NSString *str = [NSString stringWithFormat:@"pic%d",i+1];
         [keyArr addObject:str];
         
     }
-//    for (int i = 0; i<_webPicArr.count; i++) {
-//        
-//        UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YZX_BASY_URL,_webPicArr[i]]]]];
-//        
-//         NSData *imageData = UIImageJPEGRepresentation(image, 0.3);
-//         [_picArr addObject:imageData];
-//    }
-    
-//    NSLog(@"%ld",_picArr.count);
-//    
-//    NSLog(@"上传图片数量: %ld",_picArr.count);
     ADAccount *acount = [ADAccountTool account];
     [_params setObject:acount.userid forKey:@"userid"];
     [_params setObject:acount.token forKey:@"token"];
     [_params setObject:@"ios" forKey:@"apptype"];
-   // NSLog(@"%@",_params);
+    //NSLog(@"%@",_params);
+    
+    //NSLog(@"%@",_picArr);
+    //NSLog(@"%@",keyArr);
      [AFNetFirst typearrPicturePOST:YZX_gerenzhiliao_gr_baocun parameters:_params withPicureData:_picArr withKeyArray:keyArr finish:^(NSData *data, NSError *error) {
      
          NSDictionary * dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
@@ -964,8 +1144,8 @@ UIAlertViewDelegate
              //NSLog(@"上传成功");
              [self.navigationController popViewControllerAnimated:YES];
          }
-         NSLog(@"工人修改信息%@",dict);
-         NSLog(@"工人错误信息%@",error.localizedDescription);
+         //NSLog(@"工人修改信息%@",dict);
+         //NSLog(@"工人错误信息%@",error.localizedDescription);
           }];
 }
 

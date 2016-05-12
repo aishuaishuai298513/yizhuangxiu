@@ -36,6 +36,14 @@ WXApiDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    [self jiGuangTuiSong];
+    
+    NSDictionary *remoteNotification = [launchOptions objectForKey: UIApplicationLaunchOptionsRemoteNotificationKey];
+    NSLog(@"%@",remoteNotification);
+    
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+    [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
+    
     [self uMengShare];
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
@@ -63,10 +71,6 @@ WXApiDelegate
     }
     
     [APService setupWithOption:launchOptions];
-    
-//        My_Login_In_ViewController *login = [[My_Login_In_ViewController alloc]init];
-//        UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:login];
-//        self.window.rootViewController = nav;
     
     [CZRootTool chooseRootViewController:self.window];
     [self.window makeKeyAndVisible];
@@ -181,18 +185,30 @@ WXApiDelegate
     
     [UMSocialData setAppKey:@"569703cde0f55ab2bc0006b3"];
      //QQ
-    [UMSocialQQHandler setQQWithAppId:@"1104951123" appKey:@"FwOJSUJTYSOzE8Uc" url:SHARE_URL];
+    //[UMSocialQQHandler setQQWithAppId:@"1104951123" appKey:@"FwOJSUJTYSOzE8Uc" url:SHARE_URL];
+    [UMSocialQQHandler setQQWithAppId:@"1105244107" appKey:@"EJx8lws2kWGWJee2" url:SHARE_URL];
+    
 //     [UMSocialData defaultData].extConfig.qqData.url = SHARE_URL;
 
     [UMSocialQQHandler setSupportWebView:YES];
-
     //微信
-    [UMSocialWechatHandler setWXAppId:@"wx2863d9247c321b5c" appSecret:@"e5cf3a3ed66f1090275eb2bb997b2076" url:SHARE_URL];
-    
+    //[UMSocialWechatHandler setWXAppId:@"wx2863d9247c321b5c" appSecret:@"e5cf3a3ed66f1090275eb2bb997b2076" url:SHARE_URL];
+    [UMSocialWechatHandler setWXAppId:@"wx05c7d1017ae4ebdb" appSecret:@"f1bfd3a7eb4465fcb3dc151e8656b359" url:SHARE_URL];
 }
 
 
 //推送相关
+
+- (void)networkDidReceiveMessage:(NSNotification *)notification {
+    
+    NSDictionary * userInfo = [notification userInfo];
+    NSString *content = [userInfo valueForKey:@"content"];
+    NSDictionary *extras = [userInfo valueForKey:@"extras"];
+    NSString *customizeField1 = [extras valueForKey:@"customizeField1"]; //自定义参数，key是自己定义的
+    NSLog(@"%@",userInfo);
+}
+
+
 - (void)application:(UIApplication *)application
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
@@ -200,11 +216,14 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [APService registerDeviceToken:deviceToken];
 }
 
+
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    [APService handleRemoteNotification:userInfo];
     
-    NSLog(@"收到通知:%@", [self logDic:userInfo]);
+    [APService handleRemoteNotification:userInfo];
+     NSLog(@"收到通知:%@", [self logDic:userInfo]);
+    //设置角标
+    [UIApplication sharedApplication].applicationIconBadgeNumber=0;
     
     //[rootViewController addNotificationCount];
 }
@@ -214,10 +233,69 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 didReceiveRemoteNotification:(NSDictionary *)userInfo
 fetchCompletionHandler:
 (void (^)(UIBackgroundFetchResult))completionHandler {
+    //程序在前台
+    if(application.applicationState == UIApplicationStateActive)
+    {
+       
+        NSString *content = [userInfo objectForKey:@"content"];
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"通知消息" message: content delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+        
+        [alert show];
+    }
+    //点击通知程序从后台进入前台
+    else if (application.applicationState == UIApplicationStateInactive)
+    {
+        NSLog(@"applicationState  %ld",application.applicationState );
+        
+    }else if (application.applicationState == UIApplicationStateBackground)
+    {
+        NSLog(@"applicationState  %ld",application.applicationState );
+    }
+    
+    NSLog(@"%ld",application.applicationState );
+    NSLog(@"%@",userInfo);
+   
+    NSString *Type = [userInfo objectForKey:@"type"];
+    int numType = [Type intValue];
+   // NSLog(@"%@",Type);
+    
+    //保存发布工人通知
+    if (numType == 12) {
+       // NSLog(@"啊啊啊啊啊啊啊啊啊%@",[userInfo objectForKey:@"type"]) ;
+        //保存发布找工人通知数
+        [Function SaveFaBuZhaoGongRen:nil];
+    }else if(
+             numType == 2 ||
+             numType == 3 ||
+             numType == 4 ||
+             numType == 5 ||
+             numType == 6
+             )
+    {
+        //保存工人收到订单状态改变通知数
+       [Function SaveDingDanChangge_gongren:nil];
+        
+    }else
+    {
+        //保存雇主收到订单状态改变通知数
+        [Function SaveDingDanChangge_guzhu:nil];
+    }
+    
+    //发送通知 改变图标状态
+    NSNotification *notification =[NSNotification notificationWithName:@"tongzhiTuBiao" object:nil userInfo:nil];
+    //通过通知中心发送通知
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
+    
+    //type = 7,有人抢单
+    //type = 9,有人发起结算
+    //type = 10,有人确认收款
+    //type = 12 有雇主发布了新的订单
     [APService handleRemoteNotification:userInfo];
     [APService resetBadge];
     
-    NSLog(@"收到通知:%@", [self logDic:userInfo]);
+   // NSLog(@"收到通知:%@", [self logDic:userInfo]);
     //设置角标
     [UIApplication sharedApplication].applicationIconBadgeNumber=0;
     
@@ -261,6 +339,89 @@ didRegisterUserNotificationSettings:
                                      errorDescription:NULL];
     return str;
 }
+
+//******************************************推送相关******************************************
+//极光推送
+-(void)jiGuangTuiSong
+{
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+    [defaultCenter addObserver:self
+                      selector:@selector(networkDidSetup:)
+                          name:kJPFNetworkDidSetupNotification
+                        object:nil];
+    [defaultCenter addObserver:self
+                      selector:@selector(networkDidClose:)
+                          name:kJPFNetworkDidCloseNotification
+                        object:nil];
+    [defaultCenter addObserver:self
+                      selector:@selector(networkDidRegister:)
+                          name:kJPFNetworkDidRegisterNotification
+                        object:nil];
+    [defaultCenter addObserver:self
+                      selector:@selector(networkDidLogin:)
+                          name:kJPFNetworkDidLoginNotification
+                        object:nil];
+    [defaultCenter addObserver:self
+                      selector:@selector(networkDidReceiveMessage:)
+                          name:kJPFNetworkDidReceiveMessageNotification
+                        object:nil];
+    [defaultCenter addObserver:self
+                      selector:@selector(serviceError:)
+                          name:kJPFServiceErrorNotification
+                        object:nil];
+}
+
+
+- (void)networkDidSetup:(NSNotification *)notification {
+    NSLog(@"已连接");
+}
+
+- (void)networkDidClose:(NSNotification *)notification {
+    
+    NSLog(@"未连接");
+    
+}
+
+- (void)networkDidRegister:(NSNotification *)notification {
+    NSLog(@"%@", [notification userInfo]);
+    
+    NSLog(@"已注册");
+}
+
+- (void)networkDidLogin:(NSNotification *)notification {
+    NSLog(@"已登录");
+    
+    if ([APService registrationID]) {
+        NSLog(@"get RegistrationID");
+    }
+}
+
+//- (void)networkDidReceiveMessage:(NSNotification *)notification {
+//    
+//    NSDictionary *userInfo = [notification userInfo];
+//    NSString *title = [userInfo valueForKey:@"title"];
+//    NSString *content = [userInfo valueForKey:@"content"];
+//    NSDictionary *extra = [userInfo valueForKey:@"extras"];
+//    
+//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//    
+//    [dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+//    
+//    NSString *currentContent = [NSString
+//                                stringWithFormat:
+//                                @"收到自定义消息:%@\ntitle:%@\ncontent:%@\nextra:%@\n",
+//                                [NSDateFormatter localizedStringFromDate:[NSDate date]
+//                                                               dateStyle:NSDateFormatterNoStyle
+//                                                               timeStyle:NSDateFormatterMediumStyle],
+//                                title, content, [self logDic:extra]];
+//    NSLog(@"%@", currentContent);
+//    
+//    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"通知消息" message: content delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+//    
+//    [alert show];
+//    
+//}
+
 
 
 
@@ -353,10 +514,17 @@ didRegisterUserNotificationSettings:
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+    
+    //设置角标
+    //[UIApplication sharedApplication].applicationIconBadgeNumber=0;
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    
+    //设置角标
+    
+//    [UIApplication sharedApplication].applicationIconBadgeNumber=0;
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 

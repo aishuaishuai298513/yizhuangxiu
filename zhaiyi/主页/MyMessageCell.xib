@@ -18,19 +18,19 @@
                     <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oXn-54-TxV">
                         <rect key="frame" x="16" y="23" width="288" height="207.5"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="通知消息" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0fX-nR-64e">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="通知消息" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0fX-nR-64e">
                                 <rect key="frame" x="8" y="10" width="68" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" red="0.33143939389999999" green="0.33143939389999999" blue="0.33143939389999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="辞退成都成都出发 vv 分 v 个 v 个饼干饼干饼干饼干饼干饼干饼干饼干" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xqb-xu-kSX">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="辞退成都成都出发 vv 分 v 个 v 个饼干饼干饼干饼干饼干饼干饼干饼干" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xqb-xu-kSX">
                                 <rect key="frame" x="8" y="43" width="272" height="64.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="16:16" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9UH-YV-wmR">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="16:16" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9UH-YV-wmR">
                                 <rect key="frame" x="239" y="125" width="41" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.33143939389999999" green="0.33143939389999999" blue="0.33143939389999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -46,11 +46,11 @@
                                     <action selector="removeCell:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="4Ei-RP-QUu"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="叉叉-1" translatesAutoresizingMaskIntoConstraints="NO" id="i8R-k5-wP4">
-                                <rect key="frame" x="255" y="5" width="21" height="21"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="deleteCha" translatesAutoresizingMaskIntoConstraints="NO" id="i8R-k5-wP4">
+                                <rect key="frame" x="258" y="8" width="15" height="15"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="21" id="Wpy-gc-gen"/>
-                                    <constraint firstAttribute="height" constant="21" id="u1S-a4-0O4"/>
+                                    <constraint firstAttribute="width" constant="15" id="Wpy-gc-gen"/>
+                                    <constraint firstAttribute="height" constant="15" id="u1S-a4-0O4"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -87,6 +87,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="叉叉-1" width="23" height="23"/>
+        <image name="deleteCha" width="10" height="10"/>
     </resources>
 </document>

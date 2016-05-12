@@ -10,6 +10,7 @@
 #import "CustomCalloutView.h"
 #import "MyAnnotationView.h"
 #import "MyAnnotationViewWithGZ.h"
+#import "MyAnnotationViewWithGz2.h"
 
 #define kWidth  100.f
 #define kHeight 84.f
@@ -29,6 +30,7 @@
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) MyAnnotationView *MyAnnView;
 @property (nonatomic, strong) MyAnnotationViewWithGZ *MyAnnViewGz;
+@property (nonatomic, strong) MyAnnotationViewWithGz2 *MyAnnViewGz2;
 
 @end
 
@@ -210,18 +212,35 @@
     }else if (datouzhentype == 2)
     {
         
-        self.layer.cornerRadius = 22;
-        self.layer.masksToBounds = YES;
+//        self.layer.cornerRadius = 22;
+//        self.layer.masksToBounds = YES;
         
-        self.width = 140;
-        self.height = 47;
-        [_MyAnnViewGz removeFromSuperview];
-        _MyAnnViewGz = [MyAnnotationViewWithGZ appView];
-        _MyAnnViewGz.frame = CGRectMake(0, 0, 140, 47);
-        _MyAnnViewGz.userInfo = self.userinfo;
-        //SLog(@"％@",_MyAnnView.userInfo);
+//        self.width = 35;
+//        self.height = 70;
+        self.width = 146;
+        self.height = 65;
+        
+//        [_MyAnnViewGz removeFromSuperview];
+//        _MyAnnViewGz = [MyAnnotationViewWithGZ appView];
+//        //_MyAnnViewGz.frame = CGRectMake(0, 0, 35, 70);
+//        _MyAnnViewGz.frame = CGRectMake(0, 0, 35, 70);
+//        _MyAnnViewGz.backgroundColor = [UIColor clearColor];
+//        _MyAnnViewGz.userInfo = self.userinfo;
+////        SLog(@"％@",_MyAnnView.userInfo);
+//        //NSLog(@"%@",_MyAnnView.userInfo.);
+//        //_MyAnnViewGz.backgroundColor = [UIColor clearColor];
+//         [self addSubview:_MyAnnViewGz];
+        
+        [_MyAnnViewGz2 removeFromSuperview];
+        _MyAnnViewGz2 = [MyAnnotationViewWithGz2 appView];
+        //_MyAnnViewGz.frame = CGRectMake(0, 0, 35, 70);
+        _MyAnnViewGz2.frame = CGRectMake(0, 0, 146, 65);
+        _MyAnnViewGz2.backgroundColor = [UIColor clearColor];
+        //_MyAnnViewGz2.userInfo = self.userinfo;
+        //        SLog(@"％@",_MyAnnView.userInfo);
+        //NSLog(@"%@",_MyAnnView.userInfo.);
         //_MyAnnViewGz.backgroundColor = [UIColor clearColor];
-         [self addSubview:_MyAnnViewGz];
+        [self addSubview:_MyAnnViewGz2];
     }
 }
 

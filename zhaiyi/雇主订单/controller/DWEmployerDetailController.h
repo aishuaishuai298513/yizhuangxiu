@@ -14,5 +14,7 @@
 @property (nonatomic, assign) int type;
 
 @property (nonatomic, strong) DWOrderModel *orderModel;
+//订单ID
+@property (nonatomic, strong) NSString *OrderID;
 
 @end

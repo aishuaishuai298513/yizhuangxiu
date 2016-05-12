@@ -127,7 +127,7 @@ UIAlertViewDelegate
     tb=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, kU, Ga)];
     tb.delegate=self;
     tb.dataSource=self;
-    tb.bounces=NO;
+    tb.bounces=YES;
     tb.scrollEnabled = YES;
     [self.view addSubview:tb];
     
@@ -218,6 +218,7 @@ UIAlertViewDelegate
                    // @{@"action":@"pushSettingVc"},
                     @{@"action":@"pushShareVc"},
                     @{@"action":@"pushFeedbackVc"},
+                    @{@"action":@"pushMyXiaoxi"},
                     @{@"action":@"pushTelVc"},
                    // @{@"action":@"pushUpdateAlert"},
                     @{@"action":@"pushLogoutVc"}];
@@ -250,7 +251,6 @@ UIAlertViewDelegate
     
 }
 
-
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     NSLog(@"计算分组数");
     return 1;
@@ -260,11 +260,11 @@ UIAlertViewDelegate
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (GetUserDefaultsGR) {
         //return 8;
-        return 6;
+        return 7;
     }else
     {
         //return 7;
-        return 6;
+        return 7;
     }
 }
 
@@ -289,6 +289,11 @@ UIAlertViewDelegate
                 cell =[[[NSBundle mainBundle]loadNibNamed:@"My_Login_UserInfo_Cell" owner:self options:nil]lastObject];
                 cell.selectionStyle=UITableViewCellSelectionStyleNone;
             }
+//            if([self.MyInfoGr.ordernum isEqualToString:@""])
+//            {
+//              cell.orderNum.text = @"0单";
+//            }
+            cell.orderNum.text = [NSString stringWithFormat:@"%@单",self.MyInfoGz.ordernum];
             //
             if (GetUserDefaultsGR) {
                 
@@ -331,10 +336,13 @@ UIAlertViewDelegate
             }
             
             //地址
+            
+            NSString *position = [[NSUserDefaults standardUserDefaults]objectForKey:@"position"];
+            
             if (self.MyInfoGz.lng) {
-                cell.userAddressLb.text = @"地址";
+                cell.userAddressLb.text = position;
             } else {
-                cell.userAddressLb.text = @"地址";
+                cell.userAddressLb.text = position;
             }
             
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changePhoto:)];
@@ -362,14 +370,14 @@ UIAlertViewDelegate
         NSArray *picArr = [[NSArray alloc]init];
         //工人
         if (GetUserDefaultsGR) {
-            picArr=@[@"我的_03.png",@"我的_10.png",@"我的_12.png",@"我的_14.png",@"我的_16",@"我的_19.png"];
-            NSArray * name=@[@"钱       包",@"分       享",@"意见反馈",@"客服电话",@"退        出"];
+            picArr=@[@"我的_03.png",@"fenXiang",@"我的_12.png",@"xiaoxi",@"我的_14.png",@"我的_19.png"];
+            NSArray * name=@[@"钱       包",@"分       享",@"意见反馈",@"我的消息",@"客服电话",@"退        出"];
              img.image=[UIImage imageNamed:picArr[indexPath.row-1]];
             title.text=name[indexPath.row-1];
             //雇主
         }else{
-            picArr=@[@"我的_03.png",@"我的_10.png",@"我的_12.png",@"我的_14.png",@"我的_16",@"我的_19.png"];
-            NSArray * name=@[@"钱       包",@"分       享",@"意见反馈",@"客服电话",@"退        出"];
+            picArr=@[@"我的_03.png",@"fenXiang",@"我的_12.png",@"xiaoxi",@"我的_14.png",@"我的_19.png"];
+            NSArray * name=@[@"钱       包",@"分       享",@"意见反馈",@"我的消息",@"客服电话",@"退        出"];
             img.image=[UIImage imageNamed:picArr[indexPath.row-1]];
             title.text=name[indexPath.row-1];
         }
@@ -424,6 +432,16 @@ UIAlertViewDelegate
     }else {
         [self goLogin];
     }
+}
+
+
+#pragma mark  我的消息
+-(void)pushMyXiaoxi
+{
+    UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    My_pocket_tixian_FeedbackController *vc = [story instantiateViewControllerWithIdentifier:@"xiaoxi"];
+    [self.navigationController pushViewController:vc animated:YES];
+
 }
 
 #pragma mark  登陆

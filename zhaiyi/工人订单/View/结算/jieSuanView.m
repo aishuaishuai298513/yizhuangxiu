@@ -94,8 +94,8 @@
      self.timeL.text = [dataSource objectForKey:@"kaigongriqi"];
      self.yujiL.text = [dataSource objectForKey:@"yujitianshu"];
      self.tianShuTextF.text = [dataSource objectForKey:@"tianshu"];
-     self.danrigongziL.text = [NSString stringWithFormat:@"%ld元",[[dataSource objectForKey:@"price"] integerValue]];
-     self.gongjiL.text = [NSString stringWithFormat:@"%ld元",[[dataSource objectForKey:@"gongji"] integerValue]];
+     self.danrigongziL.text = [NSString stringWithFormat:@"%.2f元",[[dataSource objectForKey:@"price"] floatValue]];
+     self.gongjiL.text = [NSString stringWithFormat:@"%.2f元",[[dataSource objectForKey:@"gongji"] floatValue]];
     
     if ([[dataSource objectForKey:@"zhifufangshi"] isEqualToString:@"线上"]) {
         [self xianshangClicked];
@@ -124,11 +124,11 @@
 
 
 
--(void)setTianshu:(int)tianshu
+-(void)setTianshu:(float)tianshu
 {
     _tianshu = tianshu;
-    int money = tianshu * [self.danrigongziL.text intValue];
-    self.gongjiL.text = [NSString stringWithFormat:@"%d元",money];
+    float money = tianshu * [self.danrigongziL.text floatValue];
+    self.gongjiL.text = [NSString stringWithFormat:@"%.2f元",money];
 }
 
 
@@ -235,7 +235,7 @@
     {
         strs  = [NSString stringWithFormat:@"%@%@",textField.text,string];
     }
-    self.tianshu = [strs intValue];
+    self.tianshu = [strs floatValue];
     
     return YES;
 }

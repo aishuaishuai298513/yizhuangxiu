@@ -39,12 +39,27 @@
 {
     _userInfo = userInfo;
     
-    self.name.text = [userInfo objectForKey:@"name"];
-    self.type.text = [userInfo objectForKey:@"gzname"];
+//    self.name.text = [userInfo objectForKey:@"name"];
+//    self.type.text = [userInfo objectForKey:@"gzname"];
+    self.gzName.font = [UIFont fontWithName:@"AmericanTypewriter-Bold" size:13];
+    
+    
+    NSLog(@"%@",[userInfo objectForKey:@"headpic"]);
+    
+//    [[SDImageCache sharedImageCache] clearDisk];
+//    
+//    [[SDImageCache sharedImageCache] clearMemory];//可有可无
     
     [self.iconImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YZX_BASY_URL,[userInfo objectForKey:@"headpic"]]]];
     
-    [Function xingji:self xingji:[[userInfo objectForKey:@"xing"] intValue] startTag:1];
+    //[self.iconImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YZX_BASY_URL,@"/headpic.jpg"]]];
+    
+     self.gzName.text = [userInfo objectForKey:@"gzname"];
+    
+//      NSLog(@"ccccccccc%@",[userInfo objectForKey:@"gzname"]);
+//     NSLog(@"nnnnnnnn%@",[userInfo objectForKey:@"headpic"]);
+    
+//    [Function xingji:self xingji:[[userInfo objectForKey:@"xing"] intValue] startTag:1];
     
 }
 

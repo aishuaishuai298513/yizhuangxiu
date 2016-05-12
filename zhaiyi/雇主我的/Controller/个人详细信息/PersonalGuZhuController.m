@@ -9,6 +9,7 @@
 #import "PersonalGuZhuController.h"
 #import "PersonaldetailsCell.h"
 #import "Function.h"
+#import "TiJiaoTableViewCell.h"
 
 #define CELL_ID @"Personal_cell_ID"
 @interface PersonalGuZhuController ()
@@ -40,8 +41,7 @@ UITextFieldDelegate
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-//    [self initalData];
+
     [self createUI];
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -53,15 +53,14 @@ UITextFieldDelegate
     // Dispose of any resources that can be recreated.
 }
 -(void)initalData{
+    
     _account = [ADAccountTool account];
     _params = [NSMutableDictionary dictionary];
     _modifyDict = [NSMutableDictionary dictionary];
-    _titleArr = @[@"姓名",@"性别",@"联系电话",@"联系地址"];
-   // _contentArr = @[_account.em_name,[self returnSexType:_account.em_sex],_account.tel,_account.em_address];
+    _titleArr = @[@"*姓名",@"*性别",@"*联系电话",@"*户籍",@"从事行业"];
     _contentArr = [NSMutableArray array];
-    
     _pickerContentArr = @[@"男",@"女"];
-//    [self resignTheFirstResponser];
+
     [self setData];
 }
 //设置初始化数据
@@ -81,7 +80,8 @@ UITextFieldDelegate
             [_contentArr addObject:[dicDate objectForKey:@"name"]];
             [_contentArr addObject:[dicDate objectForKey:@"sex"]];
             [_contentArr addObject:[dicDate objectForKey:@"mobile"]];
-            [_contentArr addObject:[dicDate objectForKey:@"adr"]];
+            [_contentArr addObject:[dicDate objectForKey:@"huji"]];
+            [_contentArr addObject:[dicDate objectForKey:@"hangye"]];
             [self.tv reloadData];
         }
         
@@ -92,7 +92,7 @@ UITextFieldDelegate
 }
 -(void)createUI{
     
-    [self customPickerView];
+    //[self customPickerView];
     [self customheaderView];
     //
     self.tv.delegate = self;
@@ -106,65 +106,133 @@ UITextFieldDelegate
 }
 #pragma mark UITableView
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    
     return _titleArr.count+1;
 }
+
 //  textfield 的tag值 从380 - 383
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    PersonaldetailsCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_ID];
-    if (!cell) {
-        cell = [PersonaldetailsCell loadPersonaldetailsCell];
-    }
-    if (indexPath.row <4) {
-        cell.nameLabel.text = _titleArr[indexPath.row];
-        if (_contentArr.count >0) {
-            cell.textfield.text =_contentArr[indexPath.row];
-        }else
-        {
-           cell.textfield.text =@"";
-        }
+    PersonaldetailsCell *cell = [PersonaldetailsCell loadPersonaldetailsCell];
+    
+    TiJiaoTableViewCell *cellBtn = [[[NSBundle mainBundle]loadNibNamed:@"TiJiaoTableViewCell" owner:nil options:nil]lastObject];
+    
 
+    if (indexPath.row <5) {
+        
+        cell.nameLabel.text = _titleArr[indexPath.row];
+        
+        //设置文字颜色
+        if ([[cell.nameLabel.text substringToIndex:1] isEqualToString:@"*"]) {
+            //设置字颜色
+            [self setTextColor:cell.nameLabel];
+        }
+        
+        if (_contentArr.count >0) {
+            //性别转换
+            if (indexPath.row == 1) {
+                cell.textfield.text = [self returnSexType:_contentArr[indexPath.row]];
+            }else
+            {
+                cell.textfield.text =_contentArr[indexPath.row];
+            }
+        }
+        
     }
     
+    
+    if (indexPath.row == 0) {
+        
+        if ([cell.textfield.text isEqualToString:@""]) {
+            cell.textfield.placeholder = @"请输入有效的姓名";
+        }
+        cell.textfield.userInteractionEnabled = YES;
+        cell.textVScrool.userInteractionEnabled = YES;
+    }
     if (indexPath.row == 1) {
+        
         cell.textfield.clearButtonMode = UITextFieldViewModeNever;
+        cell.textfield.userInteractionEnabled = NO;
+        cell.textVScrool.userInteractionEnabled = NO;
         cell.textfield.enabled = NO;
+        if ([cell.textfield.text isEqualToString:@""]) {
+            cell.textfield.placeholder = @"点击选择性别";
+        }
     }
     if (indexPath.row == 2) {
         cell.textfield.keyboardType = UIKeyboardTypeNumberPad;
         cell.textfield.userInteractionEnabled = NO;
     }
-    if(indexPath.row == 4)
-    {
-        cell.nameLabel.hidden = YES;
-        cell.textfield.hidden = YES;
-        cell.finashBtn.hidden = NO;
-        cell.Line.hidden = YES;
-        [cell.finashBtn addTarget:self action:@selector(clickFinish) forControlEvents:UIControlEventTouchUpInside];
+    if (indexPath.row == 3) {
+        
+        if ([cell.textfield.text isEqualToString:@""]) {
+            cell.textfield.placeholder = @"请输入户籍";
+        }
+        
+        cell.textfield.userInteractionEnabled = YES;
+        cell.textVScrool.userInteractionEnabled = YES;
     }
+    if (indexPath.row == 4) {
+        
+        if ([cell.textfield.text isEqualToString:@""]) {
+            cell.textfield.placeholder = @"请输入从事行业";
+        }
+        cell.textfield.userInteractionEnabled = YES;
+        cell.textVScrool.userInteractionEnabled = YES;
+    }
+    
+    if(indexPath.row == 5)
+    {
+        
+        
+        //[cell.finashBtn addTarget:self action:@selector(clickFinish) forControlEvents:UIControlEventTouchUpInside];
+        
+        [cellBtn.tiJiaobtnClicked addTarget:self action:@selector(clickFinish) forControlEvents:UIControlEventTouchUpInside];
+        //cellBtn.contentView.backgroundColor = [UIColor redColor];
+        
+        return cellBtn;
+    }
+    
     cell.textfield.tag = 380 + indexPath.row;
     cell.textfield.delegate = self;
-    
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+     [self.view endEditing:YES];
+    
     if (indexPath.row == 1) {
+        
         NSLog(@"性别选择");
-        _pView.hidden = NO;
-        [self.view endEditing:YES];
+        [self customPickerView];
+        
+        UITextField *textFeild = (UITextField *)[self.tv viewWithTag:381];
+        textFeild.text = @"男";
+
+        
+
     }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 4) {
+    if (indexPath.row == 5) {
         return 100;
     }
-    return 44;
+    return 50;
 }
+
+#pragma mark 设置label字体颜色
+-(void)setTextColor:(UILabel *)label
+{
+    [Function fuwenbenLabel:label FontNumber:[UIFont systemFontOfSize:15] AndRange:NSMakeRange(0, 1) AndColor:[UIColor redColor]];
+}
+
+
 -(void)textFieldDidBeginEditing:(UITextField *)textField{
     _pView.hidden = YES;
+    textField.keyboardType = UIKeyboardTypeDefault;
+    
 }
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField{
@@ -214,6 +282,7 @@ UITextFieldDelegate
         return @"81";
     }
 }
+
 -(NSString *)returnSexType:(NSString *)str{
     if ([str isEqualToString:@"82"]) {
         return @"男";
@@ -250,7 +319,7 @@ UITextFieldDelegate
     _pickerView.dataSource =self;
     [_pView addSubview:_pickerView];
     [self.view addSubview:_pView];
-    _pView.hidden = YES;
+    //_pView.hidden = YES;
     
     return _pView;
 }
@@ -261,20 +330,22 @@ UITextFieldDelegate
     self.tv.tableHeaderView = headV;
 }
 //
--(void)cancelChoosePicker{
-    [UIView animateWithDuration:2 animations:^{
-        _pView.hidden = YES;
-        [self.view layoutIfNeeded];
-        
-    }];
-    
-    NSLog(@"取消");
-}
+//-(void)cancelChoosePicker{
+//    [UIView animateWithDuration:2 animations:^{
+//        _pView.hidden = YES;
+//        [self.view layoutIfNeeded];
+//        
+//    }];
+//    
+//    NSLog(@"取消");
+//}
 -(void)ensureChoosePicker{
     
-    [UIView animateWithDuration:1 animations:^{
-        _pView.hidden = YES;
-    }];
+    [_pView removeFromSuperview];
+    
+//    [UIView animateWithDuration:1 animations:^{
+//        _pView.hidden = YES;
+//    }];
 }
 
 #pragma mark PickerView
@@ -315,17 +386,24 @@ UITextFieldDelegate
 #pragma mark 修改个人资料
 
 -(void)clickFinish{
+    
+    [self.view endEditing:YES];
+    
     //姓名
     UITextField *nameTF = [self.view viewWithTag:380];
     //性别
     UITextField *sexTF = [self.view viewWithTag:381];
     //电话
     UITextField *telTF = [self.view viewWithTag:382];
-    //地址
+    //户籍
     UITextField *addressTF = [self.view viewWithTag:383];
+    //从事行业
+    UITextField *hangyeTF = [self.view viewWithTag:384];
     
     if ([telTF.text isEqualToString:@""] || [sexTF.text isEqualToString:@""] || [nameTF.text isEqualToString:@""] || [addressTF.text isEqualToString:@""]) {
+        
         [ITTPromptView showMessage:@"信息请填写完整"];
+        
     } else {
         
         ADAccount *acount = [ADAccountTool account];
@@ -334,7 +412,8 @@ UITextFieldDelegate
         [_params setObject:acount.token forKey:@"token"];
         [_params setObject:nameTF.text forKey:@"name"];
         [_params setObject:[self getSexType:sexTF.text] forKey:@"sex"];
-        [_params setObject:addressTF.text forKey:@"adr"];
+        [_params setObject:addressTF.text forKey:@"huji"];
+        [_params setObject:hangyeTF.text forKey:@"hangye"];
         
         [self postData];
     }
@@ -363,6 +442,11 @@ UITextFieldDelegate
     [self.view addGestureRecognizer:tapFirst];
 }
 -(void)resignTheFirst:(UITapGestureRecognizer *)sender{
+    [self.view endEditing:YES];
+}
+
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
     [self.view endEditing:YES];
 }
 

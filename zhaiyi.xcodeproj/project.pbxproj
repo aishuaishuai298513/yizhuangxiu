@@ -51,6 +51,15 @@
 		04E4A8EA1C1530A30069E4F4 /* contactMeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A8E51C1530A30069E4F4 /* contactMeButton.m */; };
 		04EB7D8F1C15685C00B21492 /* My_pocket_qiehuan_View.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EB7D8E1C15685C00B21492 /* My_pocket_qiehuan_View.m */; };
 		04EB7D911C1568F100B21492 /* My_pocket_qiehuan_View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04EB7D901C1568F100B21492 /* My_pocket_qiehuan_View.xib */; };
+		0A011FEE1CE1C2AF00498606 /* SelectDeleteView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A011FED1CE1C2AF00498606 /* SelectDeleteView.m */; };
+		0A011FF01CE1C2E300498606 /* SelectDeleteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A011FEF1CE1C2E300498606 /* SelectDeleteView.xib */; };
+		0A04A4031CE088C10067CFEE /* TiXianXiangQingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A04A4011CE088C10067CFEE /* TiXianXiangQingViewController.m */; };
+		0A04A4041CE088C10067CFEE /* TiXianXiangQingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A04A4021CE088C10067CFEE /* TiXianXiangQingViewController.xib */; };
+		0A05BE1C1CE4221200B7A808 /* ZhuCeXieYi.doc in Resources */ = {isa = PBXBuildFile; fileRef = 0A05BE1B1CE4221200B7A808 /* ZhuCeXieYi.doc */; };
+		0A05BE261CE4618C00B7A808 /* GzJIeSuanView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A05BE241CE4618C00B7A808 /* GzJIeSuanView.m */; };
+		0A05BE271CE4618C00B7A808 /* GzJIeSuanView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A05BE251CE4618C00B7A808 /* GzJIeSuanView.xib */; };
+		0A05BE2B1CE48B0F00B7A808 /* MyAnnotationViewWithGz2.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A05BE2A1CE48B0F00B7A808 /* MyAnnotationViewWithGz2.m */; };
+		0A05BE2D1CE48BD200B7A808 /* MyAnnotationViewWithGz2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A05BE2C1CE48BD200B7A808 /* MyAnnotationViewWithGz2.xib */; };
 		0A067FB51CC9E64E00870935 /* UIFont+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A067FB41CC9E64E00870935 /* UIFont+Extension.m */; };
 		0A0CC19F1CCB1CDF001DC959 /* tuiChuTixing.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CC19D1CCB1CDF001DC959 /* tuiChuTixing.m */; };
 		0A0CC1A01CCB1CDF001DC959 /* tuiChuTixing.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A0CC19E1CCB1CDF001DC959 /* tuiChuTixing.xib */; };
@@ -120,6 +129,8 @@
 		0A9C7B221C9FC6C000A0786E /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9C7B1C1C9FC6C000A0786E /* NSLayoutConstraint+PureLayout.m */; };
 		0A9C7B261C9FFF5500A0786E /* CertificatePayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9C7B251C9FFF5500A0786E /* CertificatePayView.m */; };
 		0A9C7B281C9FFF8900A0786E /* CertificatePayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A9C7B271C9FFF8900A0786E /* CertificatePayView.xib */; };
+		0AA30D4E1CDDEE450029392D /* TiJiaoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA30D4C1CDDEE450029392D /* TiJiaoTableViewCell.m */; };
+		0AA30D4F1CDDEE450029392D /* TiJiaoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AA30D4D1CDDEE450029392D /* TiJiaoTableViewCell.xib */; };
 		0AA5D3181C9AC1A4009E99B9 /* FriendPrompt.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA5D3171C9AC1A4009E99B9 /* FriendPrompt.m */; };
 		0AB689991C9BA03300F5082E /* FriendPrompt.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AB689981C9BA03300F5082E /* FriendPrompt.xib */; };
 		0AB7A60C1CA39B1000A41611 /* PayPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AB7A60A1CA39B1000A41611 /* PayPasswordViewController.m */; };
@@ -130,6 +141,10 @@
 		0AD2CED61C45FD7700774278 /* MyResignViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AD2CED41C45FD7700774278 /* MyResignViewController.xib */; };
 		0AD2CEDF1C464EDF00774278 /* SSAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD2CEDE1C464EDF00774278 /* SSAnnotation.m */; };
 		0AD2CEE31C464FD600774278 /* HMAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD2CEE21C464FD600774278 /* HMAnnotationView.m */; };
+		0ADB84421CDB383F00189DA3 /* CancleTiXing.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ADB843F1CDB383F00189DA3 /* CancleTiXing.m */; };
+		0ADB84431CDB383F00189DA3 /* CancleTiXing.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0ADB84401CDB383F00189DA3 /* CancleTiXing.xib */; };
+		0ADB844C1CDB53B800189DA3 /* CancleTiXing2.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ADB84491CDB53B800189DA3 /* CancleTiXing2.m */; };
+		0ADB844D1CDB53B800189DA3 /* CancleTiXing2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0ADB844A1CDB53B800189DA3 /* CancleTiXing2.xib */; };
 		0AE6083F1C92A473009195B2 /* PersonalMakeSureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AE6083D1C92A473009195B2 /* PersonalMakeSureCell.m */; };
 		0AE608401C92A473009195B2 /* PersonalMakeSureCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AE6083E1C92A473009195B2 /* PersonalMakeSureCell.xib */; };
 		0AE7713D1C8030CB008B277D /* AMapSearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE7713C1C8030CB008B277D /* AMapSearchKit.framework */; };
@@ -488,6 +503,19 @@
 		04EB7D8D1C15685C00B21492 /* My_pocket_qiehuan_View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = My_pocket_qiehuan_View.h; sourceTree = "<group>"; };
 		04EB7D8E1C15685C00B21492 /* My_pocket_qiehuan_View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = My_pocket_qiehuan_View.m; sourceTree = "<group>"; };
 		04EB7D901C1568F100B21492 /* My_pocket_qiehuan_View.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = My_pocket_qiehuan_View.xib; sourceTree = "<group>"; };
+		0A011FEC1CE1C2AF00498606 /* SelectDeleteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectDeleteView.h; sourceTree = "<group>"; };
+		0A011FED1CE1C2AF00498606 /* SelectDeleteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectDeleteView.m; sourceTree = "<group>"; };
+		0A011FEF1CE1C2E300498606 /* SelectDeleteView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SelectDeleteView.xib; sourceTree = "<group>"; };
+		0A04A4001CE088C10067CFEE /* TiXianXiangQingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TiXianXiangQingViewController.h; sourceTree = "<group>"; };
+		0A04A4011CE088C10067CFEE /* TiXianXiangQingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TiXianXiangQingViewController.m; sourceTree = "<group>"; };
+		0A04A4021CE088C10067CFEE /* TiXianXiangQingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TiXianXiangQingViewController.xib; sourceTree = "<group>"; };
+		0A05BE1B1CE4221200B7A808 /* ZhuCeXieYi.doc */ = {isa = PBXFileReference; lastKnownFileType = file; path = ZhuCeXieYi.doc; sourceTree = "<group>"; };
+		0A05BE231CE4618C00B7A808 /* GzJIeSuanView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GzJIeSuanView.h; sourceTree = "<group>"; };
+		0A05BE241CE4618C00B7A808 /* GzJIeSuanView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GzJIeSuanView.m; sourceTree = "<group>"; };
+		0A05BE251CE4618C00B7A808 /* GzJIeSuanView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GzJIeSuanView.xib; sourceTree = "<group>"; };
+		0A05BE291CE48B0F00B7A808 /* MyAnnotationViewWithGz2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyAnnotationViewWithGz2.h; sourceTree = "<group>"; };
+		0A05BE2A1CE48B0F00B7A808 /* MyAnnotationViewWithGz2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyAnnotationViewWithGz2.m; sourceTree = "<group>"; };
+		0A05BE2C1CE48BD200B7A808 /* MyAnnotationViewWithGz2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyAnnotationViewWithGz2.xib; sourceTree = "<group>"; };
 		0A067FB31CC9E64E00870935 /* UIFont+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+Extension.h"; sourceTree = "<group>"; };
 		0A067FB41CC9E64E00870935 /* UIFont+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+Extension.m"; sourceTree = "<group>"; };
 		0A0CC19C1CCB1CDF001DC959 /* tuiChuTixing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tuiChuTixing.h; sourceTree = "<group>"; };
@@ -611,6 +639,9 @@
 		0A9C7B241C9FFF5500A0786E /* CertificatePayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertificatePayView.h; sourceTree = "<group>"; };
 		0A9C7B251C9FFF5500A0786E /* CertificatePayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertificatePayView.m; sourceTree = "<group>"; };
 		0A9C7B271C9FFF8900A0786E /* CertificatePayView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CertificatePayView.xib; sourceTree = "<group>"; };
+		0AA30D4B1CDDEE450029392D /* TiJiaoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TiJiaoTableViewCell.h; sourceTree = "<group>"; };
+		0AA30D4C1CDDEE450029392D /* TiJiaoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TiJiaoTableViewCell.m; sourceTree = "<group>"; };
+		0AA30D4D1CDDEE450029392D /* TiJiaoTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TiJiaoTableViewCell.xib; sourceTree = "<group>"; };
 		0AA5D3161C9AC1A4009E99B9 /* FriendPrompt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendPrompt.h; sourceTree = "<group>"; };
 		0AA5D3171C9AC1A4009E99B9 /* FriendPrompt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendPrompt.m; sourceTree = "<group>"; };
 		0AB57F331CA8FAD70071E633 /* YzxPostHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YzxPostHeader.h; sourceTree = "<group>"; };
@@ -629,6 +660,12 @@
 		0AD2CEDE1C464EDF00774278 /* SSAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSAnnotation.m; sourceTree = "<group>"; };
 		0AD2CEE11C464FD600774278 /* HMAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMAnnotationView.h; sourceTree = "<group>"; };
 		0AD2CEE21C464FD600774278 /* HMAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMAnnotationView.m; sourceTree = "<group>"; };
+		0ADB843F1CDB383F00189DA3 /* CancleTiXing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CancleTiXing.m; sourceTree = "<group>"; };
+		0ADB84401CDB383F00189DA3 /* CancleTiXing.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CancleTiXing.xib; sourceTree = "<group>"; };
+		0ADB84411CDB383F00189DA3 /* CancleTiXing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CancleTiXing.h; sourceTree = "<group>"; };
+		0ADB84491CDB53B800189DA3 /* CancleTiXing2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CancleTiXing2.m; sourceTree = "<group>"; };
+		0ADB844A1CDB53B800189DA3 /* CancleTiXing2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CancleTiXing2.xib; sourceTree = "<group>"; };
+		0ADB844B1CDB53B800189DA3 /* CancleTiXing2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CancleTiXing2.h; sourceTree = "<group>"; };
 		0AE6083C1C92A473009195B2 /* PersonalMakeSureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonalMakeSureCell.h; sourceTree = "<group>"; };
 		0AE6083D1C92A473009195B2 /* PersonalMakeSureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonalMakeSureCell.m; sourceTree = "<group>"; };
 		0AE6083E1C92A473009195B2 /* PersonalMakeSureCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PersonalMakeSureCell.xib; sourceTree = "<group>"; };
@@ -1499,6 +1536,46 @@
 			path = "账户切换";
 			sourceTree = "<group>";
 		};
+		0A011FEB1CE1C23600498606 /* 确定删除 */ = {
+			isa = PBXGroup;
+			children = (
+				0A011FEC1CE1C2AF00498606 /* SelectDeleteView.h */,
+				0A011FEF1CE1C2E300498606 /* SelectDeleteView.xib */,
+				0A011FED1CE1C2AF00498606 /* SelectDeleteView.m */,
+			);
+			name = "确定删除";
+			sourceTree = "<group>";
+		};
+		0A04A3FF1CE087FE0067CFEE /* 提现详情 */ = {
+			isa = PBXGroup;
+			children = (
+				0A04A4001CE088C10067CFEE /* TiXianXiangQingViewController.h */,
+				0A04A4011CE088C10067CFEE /* TiXianXiangQingViewController.m */,
+				0A04A4021CE088C10067CFEE /* TiXianXiangQingViewController.xib */,
+			);
+			name = "提现详情";
+			sourceTree = "<group>";
+		};
+		0A05BE221CE4617900B7A808 /* 结算凭证 */ = {
+			isa = PBXGroup;
+			children = (
+				0A05BE231CE4618C00B7A808 /* GzJIeSuanView.h */,
+				0A05BE241CE4618C00B7A808 /* GzJIeSuanView.m */,
+				0A05BE251CE4618C00B7A808 /* GzJIeSuanView.xib */,
+			);
+			name = "结算凭证";
+			sourceTree = "<group>";
+		};
+		0A05BE281CE48AA200B7A808 /* 雇主图标2 */ = {
+			isa = PBXGroup;
+			children = (
+				0A05BE291CE48B0F00B7A808 /* MyAnnotationViewWithGz2.h */,
+				0A05BE2A1CE48B0F00B7A808 /* MyAnnotationViewWithGz2.m */,
+				0A05BE2C1CE48BD200B7A808 /* MyAnnotationViewWithGz2.xib */,
+			);
+			name = "雇主图标2";
+			sourceTree = "<group>";
+		};
 		0A0CC1961CCB1A7F001DC959 /* 退出登陆提醒 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1570,6 +1647,7 @@
 		0A28E3201C45231A001BB065 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0A05BE221CE4617900B7A808 /* 结算凭证 */,
 				0A9C7B231C9FFED900A0786E /* 支付凭证 */,
 				0AA5D3151C9AC136009E99B9 /* 友情提示框 */,
 				0A28E3231C452398001BB065 /* OrderheaderView.h */,
@@ -1591,6 +1669,9 @@
 		0A296BB21CBCD48000C1D72D /* view */ = {
 			isa = PBXGroup;
 			children = (
+				0AA30D4B1CDDEE450029392D /* TiJiaoTableViewCell.h */,
+				0AA30D4C1CDDEE450029392D /* TiJiaoTableViewCell.m */,
+				0AA30D4D1CDDEE450029392D /* TiJiaoTableViewCell.xib */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -1666,6 +1747,7 @@
 		0A4D46A41C3E326C00FE8DD4 /* 订单发布中/施工中/已竣工 */ = {
 			isa = PBXGroup;
 			children = (
+				0ADB843E1CDB37C300189DA3 /* View */,
 				0A8FF7CD1C48D49B009771BF /* 订单列表 */,
 				0AFAEEC61C3F8E1F00C7C728 /* model */,
 			);
@@ -1727,6 +1809,7 @@
 		0A813A011CA4D7F700733248 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				0A04A3FF1CE087FE0067CFEE /* 提现详情 */,
 				0AF8AF201CB7BB12007DB36D /* 银行卡列表 */,
 				0AF8AF1F1CB7BB05007DB36D /* 提现 */,
 			);
@@ -2202,6 +2285,19 @@
 			name = "大头针";
 			sourceTree = "<group>";
 		};
+		0ADB843E1CDB37C300189DA3 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				0ADB84491CDB53B800189DA3 /* CancleTiXing2.m */,
+				0ADB844A1CDB53B800189DA3 /* CancleTiXing2.xib */,
+				0ADB844B1CDB53B800189DA3 /* CancleTiXing2.h */,
+				0ADB843F1CDB383F00189DA3 /* CancleTiXing.m */,
+				0ADB84401CDB383F00189DA3 /* CancleTiXing.xib */,
+				0ADB84411CDB383F00189DA3 /* CancleTiXing.h */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
 		0AE1A9781C97F1DF00400889 /* 招工人 */ = {
 			isa = PBXGroup;
 			children = (
@@ -2233,6 +2329,7 @@
 		0AE771F61C88362F008B277D /* AnnotationView */ = {
 			isa = PBXGroup;
 			children = (
+				0A05BE281CE48AA200B7A808 /* 雇主图标2 */,
 				0AF576311CAA2F9D008340CB /* 雇主图标 */,
 				0AF5762A1CAA24DB008340CB /* 搜索图标 */,
 				0AF576291CAA24CF008340CB /* 工人图标 */,
@@ -2924,6 +3021,7 @@
 		18FAAAF11C1194D800728BD6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0A05BE1B1CE4221200B7A808 /* ZhuCeXieYi.doc */,
 				186DEB711C1510E800F65CE7 /* icon */,
 				0A22697C1C59F10C008598FD /* 协议.html */,
 				0A22696B1C5749F8008598FD /* 图片 */,
@@ -3304,6 +3402,7 @@
 		F6F756041C12C30D00AD835E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0A011FEB1CE1C23600498606 /* 确定删除 */,
 				0AF116781CBF4D6D00FB9813 /* 结算 */,
 				F6F756071C12C35700AD835E /* ADOrderViewCell.h */,
 				F6F756081C12C35700AD835E /* ADOrderViewCell.m */,
@@ -3461,6 +3560,7 @@
 				0AF8025A1C3D1C880003B989 /* new_feature_3@2x.png in Resources */,
 				F6F756221C12EC5400AD835E /* ADDetailController.xib in Resources */,
 				F6E7F65C1C473C0400C91232 /* UMSShareListController.xib in Resources */,
+				0A05BE271CE4618C00B7A808 /* GzJIeSuanView.xib in Resources */,
 				186DEB951C1510E800F65CE7 /* xing1.png in Resources */,
 				185AEF491C1521DB00ABE00C /* DWConfirmCheckViewController.xib in Resources */,
 				0AF1167D1CBF617300FB9813 /* jieSuanView.xib in Resources */,
@@ -3470,6 +3570,7 @@
 				04E4A8E91C1530A30069E4F4 /* ContactheadView.xib in Resources */,
 				F6F756271C12ECA100AD835E /* ADDetailViewCell.xib in Resources */,
 				0AF802571C3D1C880003B989 /* new_feature_2-568h@2x.png in Resources */,
+				0ADB844D1CDB53B800189DA3 /* CancleTiXing2.xib in Resources */,
 				F680FF681C4109000017AAC4 /* My_pocket_recharge_Controller.xib in Resources */,
 				0AD2CED61C45FD7700774278 /* MyResignViewController.xib in Resources */,
 				F6F7560D1C12C77800AD835E /* workerOrder.storyboard in Resources */,
@@ -3490,11 +3591,13 @@
 				0AF801FC1C3BC1300003B989 /* SVProgressHUD.bundle in Resources */,
 				0AFAEE6F1C3F4BDA00C7C728 /* PushConfig.plist in Resources */,
 				186DEB991C1510E800F65CE7 /* 充值anniu.png in Resources */,
+				0AA30D4F1CDDEE450029392D /* TiJiaoTableViewCell.xib in Resources */,
 				0AB7A60D1CA39B1000A41611 /* PayPasswordViewController.xib in Resources */,
 				0A4D46B01C3E4CA900FE8DD4 /* ITTPromptView.xib in Resources */,
 				04E4A8DA1C152F1F0069E4F4 /* My_pocket_tixian_ShareController.storyboard in Resources */,
 				186DEB831C1510E800F65CE7 /* DWEmployerDetailCell.xib in Resources */,
 				F62FAF151C50A54D00A11914 /* MyForgetPwdController.xib in Resources */,
+				0A04A4041CE088C10067CFEE /* TiXianXiangQingViewController.xib in Resources */,
 				0AF802591C3D1C880003B989 /* new_feature_3-568h@2x.png in Resources */,
 				0AF802601C3D1C880003B989 /* new_feature_share_true@2x.png in Resources */,
 				0A97794B1CA247F700B79714 /* ZSDPaymentView.xib in Resources */,
@@ -3537,6 +3640,7 @@
 				0A7B05641CB35A6200C7429F /* My_pocket_Pay_Controller.xib in Resources */,
 				F6E7F6571C473C0400C91232 /* UMSCommentInputControlleriPad.xib in Resources */,
 				0AF8025B1C3D1C880003B989 /* new_feature_4-568h@2x.png in Resources */,
+				0ADB84431CDB383F00189DA3 /* CancleTiXing.xib in Resources */,
 				0AF116821CC0E9F100FB9813 /* My_pocket_jiaoyijilu_ViewController.xib in Resources */,
 				18FAAC511C11A1F000728BD6 /* employersInMy.storyboard in Resources */,
 				040BAE901C16EB0900CAE4F9 /* My_jidanshezhi_Controller.xib in Resources */,
@@ -3559,6 +3663,7 @@
 				186DEB851C1510E800F65CE7 /* DWOrderDetailCell.xib in Resources */,
 				186DEB8D1C1510E800F65CE7 /* DWOrderCell.xib in Resources */,
 				0AEEFA751C5B054900881A32 /* 引导页_2.png in Resources */,
+				0A011FF01CE1C2E300498606 /* SelectDeleteView.xib in Resources */,
 				0A2269751C586068008598FD /* redkuang.png in Resources */,
 				0A19A7191CBE367F0022168A /* DWEmployerImageCell.xib in Resources */,
 				040BAE8A1C16D02300CAE4F9 /* My_Login_input_Cell.xib in Resources */,
@@ -3582,10 +3687,12 @@
 				0AF8AF1E1CB7A9B1007DB36D /* ShuoMingViewController.xib in Resources */,
 				F6E7F65A1C473C0400C91232 /* UMSLoginViewController.xib in Resources */,
 				F6E3D9761C43E04300256E9B /* AlipaySDK.bundle in Resources */,
+				0A05BE2D1CE48BD200B7A808 /* MyAnnotationViewWithGz2.xib in Resources */,
 				186DEB8F1C1510E800F65CE7 /* DWOrderDetailTableViewController.xib in Resources */,
 				0AEEFA741C5B054900881A32 /* 引导页_1.png in Resources */,
 				186DEB981C1510E800F65CE7 /* xing4.png in Resources */,
 				186DEBA01C1510E800F65CE7 /* 邓军1、.png in Resources */,
+				0A05BE1C1CE4221200B7A808 /* ZhuCeXieYi.doc in Resources */,
 				F6F7560B1C12C35700AD835E /* ADOrderViewCell.xib in Resources */,
 				F6E7F6561C473C0400C91232 /* UMSCommentInputController.xib in Resources */,
 				18FD2FA51C1948DE0070259C /* 一键好评.png in Resources */,
@@ -3645,6 +3752,7 @@
 				0AFAEEBA1C3F8D8400C7C728 /* SDWebImageDecoder.m in Sources */,
 				186DEB901C1510E800F65CE7 /* DWOrderViewController.m in Sources */,
 				0AE771FF1C887E00008B277D /* MyAnnotationView.m in Sources */,
+				0AA30D4E1CDDEE450029392D /* TiJiaoTableViewCell.m in Sources */,
 				0A8FF80D1C4CEC34009771BF /* MJRefreshGifHeader.m in Sources */,
 				0AF5763A1CAA306B008340CB /* MyAnnotationViewWithGZ.m in Sources */,
 				F6BB44A41C44F1190023A6FA /* AFNetFirst.m in Sources */,
@@ -3696,6 +3804,7 @@
 				0AD2CEDF1C464EDF00774278 /* SSAnnotation.m in Sources */,
 				0AF802421C3D1A510003B989 /* CZNewFeatureController.m in Sources */,
 				04E4A8AF1C1529BF0069E4F4 /* My_pocket_tixian_ViewController.m in Sources */,
+				0A04A4031CE088C10067CFEE /* TiXianXiangQingViewController.m in Sources */,
 				0AA5D3181C9AC1A4009E99B9 /* FriendPrompt.m in Sources */,
 				0A8FF8061C4CEC34009771BF /* MJRefreshHeader.m in Sources */,
 				04EB7D8F1C15685C00B21492 /* My_pocket_qiehuan_View.m in Sources */,
@@ -3719,7 +3828,9 @@
 				F6F7563C1C1493F900AD835E /* ADFinishController.m in Sources */,
 				0AF801F51C3BC1040003B989 /* AFURLRequestSerialization.m in Sources */,
 				F62FAF0B1C4F3CCC00A11914 /* AboutXiaoMuJiangController.m in Sources */,
+				0A011FEE1CE1C2AF00498606 /* SelectDeleteView.m in Sources */,
 				F6F756381C14937600AD835E /* ADAssessController.m in Sources */,
+				0ADB844C1CDB53B800189DA3 /* CancleTiXing2.m in Sources */,
 				0AFAEEB81C3F8D8400C7C728 /* SDImageCache.m in Sources */,
 				0A4D46B11C3E4CA900FE8DD4 /* PoppingBaseView.m in Sources */,
 				0AF801DA1C3BB7140003B989 /* NetWork.m in Sources */,
@@ -3736,6 +3847,7 @@
 				F6E3D9821C43E04300256E9B /* RSADataVerifier.m in Sources */,
 				0A8FF8041C4CEC34009771BF /* MJRefreshComponent.m in Sources */,
 				0A3017F91CA773C900809672 /* grabOrderResult.m in Sources */,
+				0ADB84421CDB383F00189DA3 /* CancleTiXing.m in Sources */,
 				F6F7562B1C147AF400AD835E /* ADDeatiCell.m in Sources */,
 				0AFAEEBF1C3F8D8400C7C728 /* UIButton+WebCache.m in Sources */,
 				0AB7A60C1CA39B1000A41611 /* PayPasswordViewController.m in Sources */,
@@ -3750,9 +3862,11 @@
 				0A8FF8081C4CEC34009771BF /* MJRefreshAutoNormalFooter.m in Sources */,
 				0A8FF8071C4CEC34009771BF /* MJRefreshAutoGifFooter.m in Sources */,
 				F6F756211C12EC5400AD835E /* ADDetailController.m in Sources */,
+				0A05BE2B1CE48B0F00B7A808 /* MyAnnotationViewWithGz2.m in Sources */,
 				F6EC894A1C48DDF2008F24A2 /* Function.m in Sources */,
 				0A19A7181CBE367F0022168A /* DWEmployerImageCell.m in Sources */,
 				0AFAEE931C3F8D5F00C7C728 /* NSString+MJExtension.m in Sources */,
+				0A05BE261CE4618C00B7A808 /* GzJIeSuanView.m in Sources */,
 				0A7B05671CB3994400C7429F /* DetialUserInfoM.m in Sources */,
 				F6E3D97B1C43E04300256E9B /* base64.m in Sources */,
 				0A8FF8131C4CEC34009771BF /* UIScrollView+MJRefresh.m in Sources */,

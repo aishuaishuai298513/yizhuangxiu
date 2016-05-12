@@ -81,8 +81,8 @@
                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="北京市中关村大街29号" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Twg-rr-Aiz">
-                    <rect key="frame" x="31" y="35" width="160" height="18"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="北京市中关村大街29号" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Twg-rr-Aiz">
+                    <rect key="frame" x="31" y="35" width="265.5" height="18"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="160" id="c2a-Yf-oRQ">
                             <variation key="widthClass=compact" constant="266"/>
@@ -91,6 +91,11 @@
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="c2a-Yf-oRQ"/>
+                        </mask>
+                    </variation>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="工种：土木" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KXr-lk-oRT">
                     <rect key="frame" x="31" y="82" width="65" height="16"/>
@@ -131,6 +136,7 @@
                 <constraint firstItem="Twg-rr-Aiz" firstAttribute="top" secondItem="gI5-HQ-CSS" secondAttribute="bottom" constant="8" id="Nc0-7r-AF6"/>
                 <constraint firstItem="Jgd-rb-GHw" firstAttribute="leading" secondItem="cCA-TZ-JoW" secondAttribute="trailing" constant="8" id="Nmx-3Q-iqo"/>
                 <constraint firstItem="SuG-0h-GcU" firstAttribute="centerY" secondItem="vr1-bi-FbN" secondAttribute="centerY" id="QR0-g3-d0g"/>
+                <constraint firstAttribute="trailing" secondItem="Twg-rr-Aiz" secondAttribute="trailing" constant="23.5" id="R6g-wO-MEX"/>
                 <constraint firstItem="vr1-bi-FbN" firstAttribute="top" secondItem="KXr-lk-oRT" secondAttribute="bottom" constant="6" id="Zgb-eo-FBo"/>
                 <constraint firstItem="uDZ-rA-dqM" firstAttribute="leading" secondItem="KXr-lk-oRT" secondAttribute="trailing" constant="100" id="dff-Bi-8B4"/>
                 <constraint firstItem="KXr-lk-oRT" firstAttribute="leading" secondItem="Ygp-HZ-bCn" secondAttribute="leading" id="ecu-GF-rLL"/>

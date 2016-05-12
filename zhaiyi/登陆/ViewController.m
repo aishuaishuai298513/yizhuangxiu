@@ -19,7 +19,7 @@
     // Do any additional setup after loading the view.
     UIWebView *webV = [[UIWebView alloc]initWithFrame:self.view.bounds];
     
-    NSURL *fileUrl = [[NSBundle mainBundle]URLForResource:@"协议.html" withExtension:nil];
+    NSURL *fileUrl = [[NSBundle mainBundle]URLForResource:@"ZhuCeXieYi.doc" withExtension:nil];
     NSURLRequest *request =[NSURLRequest requestWithURL:fileUrl];
     
     [webV loadRequest:request];

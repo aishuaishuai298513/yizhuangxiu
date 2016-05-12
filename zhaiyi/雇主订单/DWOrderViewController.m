@@ -14,6 +14,9 @@
 #import "SVProgressHUD.h"
 #import "MJRefresh.h"
 
+#import "CancleTiXing.h"
+#import "CancleTiXing2.h"
+
 @interface DWOrderViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIView *view1;
@@ -44,6 +47,14 @@
 @property (nonatomic, strong) NSMutableArray *dataSource;
 
 @property (nonatomic,assign) CGFloat rowHeit;
+
+//取消订单
+@property (nonatomic, strong)CancleTiXing *tixingView;
+@property (nonatomic, strong) UIView *backView;
+@property (nonatomic, strong) NSIndexPath *indexPath;
+
+//不能发单提醒
+@property (nonatomic, strong)CancleTiXing2 *tixingView2;
 
 @end
 
@@ -254,6 +265,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
+    
+    __weak typeof (self)Wealself = self;
 //    DWOrderCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWOrderCell"];
     DWOrderCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DWOrderCell"];
     if (!cell) {
@@ -273,7 +286,7 @@
         cell.deleteBtn.hidden = YES;
         //预计天数
         cell.yujitianshu.hidden = YES;
-        //cell.zhuangTai.hidden = YES;
+        cell.zhuangTai.text = @"(正在施工中)";
 
     }
     //已竣工
@@ -328,60 +341,96 @@
         //结算数
         cell.jiesuanshuBtn.hidden = YES;
         
+        cell.zhuangTai.text = @"(正在招人)";
+        
         [cell.deleteBtn setTitle:@"取消订单" forState:UIControlStateNormal];
         
         [cell setDeleteBlock:^(UIButton *deleteBtn) {
             
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确定取消订单？" message:nil preferredStyle:1];
-            
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-            
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                
-                //取消订单
-                [self quXiaoNetWork:indexPath];
-                NSLog(@"123");
-            }];
-            
-            [alert addAction:cancelAction];
-            [alert addAction:okAction];
-            [self presentViewController:alert animated:YES completion:nil];
+            _indexPath = indexPath;
+            [Wealself numOfCancleorder];
             
         }];
     }
     
-
-//
-//    //评价
-//    [cell setEvaluateBlock:^(UIButton *evaluateBtn) {
-//        
-//         DWOrderModel *OrderMOdel = self.dataSource[indexPath.row];
-//        //
-//        EvaluateViewController *vc = [[EvaluateViewController alloc] initWithNibName:@"EvaluateViewController" bundle:nil];
-//        vc.OrderModel = OrderMOdel;
-//        
-//        NSLog(@"%@",vc.OrderModel);
-//        
-//        [self.navigationController pushViewController:vc animated:YES];
-//        
-//    }];
-    
-    
         DWOrderModel *MOdel = self.dataSource[indexPath.row];
         cell.MOdel =MOdel;
-    
-//    if (cell.deleteBtn.hidden) {
-//        
-//         _rowHeit = cell.deleteBtn.frame.origin.y+10;
-//    }else
-//    {
-//         _rowHeit = cell.deleteBtn.frame.origin.y+cell.deleteBtn.frame.size.height+10;
-//    }
-    
-   // cell.userInteractionEnabled = YES;
-
-    
     return cell;
+}
+
+-(void)numOfCancleorder
+{
+    ADAccount *acount = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
+    
+    __weak typeof (self)WeakSelf = self;
+    
+    
+   [NetWork postNoParm:YZX_shifouquxiao params:parm success:^(id responseObj) {
+        
+        NSLog(@" %@",responseObj);
+       
+        //第二次取消
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            [WeakSelf popCancleTiShiView:[responseObj objectForKey:@"message"]];
+         
+            //第一次取消
+        }else if([[responseObj objectForKey:@"result"]isEqualToString:@"0"])
+        {
+            [WeakSelf popCancleTiShiView:nil];
+        }else
+        {
+            [self makeSureClicked];
+        }
+    } failure:^(NSError *error) {
+        NSLog(@"%@",error);
+        [ITTPromptView showMessage:@"网络错误"];
+    }];
+}
+
+#pragma makr 弹出取消提示框
+
+-(void)popCancleTiShiView:(NSString *)Message
+{
+    _tixingView = [CancleTiXing LoadView];
+    //grabOrderV.frame = CGRectMake(50, 200, SCREEN_WIDTH -100, SCREEN_WIDTH -100);
+    _tixingView.frame = CGRectMake((SCREEN_WIDTH-270)/2, 200, 270, 217);
+    
+    if(Message)
+    {
+       _tixingView.concentL.text = Message;
+    }
+    
+    [_tixingView YesBtnAddTarget:self action:@selector(makeSureClicked) forControlEvents:UIControlEventTouchUpInside];
+    
+    [_tixingView NoBtnAddTarget:self action:@selector(NoBtnClicked) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    _backView = [Function createBackView:self action:@selector(backViewClicked)];
+    [[[UIApplication sharedApplication]keyWindow]addSubview:_backView];
+    [[[UIApplication sharedApplication]keyWindow]addSubview:_tixingView];
+}
+
+#pragma mark 确定取消订单
+-(void)makeSureClicked
+{
+    [_backView removeFromSuperview];
+    [_tixingView removeFromSuperview];
+   [self quXiaoNetWork:_indexPath];
+    
+}
+-(void)NoBtnClicked
+{
+    [_backView removeFromSuperview];
+    [_tixingView removeFromSuperview];
+}
+
+-(void)backViewClicked
+{
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -390,13 +439,6 @@
     return self.dataSource.count;
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPat
-//{
-////    DWOrderCell *cell = [tableView cellForRowAtIndexPath:indexPat];
-////    return cell.rowHeit;
-//    
-//    return 200;
-//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     DWOrderModel *MOdel = self.dataSource[indexPath.row];
@@ -472,18 +514,27 @@
         NSLog(@"%@",responseObj);
         
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
-            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
             
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
             [self netWork];
             
         }else
         {
+            
             [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            
         }
         
     } failure:^(NSError *error) {
         
     }];
+}
+#pragma mark 不能发单提醒取消
+-(void)quxiao
+{
+    [_tixingView2 removeFromSuperview];
+    [_backView removeFromSuperview];
+
 }
 
 #pragma mark  控制点击施工中

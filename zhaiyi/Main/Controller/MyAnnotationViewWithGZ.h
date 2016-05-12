@@ -16,8 +16,7 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *iconImage;
 
-@property (weak, nonatomic) IBOutlet UILabel *name;
-@property (weak, nonatomic) IBOutlet UILabel *type;
+@property (weak, nonatomic) IBOutlet UILabel *gzName;
 
 @property (nonatomic, strong)NSDictionary *userInfo;
 

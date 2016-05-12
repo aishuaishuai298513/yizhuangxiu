@@ -15,6 +15,8 @@
 
 #import "jieSuanView.h"
 
+#import "EvaluateViewController.h"
+
 
 @interface DetatilViewController ()
 //
@@ -48,6 +50,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *gongZhong;//工种
 @property (weak, nonatomic) IBOutlet UILabel *lianXiRen;//联系人
 
+@property (weak, nonatomic) IBOutlet UILabel *dingdanHao;//订单号
+
 @property (weak, nonatomic) IBOutlet UIButton *baozhengjinBtn;
 
 
@@ -56,7 +60,22 @@
 @property (weak, nonatomic) IBOutlet UIButton *baiBianBtn;
 
 
+//一键拨号内容
+@property (weak, nonatomic) IBOutlet UIButton *yiJianBoHao;
+
+@property (weak, nonatomic) IBOutlet UIImageView *bihaoImage;
+
+@property (weak, nonatomic) IBOutlet UILabel *baohaoLabel;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *yiJianBoHaotopJuLi;
+
 @property (nonatomic, strong)jieSuanView *jiesuanView;
+- (IBAction)yiJianBoHaoClicked:(UIButton *)sender;
+
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *dingDanXiaXian;
+@property (weak, nonatomic) IBOutlet UILabel *DingDanHaoLabel;
+@property (weak, nonatomic) IBOutlet UIView *dingdanxiaxian;
 
 @end
 
@@ -76,6 +95,21 @@
     self.title = @"详情";
     self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.showsVerticalScrollIndicator = NO;
+    
+    if (self.statue == 4) {
+        self.yiJianBoHao.hidden = YES;
+        self.yiJianBoHao.height = 0;
+        self.bihaoImage.hidden = YES;
+        self.baohaoLabel.hidden = YES;
+        self.yiJianBoHaotopJuLi.constant = 0;
+        
+        //隐藏订单号
+        self.dingdanHao.hidden = YES;
+        self.DingDanHaoLabel.hidden = YES;
+        self.dingDanXiaXian.constant = -1;
+//        self.dingdanxiaxian.hidden = YES;
+        
+    }
 }
 
 -(void)setBtnInfo
@@ -105,15 +139,18 @@
 
     }else if(self.statue == 3)
     {
-       [self.baiBianBtn setTitle:@"删除订单" forState:UIControlStateNormal];
-        [self.baiBianBtn addTarget:self action:@selector(shanchuOrderC) forControlEvents:UIControlEventTouchUpInside];
+        [self.baiBianBtn setTitle:@"评价" forState:UIControlStateNormal];
+//        [self.baiBianBtn addTarget:self action:@selector(shanchuOrderC) forControlEvents:UIControlEventTouchUpInside];
+        [self.baiBianBtn addTarget:self action:@selector(Pingjia) forControlEvents:UIControlEventTouchUpInside];
+        
     }else
     {
-       [self.baiBianBtn setTitle:@"确认" forState:UIControlStateNormal];
+       [self.baiBianBtn setTitle:@"抢单" forState:UIControlStateNormal];
         [self.baiBianBtn addTarget:self action:@selector(netWork) forControlEvents:UIControlEventTouchUpInside];
     }
     
 }
+
 //更新UI
 -(void)netWorkInfo
 {
@@ -169,6 +206,7 @@
     
     self.gongZhong.text = _Model.gzname;
     self.lianXiRen.text = _Model.lianxiren;
+    self.dingdanHao.text = _Model.ordercode;
     //星级
     self.xingji = _Model.xing;
     
@@ -281,7 +319,6 @@
 #pragma mark 取消订单
 -(void)quxiaoOrderC
 {
-    
     if (self.shawdowView != nil) {
         [self.shawdowView removeFromSuperview];
     }
@@ -384,4 +421,20 @@
     }];
 }
 
+-(void)Pingjia
+{
+    EvaluateViewController *evaluate = [[EvaluateViewController alloc]init];
+    //工人评价
+    evaluate.TypeFrom = 1;
+    evaluate.OrderModel = self.Model;
+    [self.navigationController pushViewController:evaluate animated:YES];
+    
+    
+
+}
+- (IBAction)yiJianBoHaoClicked:(UIButton *)sender {
+    
+   [ADAccountTool CallPhone:self.Model.mobile];
+    
+}
 @end

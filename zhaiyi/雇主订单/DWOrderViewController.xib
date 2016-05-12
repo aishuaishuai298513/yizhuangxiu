@@ -43,13 +43,23 @@
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <view alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qb4-ZO-mAe">
+                                    <rect key="frame" x="124" y="0.0" width="1" height="100"/>
+                                    <color key="backgroundColor" red="0.5324519231" green="0.5324519231" blue="0.5324519231" alpha="1" colorSpace="calibratedRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="1" id="bWx-fI-SrN"/>
+                                    </constraints>
+                                </view>
                             </subviews>
                             <color key="backgroundColor" red="0.36078431370000003" green="0.88235294119999996" blue="0.70588235290000001" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
+                                <constraint firstItem="qb4-ZO-mAe" firstAttribute="top" secondItem="HfS-Mu-2dc" secondAttribute="top" id="C2h-J0-b4e"/>
                                 <constraint firstItem="n6V-S1-n4g" firstAttribute="centerX" secondItem="HfS-Mu-2dc" secondAttribute="centerX" id="CD2-ed-LqU"/>
                                 <constraint firstItem="n6V-S1-n4g" firstAttribute="centerY" secondItem="HfS-Mu-2dc" secondAttribute="centerY" constant="-30" id="DWb-2r-GFd"/>
                                 <constraint firstAttribute="height" constant="100" id="Q5C-w7-Zge"/>
+                                <constraint firstAttribute="trailing" secondItem="qb4-ZO-mAe" secondAttribute="trailing" id="bgk-vw-K9l"/>
                                 <constraint firstItem="0Nk-be-QM6" firstAttribute="centerY" secondItem="HfS-Mu-2dc" secondAttribute="centerY" constant="10" id="cwd-Xb-isd"/>
+                                <constraint firstAttribute="bottom" secondItem="qb4-ZO-mAe" secondAttribute="bottom" id="mfS-4x-aMd"/>
                                 <constraint firstItem="0Nk-be-QM6" firstAttribute="centerX" secondItem="HfS-Mu-2dc" secondAttribute="centerX" id="vBA-Xh-xBs"/>
                             </constraints>
                         </view>
@@ -68,12 +78,22 @@
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <view alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="spM-dJ-9cY">
+                                    <rect key="frame" x="0.0" y="0.0" width="1" height="100"/>
+                                    <color key="backgroundColor" red="0.5324519231" green="0.5324519231" blue="0.5324519231" alpha="1" colorSpace="calibratedRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="1" id="iye-Ud-Geg"/>
+                                    </constraints>
+                                </view>
                             </subviews>
                             <color key="backgroundColor" red="0.2470588235" green="1" blue="0.08235294118" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
+                                <constraint firstItem="spM-dJ-9cY" firstAttribute="top" secondItem="Egk-1q-MOb" secondAttribute="top" id="2Ol-2M-DPF"/>
                                 <constraint firstItem="3uo-UX-Uk7" firstAttribute="centerX" secondItem="Egk-1q-MOb" secondAttribute="centerX" id="57i-h2-Azy"/>
                                 <constraint firstItem="3uo-UX-Uk7" firstAttribute="centerY" secondItem="Egk-1q-MOb" secondAttribute="centerY" constant="10" id="8iD-oY-5SG"/>
+                                <constraint firstItem="spM-dJ-9cY" firstAttribute="leading" secondItem="Egk-1q-MOb" secondAttribute="leading" id="KV0-VA-OG5"/>
                                 <constraint firstItem="jMx-yf-AAj" firstAttribute="centerY" secondItem="Egk-1q-MOb" secondAttribute="centerY" constant="-30" id="QNN-1n-f3A"/>
+                                <constraint firstAttribute="bottom" secondItem="spM-dJ-9cY" secondAttribute="bottom" id="T9k-8u-wcK"/>
                                 <constraint firstItem="jMx-yf-AAj" firstAttribute="centerX" secondItem="Egk-1q-MOb" secondAttribute="centerX" id="wua-9r-Dol"/>
                             </constraints>
                         </view>

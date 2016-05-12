@@ -29,6 +29,9 @@
 //以辞退
 @property (weak, nonatomic) IBOutlet UIButton *yiCiTuiBtn;
 
+@property (weak, nonatomic) IBOutlet UILabel *distanceL;
+
+
 
 @property (nonatomic, assign) int xingji;
 

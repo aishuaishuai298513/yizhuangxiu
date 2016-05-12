@@ -28,6 +28,6 @@
 {
     [super awakeFromNib];
     [self makeCornerRadius:5.0f];
-    [self performSelector:@selector(cancel) withObject:nil afterDelay:1];
+    [self performSelector:@selector(cancel) withObject:nil afterDelay:2];
 }
 @end

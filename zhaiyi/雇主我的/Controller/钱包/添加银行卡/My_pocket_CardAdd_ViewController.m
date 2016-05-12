@@ -10,6 +10,7 @@
 #import "CardViewController.h"
 #import "PureLayout.h"
 #import "ZSDPaymentView.h"
+#import "TiXianXiangQingViewController.h"
 
 #define NUMBERS @"0123456789\n"
 @interface My_pocket_CardAdd_ViewController ()
@@ -80,11 +81,13 @@ UITextFieldDelegate
     _account = [ADAccountTool account];
 
     [self initalData];
-    [self netWorkInfo];
+    //[self netWorkInfo];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    [self netWorkInfo];
     
     _account = [ADAccountTool account];
     
@@ -181,14 +184,19 @@ UITextFieldDelegate
         if([[self.dataSource objectForKey:@"kaihuhang"]isEqualToString:@""])
         {
           [kaihuhang setTitle:@"选择银行" forState:UIControlStateNormal];
+          [kaihuhang setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+            
         }else
         {
          [kaihuhang setTitle:[self.dataSource objectForKey:@"kaihuhang"]  forState:UIControlStateNormal];
         }
     }
-    
-    
     return cell;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 60;
 }
 
 -(void)initalData{
@@ -317,21 +325,31 @@ UITextFieldDelegate
     
     if ([kaihuhang.titleLabel.text isEqualToString:@"选择银行"]) {
         [ITTPromptView showMessage:@"请选择银行"];
+        return;
     }
     if ([jine.text isEqualToString:@""]) {
         [ITTPromptView showMessage:@"请输入金额"];
+        return;
     }
     if ([kahao.text isEqualToString:@""]) {
         [ITTPromptView showMessage:@"请输入卡号"];
+        return;
     }
     if ([chikaren.text isEqualToString:@""]) {
         [ITTPromptView showMessage:@"请输入持卡人姓名"];
+        return;
     }
     
     
     NSLog(@"btn标题 %@",_bankBtn.titleLabel.text);
-    if (kahao.text.length !=19||kahao.text.length != 16 ) {
+    if (kahao.text.length !=19&&kahao.text.length != 16 ) {
         [ITTPromptView showMessage:@"输入卡号有误"];
+        return;
+    }
+    
+    if ([[self.dataSource objectForKey:@"yue"] floatValue]< [jine.text floatValue]) {
+        [ITTPromptView showMessage:@"余额不足"];
+        return;
     }
     
     
@@ -371,8 +389,20 @@ UITextFieldDelegate
     [NetWork postNoParm:YZX_tixian params:parm success:^(id responseObj) {
         NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
-            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
-            pop
+            
+            TiXianXiangQingViewController *TiXian = [[TiXianXiangQingViewController alloc]init];
+            TiXian.cardNum = kahao.text;
+            TiXian.bank = kaihuhang.titleLabel.text;
+            TiXian.Money = jine.text;
+//            //截取
+//            NSString *WeiHao = [kahao.text substringFromIndex:kahao.text.length-4];
+//            TiXian.BackOrCardNumL.text = [NSString stringWithFormat:@"%@    尾号%@",kaihuhang.titleLabel.text,WeiHao];
+//            TiXian.MoneyL.text = [NSString stringWithFormat:@"¥ %@",jine.text];
+            
+            [self.navigationController pushViewController:TiXian animated:YES];
+            
+            //[ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+           // pop
         }else
         {
             [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
@@ -392,6 +422,12 @@ UITextFieldDelegate
 -(void)cancelTap:(UITapGestureRecognizer *)sender{
     [self.view endEditing:YES];
     _pickerView.hidden = YES;
+}
+
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [self.view endEditing:YES];
+    
 }
 
 

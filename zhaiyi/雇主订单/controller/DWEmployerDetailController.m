@@ -68,20 +68,9 @@
     self.tableView.showsVerticalScrollIndicator = NO;
     //[self.tableView registerNib:[UINib nibWithNibName:@"DWEmployerDetailCell" bundle:nil] forCellReuseIdentifier:@"DWEmployerDetailCell"];
     
-    self.quitBtn.layer.cornerRadius = 20;
+    self.quitBtn.layer.cornerRadius = self.quitBtn.height/2;
     self.quitBtn.layer.masksToBounds = YES;
     [self configueRightBarItem];
-    
-    if (self.type == 1) {
-        self.tableView.tableFooterView.hidden = NO;
-    }
-    if (self.type == 3) {
-        self.tableView.tableFooterView.hidden = YES;
-    }
-    if (self.type == 2) {
-        self.tableView.tableFooterView.hidden = NO;
-    }
-    
     
     [self netWorkUserinfo];
     
@@ -119,10 +108,14 @@
 #pragma mark  设置头像等信息
 -(void)refeshHeaderView
 {
+    self.headPicImage.layer.cornerRadius = self.headPicImage.width/2;
+    self.headPicImage.layer.masksToBounds = YES;
     //设置头像
     [self.headPicImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",YZX_BASY_URL,[self.dataSource objectForKey:@"headpic"]]] placeholderImage:[UIImage imageNamed:@"dj.png"]];
     //设置星级
     [Function xingji:self.dwHeaderView xingji:[[self.dataSource objectForKey:@"xing"] intValue] startTag:101];
+    
+    self.jiedanLabel.text = [NSString stringWithFormat:@"已接%@单",[self.dataSource objectForKey:@"ordernum"]];
     
    // NSArray * imageArray = [self.dataSource objectForKey:@"zizhizhengshu"];
     
@@ -253,8 +246,65 @@
     //vc.UserAcount = self.acount;
     
     vc.userId = self.orderModel.userid;
-    vc.orderNum = [self.dataSource objectForKey:@"ordernum"];
-    
+    //vc.orderID = [self.dataSource objectForKey:@"ordernum"];
+    vc.orderID = self.OrderID;
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+-(void)setOrderModel:(DWOrderModel *)orderModel
+{
+    _orderModel = orderModel;
+    
+    NSLog(@"%d",[orderModel.status intValue]);
+    
+//    if (self.type == 1) {
+//        self.tableView.tableFooterView.hidden = NO;
+//    }
+//    if (self.type == 3) {
+//        self.tableView.tableFooterView.hidden = YES;
+//    }
+//    if (self.type == 2) {
+//        self.tableView.tableFooterView.hidden = NO;
+//    }
+    
+    
+    switch ([orderModel.status intValue]) {
+            //工作中
+        case 9:
+            self.tableView.tableFooterView.hidden = NO;
+            break;
+        case 8:
+            self.tableView.tableFooterView.hidden = NO;
+            break;
+            //已辞退
+            //已辞退
+        case 10:
+            self.tableView.tableFooterView.hidden = YES;
+            break;
+            //待结算
+        case 11:
+            
+            self.tableView.tableFooterView.hidden = YES;
+            break;
+            //已结算
+        case 12:
+            
+            self.tableView.tableFooterView.hidden = YES;
+            break;
+            
+        case 13:
+            
+            self.tableView.tableFooterView.hidden = YES;
+            break;
+            
+        case 39:
+            self.tableView.tableFooterView.hidden = YES;
+            break;
+            
+        default:
+            self.tableView.tableFooterView.hidden = YES;
+            break;
+    }
+
 }
 @end

@@ -17,6 +17,7 @@
     NSInteger SelectIndex;
     PlaceholdertextView *textV;
     UITapGestureRecognizer *tap;
+    UIView *footerView ;
     
 }
 @end
@@ -94,7 +95,16 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     SelectIndex  =indexPath.row;
+    
+    if (SelectIndex == 3) {
+        textV.userInteractionEnabled = YES;
+    }else
+    {
+        textV.userInteractionEnabled = NO;
+    }
+
     
     cell = [tableView cellForRowAtIndexPath:indexPath];
     [self.tableView reloadData];
@@ -109,7 +119,7 @@
     [parm setObject:acount.userid forKey:@"userid"];
     [parm setObject:acount.token forKey:@"token"];
     [parm setObject:self.userId forKey:@"userid2"];
-    [parm setObject:self.orderNum forKey:@"id"];
+    [parm setObject:self.orderID forKey:@"id"];
     
     switch (SelectIndex) {
         case 0:
@@ -150,8 +160,8 @@
 -(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 100)];
-    footerView.userInteractionEnabled = YES;
+    footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 100)];
+   // footerView.userInteractionEnabled = NO;
      textV = [[PlaceholdertextView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 100)];
     textV.placeholder = @"请输入辞退原因，谢谢您的配合";
     textV.placeholderColor = [UIColor redColor];
@@ -161,6 +171,13 @@
     
     [footerView addSubview:textV];
     textV.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1];
+    
+    if (SelectIndex == 3) {
+        textV.userInteractionEnabled = YES;
+    }else
+    {
+        textV.userInteractionEnabled = NO;
+    }
     
     
     // 辞退按钮

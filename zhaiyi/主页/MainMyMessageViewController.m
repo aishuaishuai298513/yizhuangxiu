@@ -87,6 +87,8 @@
 
 -(void)netWorkHeader
 {
+    
+    _pageIndex = 1;
     ADAccount *acount = [ADAccountTool account];
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     [parm setObject:acount.userid forKey:@"userid"];
@@ -177,9 +179,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return 1;
 }
-
-
-
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{

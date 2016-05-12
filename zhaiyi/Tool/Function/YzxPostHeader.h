@@ -10,7 +10,8 @@
 #define Header_h
 
 //通用域名
-#define YZX_BASY_URL @"http://test7.feiteng010.com"
+//#define YZX_BASY_URL @"http://test7.feiteng010.com"
+#define YZX_BASY_URL @"http://123.56.235.148"
 //注册
 #define YZX_resign @"/api/index/reg"
 //发送验证码
@@ -121,6 +122,8 @@
 #define YZX_querenshoukuan @"/api/index/querenshoukuan"
 //评价工人
 #define YZX_pingjiagongren @"/api/index/pingjiagongren"
+//评价雇主
+#define YZX_pingjiaguzhu @"/api/index/pingjiaguzhu"
 //取消订单（雇主端）
 #define YZX_quxiaodingdan_gz @"/api/index/quxiaodingdan_gz"
 //删除订单（雇主端）
@@ -141,6 +144,13 @@
 #define YZX_wodexiaoxi_gz @"/api/index/wodexiaoxi"
 //删除消息
 #define YZX_delmessage @"/api/index/del_message"
+//本日是否第二次取消订单
+#define YZX_shifouquxiao @"/api/index/shifouquxiao"
+//结算详情
+#define YZX_jiesuanxiangqing @"/api/index/jiesuanxiangqing"
+
+//分享页
+#define YZX_shareUrl @"http://www.hdsj.cc/weixin/index.html"
 
 
 #endif /* Header_h */

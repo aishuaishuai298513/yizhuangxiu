@@ -35,7 +35,14 @@
 {
     if (_UserDataSource == nil) {
         _UserDataSource = [NSMutableArray alloc];
-        _UserDataSource = @[@"工作态度:",@"工做能力:",@"工作效率:",@"团队合作"];
+        //工人评价
+        if (_TypeFrom == 1) {
+            
+           _UserDataSource = @[@"按时结算:",@"福利待遇:",@"信用客户:",@"处事公正:"];
+        }else
+        {
+           _UserDataSource = @[@"工作态度:",@"工做能力:",@"工作效率:",@"团队合作"];
+        }
         
     }
     return _UserDataSource;
@@ -151,6 +158,14 @@
 #pragma mark 评价
 -(void)pingjia
 {
+    //评价雇主
+    if (_TypeFrom == 1) {
+        
+        [self pinjiaGz];
+        return;
+    }
+    
+    
     ADAccount *account = [ADAccountTool account];
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
     [parm setObject:self.UserInfoM.userid forKey:@"userid2"];
@@ -180,20 +195,56 @@
     
 }
 
+#pragma mark 评价雇主
+-(void)pinjiaGz
+{
+    ADAccount *account = [ADAccountTool account];
+    NSMutableDictionary *parm = [NSMutableDictionary dictionary];
+    [parm setObject:self.OrderModel.userid forKey:@"userid2"];
+    [parm setObject:account.userid forKey:@"userid"];
+    [parm setObject:account.token forKey:@"token"];
+    [parm setObject:self.gongZuoTaiDu forKey:@"anshijiesuan"];
+    [parm setObject:self.gongZuoNengLi forKey:@"fulidaiyu"];
+    [parm setObject:self.gongZuoXiaoLv forKey:@"xinyongkehu"];
+    [parm setObject:self.tuanDuiHeZuo forKey:@"chushigongzheng"];
+    [parm setObject:self.OrderModel.ID forKey:@"orderid"];
+    
+    NSLog(@"%@",parm);
+    
+    [NetWork postNoParm:YZX_pingjiaguzhu params:parm success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
+            
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            pop
+            
+        }else
+        {
+            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+
+}
+
 #pragma mark Delegate
 -(void)cellXingClicked:(int)xingJi row:(int)Row
 {
     if (Row == 0) {
-        self.gongZuoTaiDu = [NSString stringWithFormat:@"%d",_xingji];
+        self.gongZuoTaiDu = [NSString stringWithFormat:@"%d",xingJi];
+        NSLog(@"%@",self.gongZuoTaiDu);
     }else if (Row == 1)
     {
-        self.gongZuoNengLi = [NSString stringWithFormat:@"%d",_xingji];
+        self.gongZuoNengLi = [NSString stringWithFormat:@"%d",xingJi];
+        NSLog(@"%@",self.gongZuoNengLi);
     }else if (Row == 2)
     {
-        self.gongZuoXiaoLv = [NSString stringWithFormat:@"%d",_xingji];
+        self.gongZuoXiaoLv = [NSString stringWithFormat:@"%d",xingJi];
+        NSLog(@"%@",self.gongZuoXiaoLv);
     }else if (Row == 3)
     {
-        self.tuanDuiHeZuo = [NSString stringWithFormat:@"%d",_xingji];
+        self.tuanDuiHeZuo = [NSString stringWithFormat:@"%d",xingJi];
+        NSLog(@"%@",self.tuanDuiHeZuo);
     }
 }
 

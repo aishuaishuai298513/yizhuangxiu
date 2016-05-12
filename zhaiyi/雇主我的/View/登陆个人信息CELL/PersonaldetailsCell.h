@@ -18,4 +18,6 @@
 + (instancetype)loadPersonaldetailsCell;
 
 @property (weak, nonatomic) IBOutlet UIView *Line;
+
+@property (weak, nonatomic) IBOutlet UIScrollView *textVScrool;
 @end

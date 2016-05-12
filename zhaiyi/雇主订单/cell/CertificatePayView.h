@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong)PayInfoModel *payinfoModel;
 
+@property (weak, nonatomic) IBOutlet UILabel *nameLa;
 //初始化
 +(instancetype)loadView;
 

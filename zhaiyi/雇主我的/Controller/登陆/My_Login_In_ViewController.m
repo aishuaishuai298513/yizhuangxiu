@@ -186,7 +186,7 @@
     NSMutableDictionary *parm  =[NSMutableDictionary dictionary];
     [parm setObject:userName forKey:@"mobile"];
     [parm setObject:PassWord forKey:@"password"];
-    [parm setObject:[APService registrationID] forKey:@"jpushcode"];
+    [parm setObject:[APService registrationID] forKey:@"jiguangcode"];
     
     NSLog(@"%@",parm);
     

@@ -33,7 +33,7 @@ UIWebViewDelegate
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title = @"关于小木匠";
+    self.title = @"关于亿装";
     self.view.backgroundColor = [UIColor whiteColor];
 
     [self initalData];

@@ -91,6 +91,14 @@
     self.workTypeL.attributedText = workTypeStr;
     self.payMoneyCountL.attributedText = payMoneyCountStr;
     self.paytypeL.text = payinfoModel.zhifufangshi;
+    
+    //设置文字
+    NSLog(@"%@",self.paytypeL.text);
+    if ([self.paytypeL.text isEqualToString:@"线上"]) {
+        
+        [self.makeSurebtnClicked setTitle:@"支付" forState:UIControlStateNormal];
+       // self.makeSurebtnClicked.titleLabel.text = @"支付";
+    }
 }
 
 

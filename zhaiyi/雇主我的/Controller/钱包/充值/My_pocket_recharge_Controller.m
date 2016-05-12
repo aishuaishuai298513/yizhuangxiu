@@ -82,10 +82,10 @@ UIAlertViewDelegate
 -(void)initalData{
     _account = [ADAccountTool account];
     self.title = @"充值";
-    self.chongZhiZhangHu.text =_account.userid;
+    self.chongZhiZhangHu.text =_account.mobile;
     
     _moneyTF.delegate = self;
-    _moneyTF.keyboardType = UIKeyboardTypeNumberPad;
+   // _moneyTF.keyboardType = UIKeyboardTypeNumberPad;
     _parames = [[NSMutableDictionary alloc]init];
     //NSUserDefaults *userDefualts = [NSUserDefaults standardUserDefaults];
    // NSDictionary *dict = [userDefualts objectForKey:@"enter_user_info"];
@@ -341,6 +341,7 @@ UIAlertViewDelegate
 
 //微信支付
 -(void)weixinPayDemo{
+
     
     ADAccount *acount = [ADAccountTool account];
     

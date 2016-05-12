@@ -260,6 +260,7 @@ UIAlertViewDelegate
     };
     payment.title = @"请输入支付密码";
     payment.goodsName = @"支付金额";
+    NSLog(@"%d",[self.ZhiFuJinE floatValue]);
     payment.amount = [self.ZhiFuJinE floatValue];
     [payment show];
 
@@ -319,12 +320,14 @@ UIAlertViewDelegate
     [self.tiShiYuEView removeFromSuperview];
     
     
-    MainViewController *controller = self.navigationController.childViewControllers[0];
-    //[controller ]
+//    MainViewController *controller = self.navigationController.childViewControllers[0];
+//    //[controller ]
+//    
+//    //[self.navigationController popToRootViewControllerAnimated:YES];
+//    [self.navigationController popToViewController:controller animated:NO];
+//     controller.pushOrder = YES;
     
-    //[self.navigationController popToRootViewControllerAnimated:YES];
-    [self.navigationController popToViewController:controller animated:NO];
-     controller.pushOrder = YES;
+    [self PayOrderSuccess];
     
     
     
@@ -397,11 +400,24 @@ UIAlertViewDelegate
     //self.tnMode = @"01";
     if (tn != nil && tn.length > 0)
     {
-        [[UPPaymentControl defaultControl]
-         startPay:tn
-         fromScheme:@"UPPayDemo"
-         mode:self.tnMode
-         viewController:self];
+        if ([[UPPaymentControl defaultControl]
+             startPay:tn
+             fromScheme:@"UPPayDemo"
+             mode:self.tnMode
+             viewController:self]) {
+            
+            //支付成功
+//            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"支付成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            
+//            [alert show];
+            [self PayOrderSuccess];
+            
+        }
+//        [[UPPaymentControl defaultControl]
+//         startPay:tn
+//         fromScheme:@"UPPayDemo"
+//         mode:self.tnMode
+//         viewController:self];
     }
 }
 //支付宝
@@ -448,11 +464,14 @@ UIAlertViewDelegate
             switch (orderStatus) {
                 case 9000:{
                     
-                    //支付成功
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:message delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                //支付成功
+//                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"支付成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//                    
+//                [alert show];
                     
-                [alert show];
-                    //[ITTPromptView showMessageWhitleColor:@"支付成功"];
+                [self PayOrderSuccess];
+                    
+                //[ITTPromptView showMessageWhitleColor:@"支付成功"];
 
                 }
                     break;
@@ -521,8 +540,10 @@ UIAlertViewDelegate
         case WXSuccess:
          {
             NSLog(@"微信支付成功");
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"支付成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
+//            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"支付成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            [alert show];
+             
+             [self PayOrderSuccess];
         }
             return;
         case WXErrCodeUserCancel:
@@ -538,10 +559,30 @@ UIAlertViewDelegate
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     if (buttonIndex == 0) {
-        [self.navigationController popViewControllerAnimated:YES];
+        
+        MainViewController *controller = self.navigationController.childViewControllers[0];
+        //[controller ]
+        
+        //[self.navigationController popToRootViewControllerAnimated:YES];
+        [self.navigationController popToViewController:controller animated:NO];
+        controller.pushOrder = YES;
+        
+        //[self.navigationController popViewControllerAnimated:YES];
     } else {
         NSLog(@"停留页面");
     }
+}
+
+#pragma 支付成功跳转
+-(void)PayOrderSuccess
+{
+    MainViewController *controller = self.navigationController.childViewControllers[0];
+    //[controller ]
+    
+    //[self.navigationController popToRootViewControllerAnimated:YES];
+    [self.navigationController popToViewController:controller animated:NO];
+    controller.pushOrder = YES;
+
 }
 
 #pragma mark UITextFeild

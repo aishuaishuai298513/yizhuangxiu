@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="108" id="KGk-i7-Jjw" customClass="TiJiaoTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="108"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="107.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="温馨提示:为了您的个人资信，请认真填写个人信息，*为必填项。" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Hz-92-eXA">
+                        <rect key="frame" x="18" y="16" width="284" height="33.5"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="33.5" id="092-BA-qDM"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.5324519231" green="0.5324519231" blue="0.5324519231" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IYh-Rt-RG8">
+                        <rect key="frame" x="120" y="63" width="81" height="31"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="81" id="6th-yd-Rly"/>
+                            <constraint firstAttribute="height" constant="31" id="gt2-so-NUf"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <state key="normal" title="完成" backgroundImage="红色圆形button">
+                            <color key="titleColor" red="0.96930239900000004" green="0.96930239900000004" blue="0.96930239900000004" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="IYh-Rt-RG8" firstAttribute="top" secondItem="3Hz-92-eXA" secondAttribute="bottom" constant="13" id="PMh-rB-6UX"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="3Hz-92-eXA" secondAttribute="trailing" constant="10" id="bQQ-B4-owL"/>
+                    <constraint firstItem="3Hz-92-eXA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="10" id="fMv-ys-3XS"/>
+                    <constraint firstItem="IYh-Rt-RG8" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="ngH-b1-RTF"/>
+                    <constraint firstItem="3Hz-92-eXA" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="8" id="tIf-91-nTg"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="tiJiaobtnClicked" destination="IYh-Rt-RG8" id="cia-xT-gPu"/>
+            </connections>
+            <point key="canvasLocation" x="266" y="136"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="红色圆形button" width="30" height="31"/>
+    </resources>
+</document>

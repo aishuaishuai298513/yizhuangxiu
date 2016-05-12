@@ -38,7 +38,7 @@
     
     self.jiaoyiTimeLb.text = _recordModel.createtime;
     
-    self.jiaoyiMoneyLb.text = [NSString stringWithFormat:@"￥%@",_recordModel.money];
+    self.jiaoyiMoneyLb.text = [NSString stringWithFormat:@"%@",_recordModel.money];
     
 }
 

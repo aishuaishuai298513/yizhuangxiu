@@ -13,6 +13,11 @@
 #import "NSDate+ITTAdditions.h"
 #import "My_Login_In_ViewController.h"
 #import "ShuoMingViewController.h"
+#import "MainViewController.h"
+
+#import "CancleTiXing2.h"
+
+#import "PersonalGuZhuController.h"
 
 //#define ZhaoGongRen @"http://drf.unioncloud.com:10094/drf/datagateway/drfrestservice/ExecuteFunction"
 
@@ -43,11 +48,18 @@
 //备注
 @property (weak, nonatomic) IBOutlet UITextField *BeiZhu;
 
+//发布按钮
+@property (weak, nonatomic) IBOutlet UIButton *fabuBtn;
+
 //分类按钮父视图
 @property (weak, nonatomic) IBOutlet UIView *FenLeiSuperView;
 
 //分类数据源
 @property (nonatomic, strong) NSMutableArray *dataSourceFenLei;
+//联系人
+@property (nonatomic, strong)NSString *lianxiRen;
+//联系电话
+@property (nonatomic, strong)NSString *lianxiDianHua;
 //重新发布数据源
 @property (nonatomic, strong) NSMutableDictionary *dataSourceChongXinFaBu;
 
@@ -97,6 +109,8 @@
 @property (nonatomic, strong) NSString *Id;
 
 
+//不能发单提醒
+@property (nonatomic, strong)CancleTiXing2 *tixingView2;
 
 /////////////////////////确认订单信息界面///////
 
@@ -173,6 +187,7 @@
     
     //登陆后的操作
         if (self.isChongXinFaBu) {
+            
             [self chongxinfabu];
         }else
         {
@@ -200,10 +215,10 @@
     
     //设置日期
     self.starTimeLabel.text = [NSDate stringWithNowData];
-
-
-
     
+   //设置按钮
+    self.fabuBtn.layer.cornerRadius = self.fabuBtn.height/2;
+    self.fabuBtn.layer.masksToBounds = YES;
     //初始化地图搜索
     [self initSearch];
 }
@@ -215,6 +230,9 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    self.fabuBtn.enabled = YES;
+    self.queDingOrChongZhi.enabled = YES;
 }
 
 
@@ -241,10 +259,19 @@
                 NSDate *selectDate = [NSDate dateWithString:dateStr formate:@"yyyy-MM-dd"];
                 NSDate *nowDate = [NSDate date];
                 
-                if (([nowDate timeIntervalSince1970]*1 - [selectDate timeIntervalSince1970]*1)>=0) {
+//                if (([nowDate timeIntervalSince1970]*1 - [selectDate timeIntervalSince1970]*1)>-1) {
+                if ([NSDate numDayFromDate:selectDate]<=0) {
+                    
+                    //NSLog(@"%lf",([nowDate timeIntervalSince1970]*1 - [selectDate timeIntervalSince1970]*1));
                     [ITTPromptView showMessage:@"日期不合法"];
                     return ;
-                }else
+                }else if ([NSDate numDayFromDate:selectDate]>=3)
+                {
+                    [ITTPromptView showMessage:@"开工日期最晚为当前日期的后三天"];
+                    return;
+                   //NSLog(@"%ld",[NSDate numDayFromDate:selectDate]);
+                }
+                else
                 {
                     weakSelf.starTimeLabel.text = [NSString stringWithFormat:@"%ld-%ld-%ld",year,month,day];
                 }
@@ -317,6 +344,9 @@
 
 #pragma mark 填写完毕发布按钮
 - (IBAction)commintAction:(id)sender {
+    
+    self.queDingOrChongZhi.enabled = YES;
+    //self.fabuBtn.enabled = NO;
     
     ADAccount *account = [ADAccountTool account];
     
@@ -419,6 +449,8 @@
 #pragma mark 提交订单／跳转支付页
 - (void)toVC:(UIButton *)button{
     
+    self.queDingOrChongZhi.enabled = NO;
+    
     [self backClicked];
     
    // _sureView.hidden = YES;
@@ -456,16 +488,51 @@
             
             [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
             
+            if ([self.ZhiFuJinE isEqualToString:@"0"]||[self.ZhiFuJinE floatValue]<=0) {
+                
+                MainViewController *controller = self.navigationController.childViewControllers[0];
+                //[self.navigationController popToRootViewControllerAnimated:YES];
+                [self.navigationController popToViewController:controller animated:NO];
+                controller.pushOrder = YES;
+                
+                return ;
+            }
+            
             [weakSelf pushToZhiFu:[[responseObj objectForKey:@"data"] objectForKey:@"ordercode"]];
             
         }else
         {
-            [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            _tixingView2 = [CancleTiXing2 LoadView];
+            _tixingView2.Content.text =[responseObj objectForKey:@"message"];
+            //grabOrderV.frame = CGRectMake(50, 200, SCREEN_WIDTH -100, SCREEN_WIDTH -100);
+            _tixingView2.frame = CGRectMake((SCREEN_WIDTH-250)/2, 180, 250, 180);
+            
+            [_tixingView2 YesBtnAddTarget:self action:@selector(quxiao) forControlEvents:UIControlEventTouchUpInside];
+            
+            _backView = [Function createBackView:self action:@selector(backViewClicked)];
+            [[[UIApplication sharedApplication]keyWindow]addSubview:_backView];
+            [[[UIApplication sharedApplication]keyWindow]addSubview:_tixingView2];
+
+            //[ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+            
+            
         }
         
     } failure:^(NSError *error) {
         
     }];
+}
+
+#pragma mark 不能发单提醒取消
+-(void)quxiao
+{
+    [_tixingView2 removeFromSuperview];
+    [_backView removeFromSuperview];
+    
+}
+-(void)backViewClicked
+{
+
 }
 
 
@@ -561,9 +628,11 @@
 #pragma mark 重新发布请求
 -(void)chongXinFaBu
 {
+    
+    ADAccount *acount = [ADAccountTool account];
     NSMutableDictionary *parm = [NSMutableDictionary dictionary];
-    [parm setObject:_account.userid forKey:@"userid"];
-    [parm setObject:_account.token forKey:@"token"];
+    [parm setObject:acount.userid forKey:@"userid"];
+    [parm setObject:acount.token forKey:@"token"];
     [parm setObject:self.orderId forKey:@"id"];
     [parm setObject:self.moenyLabel.text forKey:@"price"];
     
@@ -594,39 +663,107 @@
 #pragma mark 重新发布工种
 -(void)UpdateFenLeiChongXin
 {
-    int colNum = 3;
-    int rowNum= 2;
+//    int colNum = 3;
+//    int rowNum= 2;
+//    
+//    CGFloat squareWidth = 45;
+//    CGFloat squareHeight = 45;
+//    CGFloat colPan = 20;
+//    CGFloat rowpan = 10;
+//    
+//    //UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, squareHeight * rowNum)];
+//        //行号
+//    int row = 0;
+//        //列号
+//    int col = 0;
+//        
+//    UILabel *squareLab = [[UILabel alloc] initWithFrame:CGRectMake( colPan+squareWidth * col+((ScreenW-colPan*2-squareWidth*colNum)/(colNum-1))*col, rowpan+squareHeight * row+(rowpan *row), squareWidth, squareHeight)];
+//    
+//        // NSLog(@"%ld",squareLab.tag);
+//    squareLab.textAlignment = NSTextAlignmentCenter;
+//    squareLab.font = [UIFont systemFontOfSize:16];
+//        
+//    squareLab.backgroundColor = [UIColor whiteColor];
+//    _SelectLabel =squareLab;
+//            //切割成圆
+//    _SelectLabel.layer.cornerRadius = 22;
+//    _SelectLabel.clipsToBounds = YES;
+//        
+//    squareLab.text = [self.dataSourceChongXinFaBu objectForKey:@"gzname"];
+//    
+//    [self.FenLeiSuperView addSubview:squareLab];
     
+    int colNum = 3;
+    int rowNum;
+    if (self.dataSourceFenLei.count % colNum == 0) {
+        rowNum = (int)(self.dataSourceFenLei.count / colNum);
+    }else
+    {
+        rowNum = (int)(self.dataSourceFenLei.count / colNum) + 1;
+    }
+    NSLog(@"%d",rowNum);
     CGFloat squareWidth = 45;
     CGFloat squareHeight = 45;
     CGFloat colPan = 20;
     CGFloat rowpan = 10;
-    
     //UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, squareHeight * rowNum)];
-        //行号
-    int row = 0;
-        //列号
-    int col = 0;
+    for (int i = 0; i < self.dataSourceFenLei.count; i++) {
+        int row = i / colNum;
+        int col = i % colNum;
         
-    UILabel *squareLab = [[UILabel alloc] initWithFrame:CGRectMake( colPan+squareWidth * col+((ScreenW-colPan*2-squareWidth*colNum)/(colNum-1))*col, rowpan+squareHeight * row+(rowpan *row), squareWidth, squareHeight)];
-    
+        UILabel *squareLab = [[UILabel alloc] initWithFrame:CGRectMake( colPan+squareWidth * col+((ScreenW-colPan*2-squareWidth*colNum)/(colNum-1))*col, rowpan+squareHeight * row+(rowpan *row), squareWidth, squareHeight)];
+        squareLab.tag = [[self.dataSourceFenLei[i] objectForKey:@"id"] integerValue];
+        squareLab.textColor = [UIColor whiteColor];
+        
         // NSLog(@"%ld",squareLab.tag);
-    squareLab.textAlignment = NSTextAlignmentCenter;
-    squareLab.font = [UIFont systemFontOfSize:14];
+        squareLab.textAlignment = NSTextAlignmentCenter;
+        squareLab.font = [UIFont systemFontOfSize:16];
         
-    squareLab.backgroundColor = [UIColor whiteColor];
-    _SelectLabel =squareLab;
+        NSLog(@"%@",[self.dataSourceFenLei[i] objectForKey:@"gzname"]);
+        NSLog(@"%@",[self.dataSourceChongXinFaBu objectForKey:@"gzname"]);
+        
+        if ([self.dataSourceFenLei[i] objectForKey:@"gzname"] == [self.dataSourceChongXinFaBu objectForKey:@"gzname"]) {
+            
+            squareLab.backgroundColor = [UIColor whiteColor];
+            squareLab.textColor = [UIColor blackColor];
+            _SelectLabel =squareLab;
             //切割成圆
-    _SelectLabel.layer.cornerRadius = 22;
-    _SelectLabel.clipsToBounds = YES;
+            _SelectLabel.layer.cornerRadius = 22;
+            _SelectLabel.clipsToBounds = YES;
+            _classId =[NSString stringWithFormat:@"%ld",squareLab.tag];
+            
+        }else
+        {
+            squareLab.backgroundColor = [UIColor clearColor];
+        }
         
-    squareLab.text = [self.dataSourceChongXinFaBu objectForKey:@"gzname"];
-    
-    [self.FenLeiSuperView addSubview:squareLab];
+//        if (i == 0) {
+//            
+//            
+//            squareLab.backgroundColor = [UIColor whiteColor];
+//            squareLab.textColor = [UIColor blackColor];
+//            _SelectLabel =squareLab;
+//            //切割成圆
+//            _SelectLabel.layer.cornerRadius = 22;
+//            _SelectLabel.clipsToBounds = YES;
+//            _classId =[NSString stringWithFormat:@"%ld",squareLab.tag];
+//        }else
+//        {
+//            squareLab.backgroundColor = [UIColor clearColor];
+//        }
+        //后台返回null
+        // NSString *str = [self.titleArr[i] objectForKey:@"title"];
+        // NSLog(@"%@",str);
+        
+        squareLab.text = [self.dataSourceFenLei[i] objectForKey:@"gzname"];
+        [self.FenLeiSuperView addSubview:squareLab];
+    }
+
     
     [self makeUIChognxinFaBu];
-    
 }
+
+
 #pragma mark 继续发布设置UI
 -(void)makeUIChognxinFaBu
 {
@@ -639,7 +776,8 @@
     self.XuQiuRenShu.text = [self.dataSourceChongXinFaBu objectForKey:@"n"];
     self.XuQiuRenShu.userInteractionEnabled = NO;
     
-    self.starTimeLabel.text = [self.dataSourceChongXinFaBu objectForKey:@"kaigongriqi"];
+    //self.starTimeLabel.text = [self.dataSourceChongXinFaBu objectForKey:@"kaigongriqi"];
+    self.starTimeLabel.text =  [NSDate stringWithNowData];
     self.starTimeLabel.userInteractionEnabled = NO;
     self.dayNum.userInteractionEnabled = NO;
     
@@ -685,13 +823,15 @@
         
         UILabel *squareLab = [[UILabel alloc] initWithFrame:CGRectMake( colPan+squareWidth * col+((ScreenW-colPan*2-squareWidth*colNum)/(colNum-1))*col, rowpan+squareHeight * row+(rowpan *row), squareWidth, squareHeight)];
         squareLab.tag = [[self.dataSourceFenLei[i] objectForKey:@"id"] integerValue];
+        squareLab.textColor = [UIColor whiteColor];
         
         // NSLog(@"%ld",squareLab.tag);
         squareLab.textAlignment = NSTextAlignmentCenter;
-        squareLab.font = [UIFont systemFontOfSize:14];
+        squareLab.font = [UIFont systemFontOfSize:16];
         
         if (i == 0) {
             squareLab.backgroundColor = [UIColor whiteColor];
+            squareLab.textColor = [UIColor blackColor];
             _SelectLabel =squareLab;
             //切割成圆
             _SelectLabel.layer.cornerRadius = 22;
@@ -725,17 +865,26 @@
             self.GongChengDiDian.font = [UIFont systemFontOfSize:12];
             self.BeiZhu.font = [UIFont systemFontOfSize:12];
         }
+        
     }
+    
+    NSString *money = [self.dataSourceFenLei[0] objectForKey:@"price"];
+    //self.baoxianFei.text =[NSString stringWithFormat:@"%ld",money];
+    self.moenyLabel.text =money;
 }
 #pragma mark 点击工种
 - (void)HeaderClicked: (UITapGestureRecognizer *)gestureRecognizer
 {
     _SelectLabel.backgroundColor = [UIColor clearColor];
     _SelectLabel.clipsToBounds = NO;
+    _SelectLabel.textColor = [UIColor whiteColor];
+    
     _SelectLabel = (UILabel *)[gestureRecognizer view];
     _SelectLabel.backgroundColor = [UIColor whiteColor];
     _SelectLabel.layer.cornerRadius = 22;
     _SelectLabel.clipsToBounds = YES;
+    _SelectLabel.textColor = [UIColor blackColor];
+    
     
     self.classId = [NSString stringWithFormat:@"%ld",_SelectLabel.tag];
     self.GongZhongType = _SelectLabel.text;
@@ -762,23 +911,43 @@
     }
     
     NSLog(@"%@",parm);
-    
     [NetWork postNoParm:YZX_zhaogongren params:parm success:^(id responseObj) {
-        
         NSLog(@"%@",responseObj);
+        
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
         
-     //   NSLog(@"%@",[responseObj objectForKey:@"data"] );
-        
+            //完善个人资料
+            if ([[responseObj objectForKey:@"message"]isEqualToString:@"请您先完善您的个人资料"]) {
+                [ITTPromptView showMessage:@"请您先完善您的个人资料"];
+                
+                PersonalGuZhuController *personalGZ = [[PersonalGuZhuController alloc]init];
+                personalGZ.title = @"个人资料";
+                [self.navigationController pushViewController:personalGZ animated:YES];
+                
+               // return ;
+            }
+            
+       //NSLog(@"%@",[responseObj objectForKey:@"data"] );
         self.dataSourceFenLei = [[responseObj objectForKey:@"data"]objectForKey:@"gongzhong"];
-        
-        NSLog(@"%@",self.dataSourceFenLei);
-        
-     //更新分类界面
-      [self UpdateFenLei];
-                }
+        self.LianXIRen.text = [[responseObj objectForKey:@"data"]objectForKey:@"lianxiren"];
+        self.LianXiDianHua.text = [[responseObj objectForKey:@"data"]objectForKey:@"lianxidianhua"];
+       // NSLog(@"%@",self.dataSourceFenLei);
+       //更新分类界面
+            if (_isChongXinFaBu) {
+                 [self UpdateFenLeiChongXin];
+            }else
+            {
+                [self UpdateFenLei];
+            }
+            
+            
+    }else
+    {
+        [ITTPromptView showMessage:[responseObj objectForKey:@"message"]];
+    }
         
     } failure:^(NSError *error) {
+        [ITTPromptView showMessage:@"网络错误"];
         NSLog(@"%@",error);
         
     }];
@@ -795,7 +964,7 @@
     
     [NetWork postNoParmForMap:YZX_returnzhibaojin params:parm success:^(id responseObj) {
         
-        NSLog(@"%@",responseObj);
+       // NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             self.zhiabaojin.text =[NSString stringWithFormat:@"%@元",[[responseObj objectForKey:@"data"]objectForKey:@"zhibaojin"]];
             self.ZhiFuJinE = [[responseObj objectForKey:@"data"]objectForKey:@"zhibaojin"];
@@ -820,12 +989,16 @@
     [parm setObject:account.token forKey:@"token"];
     [parm setObject:self.orderId forKey:@"id"];
     
+    //NSLog(@"%@");
+    
     __weak typeof (self)weakSelf = self;
     [NetWork postNoParm:YZX_jixufabu params:parm success:^(id responseObj) {
         
         NSLog(@"%@",responseObj);
         self.dataSourceChongXinFaBu = [responseObj objectForKey:@"data"];
-        [weakSelf UpdateFenLeiChongXin];
+    
+       // [weakSelf UpdateFenLeiChongXin];
+        [weakSelf netWork];
         
     } failure:^(NSError *error) {
         

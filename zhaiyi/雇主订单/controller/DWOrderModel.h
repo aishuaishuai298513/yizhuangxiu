@@ -42,4 +42,6 @@
 //工人订单（已抢单）
 @property (nonatomic,copy) NSString *orderid;//订单id
 @property (nonatomic,copy) NSString *shifoucitui;//是否被辞退  37正常工作38已被辞退
+
+@property (nonatomic, copy) NSString *mobile;
 @end

@@ -58,8 +58,23 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 @property (strong, nonatomic) IBOutlet UIButton *orderBtn;
 @property (strong, nonatomic) IBOutlet UIButton *firstBtn;
 
+@property (weak, nonatomic) IBOutlet UIButton *NewOrderBtn;
+
+@property (weak, nonatomic) IBOutlet UIButton *FinePeopleOrWorkBtn;
+
+
+@property (weak, nonatomic) IBOutlet UIButton *NewMyBtn;
+
+
 @property (nonatomic,strong) CLLocationManager *manger;
 @property (weak, nonatomic) IBOutlet UIView *BottomMenuView;
+
+@property (weak, nonatomic) IBOutlet UILabel *dingDanLabel;
+
+@property (weak, nonatomic) IBOutlet UILabel *woDelabel;
+
+@property (weak, nonatomic) IBOutlet UIButton *bageValuebtn;
+
 // 大头针数组
 @property (nonatomic,strong) NSMutableArray *anncoationArray;
 //搜索提示
@@ -75,6 +90,8 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 @property (nonatomic, copy) NSString *titles;
 /* 包含 社区，建筑. */
 @property (nonatomic, copy) NSString *subtitle;
+/* 街道 门牌号*/
+@property (nonatomic, copy) NSString *jieDao;
 
 //coreLocation
 //@property (nonatomic, strong) CLLocationManager *lm;
@@ -163,6 +180,86 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     //jpush注册别名
     [self setTagsAlias];
     
+    // 监听通知数量的变化
+    [self jiantingTongzhiXiaoxi];
+    
+}
+
+#pragma mark 监听通知消息
+-(void)jiantingTongzhiXiaoxi
+{
+    //是否显示图标bagevalue
+    [self ifAppearBageValue];
+
+    //注册通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tongzhi:) name:@"tongzhiTuBiao" object:nil];
+}
+
+- (void)tongzhi:(NSNotification *)text{
+    
+   // NSLog(@"%@",text.userInfo[@"textOne"]);
+   // NSLog(@"－－－－－接收到通知------");
+    if (GetUserDefaultsGR) {
+        
+        //是否显示图标bageValue
+        [self ifAppearBageValue];
+        //是否显示工人订单bageValue
+        [self ifAppearOrderBageValue_gr];
+
+    }else if (GetUserDefaultsGZ)
+    {
+        //是否显示雇主订单bageValue
+        [self ifAppearOrderBageValue_gz];
+    }
+    
+    
+}
+
+//找活图标显示数量
+-(void)ifAppearBageValue
+{
+    
+    NSString *dingdanshuliang = [[NSUserDefaults standardUserDefaults]objectForKey:@"fadanTongZhi"];
+    if ([dingdanshuliang integerValue]>0) {
+        // NSLog(@"%@",dingdanshuliang);
+        self.bageValuebtn.hidden = NO;
+        
+        [self.bageValuebtn setTitle:[NSString stringWithFormat:@"%ld",[dingdanshuliang integerValue]] forState:UIControlStateNormal];
+        
+    }else
+    {
+        self.bageValuebtn.hidden = YES;
+    }
+}
+//是否显示工人订单bageValue
+-(void)ifAppearOrderBageValue_gr
+{
+    NSString *gongRenDingDanNum  = [[NSUserDefaults standardUserDefaults]objectForKey:@"gongrendingdan"];
+    
+    if ([gongRenDingDanNum integerValue]>0) {
+        
+        [self.NewOrderBtn setBackgroundImage:[UIImage imageNamed:@"dingdan"] forState:UIControlStateNormal];
+        NSLog(@"%@",gongRenDingDanNum);
+    }
+    if([gongRenDingDanNum integerValue]<=0)
+    {
+        [self.NewOrderBtn setBackgroundImage:[UIImage imageNamed:@"List-拷贝"] forState:UIControlStateNormal];
+    }
+
+}
+//是否显示雇主订单bageValue
+-(void)ifAppearOrderBageValue_gz
+{
+    NSString *guZhuDingDanNum  = [[NSUserDefaults standardUserDefaults]objectForKey:@"guzhudingdan"];
+    if ([guZhuDingDanNum integerValue]>0) {
+        
+        [self.NewOrderBtn setBackgroundImage:[UIImage imageNamed:@"dingdan"] forState:UIControlStateNormal];
+        
+    }else
+    {
+        [self.NewOrderBtn setBackgroundImage:[UIImage imageNamed:@"List-拷贝"] forState:UIControlStateNormal];
+    }
+    
 }
 
 #pragma mark 根据身份选择对应页面
@@ -171,24 +268,31 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 {
     if(GetUserDefaultsGR)
     {
-        [self.firstBtn setTitle:@"抢单" forState:(UIControlStateNormal)];
-        [self.myBtn setTitle:@"我的" forState:(UIControlStateNormal)];
-        [self.orderBtn setTitle:@"订单" forState:(UIControlStateNormal)];
+        int bagenum = [Function getbageValue];
+        if (bagenum>0) {
+            self.bageValuebtn.hidden = NO;
+            [self.bageValuebtn setTitle:[NSString stringWithFormat:@"%d",bagenum] forState:UIControlStateNormal];
+        }else
+        {
+            self.bageValuebtn.hidden = YES;
+        }
+
+        [self.FinePeopleOrWorkBtn setBackgroundImage:[UIImage imageNamed:@"找活"] forState:UIControlStateNormal];
+        
         
     }else
     {
-        [self.firstBtn setTitle:@"找工人" forState:(UIControlStateNormal)];
-        [self.myBtn setTitle:@"我的" forState:(UIControlStateNormal)];
-        [self.orderBtn setTitle:@"订单" forState:(UIControlStateNormal)];
+        self.bageValuebtn.hidden = YES;
+        
+        [self.FinePeopleOrWorkBtn setBackgroundImage:[UIImage imageNamed:@"找人"] forState:UIControlStateNormal];
+        
     }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     //未登陆选择身份
     [self SelectShenFen];
-    
     //极光推送
     [self jiGuangTuiSong];
     
@@ -381,7 +485,7 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     self.search.delegate = self;
 }
 
-#pragma mark - MAMapViewDelegate
+#pragma mark - MAMapViewDelegate  添加大头针
 - (MAAnnotationView *)mapView:(MAMapView *)mapView viewForAnnotation:(id<MAAnnotation>)annotation
 {
     
@@ -397,19 +501,16 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
             annotationView = [[CusAnnotationView alloc] initWithAnnotation:annotation
                                                            reuseIdentifier:customReuseIndetifier];
             
-            
             if (self.datouzhenType == GongRentype) {
                 annotationView.userinfo = self.userLocation;
                 annotationView.datouzhentype = 1;
-                
-                //NSLog(@"工人%@",self.userLocation);
+//                NSLog(@"工人%@",self.userLocation);
             }
             else
             {
                 annotationView.userinfo = self.userLocation;
                 annotationView.datouzhentype = 2;
-                
-                //NSLog(@"雇主%@",self.userLocation);
+//                NSLog(@"雇主%@",self.userLocation);
             }
             
             
@@ -594,7 +695,7 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     searchView.x = 10;
     searchView.y = 84;
     searchView.width = kU-20;
-    searchView.height = 50;
+    searchView.height = 60;
     
     searchView.layer.cornerRadius = 5;
     searchView.clipsToBounds = YES;
@@ -615,12 +716,15 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 #pragma mark 导航栏
 -(void)updateNav
 {
-
+    UIImageView *imageV = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 53, 24)];
+    imageV.image = [UIImage imageNamed:@"亿装"];
     
-    UIImageView *imageV = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 20, 30)];
-    imageV.image = [UIImage imageNamed:@"亿装修@2x"];
-//    
-     self.navigationItem.titleView = imageV;
+//    self.navigationItem.titleView.frame =CGRectMake(0, 0, 20, 30);
+//    self.navigationItem.titleView.width = 162;
+//    self.navigationItem.titleView.height = 47;
+    
+    self.navigationItem.titleView = imageV;
+    
     
     //设置下面按钮界面
     self.BottomMenuView.layer.cornerRadius = 5;
@@ -629,6 +733,9 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     self.BottomMenuView.layer.borderWidth = 1;
     self.BottomMenuView.layer.borderColor = [[UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0.3]CGColor];
     
+    
+    self.dingDanLabel.font = [UIFont fontWithName:@"AmericanTypewriter-Bold" size:15];
+    self.woDelabel.font = [UIFont fontWithName:@"AmericanTypewriter-Bold" size:15];
     
 }
 
@@ -843,7 +950,7 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 #pragma mark 点击搜索按钮后显示位置信息
 -(void)clearAndShowAnnotationWithCoordinate2D:(CLLocationCoordinate2D)Coordinate2D AnnotationTitle:(NSString*)Title Annotationsubtitle :(NSString *)subtitle
 {
-        [self clear];
+    [self clear];
     
     CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(Coordinate2D.latitude, Coordinate2D.longitude);
     [self.mapView setCenterCoordinate:coordinate];
@@ -900,16 +1007,21 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
                       self.reGeocode.addressComponent.district?: @"",
                       self.reGeocode.addressComponent.township?: @"",
                       self.reGeocode.addressComponent.building?: @""];
+        
         self.subtitle = [NSString stringWithFormat:@"%@%@",
                          self.reGeocode.addressComponent.neighborhood?: @"",
                          self.reGeocode.addressComponent.building?: @""];
         
-        NSLog(@"%@",self.titles);
+        AMapStreetNumber *streetNum = self.reGeocode.addressComponent.streetNumber;
         
-        [[NSUserDefaults standardUserDefaults]setObject:self.titles forKey:@"position"];
-        //NSLog(@"%@",self.subtitle);
+        self.jieDao = [NSString stringWithFormat:@"%@%@",streetNum.street,streetNum.number];
         
+        NSLog(@"----%@",self.titles);
+        NSLog(@"+++++%@",self.subtitle);
+       // NSLog(@"aaaaa%@",self.jieDao);
+        NSString *adress = [NSString stringWithFormat:@"%@%@",self.titles,self.subtitle];
         
+        [[NSUserDefaults standardUserDefaults]setObject:adress forKey:@"position"];
     }
 }
 
@@ -991,18 +1103,24 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     [self.mapView removeAnnotations:self.mapView.annotations];
 }
 // 抢单
-//1属于工人,0属于雇主
-#pragma mark找工人 抢单
-- (IBAction)grabASingle:(UIButton *)sender {
+////1属于工人,0属于雇主
+//#pragma mark找工人 抢单
+//- (IBAction)grabASingle:(UIButton *)sender {
+//}
+
+- (IBAction)FineWorkOrPeople:(id)sender {
     
+    //bageValue 清零
+    [Function qingLingQiangDan_gongRen];
+    self.bageValuebtn.hidden = YES;
     
     __weak typeof (self)weakSelf =self;
     //工人抢单
     if (GetUserDefaultsGR)
     {
         
-//        [[NSUserDefaults standardUserDefaults]setObject:lon forKey:@"lon"];
-//        [[NSUserDefaults standardUserDefaults]setObject:lat forKey:@"lat"];
+        //        [[NSUserDefaults standardUserDefaults]setObject:lon forKey:@"lon"];
+        //        [[NSUserDefaults standardUserDefaults]setObject:lat forKey:@"lat"];
         
         if (![[NSUserDefaults standardUserDefaults]objectForKey:@"lon"]||![[NSUserDefaults standardUserDefaults]objectForKey:@"lon"]) {
             [ITTPromptView showMessage:@"未获取到您的位置，请先打开您的位置共享"];
@@ -1029,8 +1147,8 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
 }
 
 #pragma mark 订单
-- (IBAction)theOrder:(UIButton *)sender {
-    
+
+- (IBAction)OrderListNew:(id)sender {
     //[self IfLogin];
     
     ADAccount *account = [ADAccountTool account];
@@ -1040,7 +1158,7 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
         return;
     }
     
-   // if ([self.userStatus isEqualToString:@"0"]) {
+    // if ([self.userStatus isEqualToString:@"0"]) {
     
     if (GetUserDefaultsGZ) {
         
@@ -1053,9 +1171,9 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
         UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"workerOrder" bundle:nil];
         UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"workerOrder"];
         [self.navigationController pushViewController:test2obj animated:YES];
+    }
 }
-   
-}
+
 #pragma mark 外界通过此方法跳转
 -(void)setPushOrder:(BOOL)pushOrder
 {
@@ -1068,25 +1186,22 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     [self.navigationController pushViewController:dwOrderVc animated:YES];
 }
 #pragma mark 我的
-- (IBAction)myList:(UIButton *)sender {
-    
-    //
-    //[self IfLogin];
-    
-//    ADAccount *account = [ADAccountTool account];
-//    if (!account) {
-//        
-//        My_Login_In_ViewController *Login = [[My_Login_In_ViewController alloc]init];
-//        
-//        [self.navigationController pushViewController:Login animated:YES];
-//        return;
-//    }
+//- (IBAction)myList:(UIButton *)sender {
+//    
+//    UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"employersInMy" bundle:nil];
+//    
+//    UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"employersInMy"];
+//    [self.navigationController pushViewController:test2obj animated:YES];
+//}
+
+- (IBAction)myListNew:(id)sender {
     
     UIStoryboard *secondStoryBoard = [UIStoryboard storyboardWithName:@"employersInMy" bundle:nil];
     
     UIViewController* test2obj = [secondStoryBoard instantiateViewControllerWithIdentifier:@"employersInMy"];
     [self.navigationController pushViewController:test2obj animated:YES];
 }
+
 
 
 //点击空白
@@ -1217,7 +1332,6 @@ typedef NS_ENUM(NSInteger,daTouZhenType)
     [NetWork postNoParmForMap:YZX_search_gz params:parms success:^(id responseObj) {
         
        // NSLog(@"%@",responseObj);
-        
         self.dataSourceLocation = [responseObj objectForKey:@"data"];
         
         for (int i = 0; i<self.dataSourceLocation.count; i++) {

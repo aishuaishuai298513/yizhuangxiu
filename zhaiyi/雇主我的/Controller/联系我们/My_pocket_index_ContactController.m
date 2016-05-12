@@ -134,7 +134,7 @@ static NSString *tel = @"400－876－6263";
         
     }else {
         
-        cell.textLabel.text = @"关于亿装修";
+        cell.textLabel.text = @"关于亿装";
         UIView  *lineView = [UIView new];
         lineView.backgroundColor = [UIColor lightGrayColor];
         [cell.contentView addSubview:lineView];

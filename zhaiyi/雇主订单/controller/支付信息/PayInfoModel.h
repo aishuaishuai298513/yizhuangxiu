@@ -20,4 +20,7 @@
 @property (nonatomic ,strong)NSString *gzname;
 @property (nonatomic ,strong)NSString *jiaoyidanhao;
 @property (nonatomic ,strong)NSString *yue;
+
+@property (nonatomic ,strong)NSString *gongzhong;
+@property (nonatomic ,strong)NSString *updatetime;
 @end

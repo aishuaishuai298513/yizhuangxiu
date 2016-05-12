@@ -166,6 +166,7 @@ typedef enum
 {
     return self.WorkingdataSource.count;
 }
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
@@ -187,6 +188,7 @@ typedef enum
                 
                 [WeakSelf netWorJieSuan:orderModel];
             };
+            
             orderCell.queRenShouKuan = ^(NSDictionary *response)
             {
                 if ([[response objectForKey:@"result"]isEqualToString:@"1"]) {
@@ -198,6 +200,7 @@ typedef enum
                 }
             };
         }
+        
         return orderCell;
     }
 
@@ -285,7 +288,19 @@ typedef enum
     }
 }
 
+// 清理订单标记
+-(void)quxiaoBiaoji{
+    [Function qingLingDiangDan_gongRen];
+    
+    NSNotification *notification =[NSNotification notificationWithName:@"tongzhiTuBiao" object:nil userInfo:nil];
+    //通过通知中心发送通知
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+
 - (IBAction)leftBtnClick:(id)sender {
+    
+    //取消标记
+    [self quxiaoBiaoji];
     
     _WorkStatue = working;
     self.leftTopLabel.backgroundColor = [UIColor colorWithRed:208/255.0 green:44/255.0 blue:65/255.0 alpha:1];
@@ -384,7 +399,7 @@ typedef enum
     
     NSLog(@"%@",parm);
     [NetWork postNoParm:YZX_dingdan_gr params:parm success:^(id responseObj) {
-        //NSLog(@"%@",responseObj);
+        NSLog(@"%@",responseObj);
         if ([[responseObj objectForKey:@"result"]isEqualToString:@"1"]) {
             
             //已抢单数量

@@ -132,7 +132,7 @@
                                 <constraint firstAttribute="height" constant="30" id="Pdn-JT-7Eo"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                            <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                         </textField>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -168,13 +168,13 @@
                     <color key="textColor" red="0.82745098039999998" green="0.1647058824" blue="0.25490196079999999" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="       充值资金用于雇佣工人的保证金,也可用于支付工人工资，也可以远路退还至银行卡,储蓄卡充值可以提现。 " lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5aR-me-ibk">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="       充值金额作为帐户余额，可用于支付工人工资，也可提现至储值卡。 " lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5aR-me-ibk">
                     <rect key="frame" x="20" y="101" width="334" height="53"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="53" id="OXb-O1-RYR"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="textColor" red="0.33143939389999999" green="0.33143939389999999" blue="0.33143939389999999" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <view tag="103" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Uk-ID-dZx" userLabel="支付宝">
@@ -203,7 +203,7 @@
                                 <constraint firstAttribute="height" constant="20" id="eiF-t2-9lL"/>
                                 <constraint firstAttribute="width" constant="20" id="gxA-Oc-B1Y"/>
                             </constraints>
-                            <state key="normal" image="5A246649-27C0-4E4C-AC35-3410D99697F6"/>
+                            <state key="normal" image="44A90469-8507-471E-978C-5319442CBBC5"/>
                             <state key="selected" image="充值3"/>
                         </button>
                     </subviews>
@@ -259,7 +259,7 @@
         </view>
     </objects>
     <resources>
-        <image name="5A246649-27C0-4E4C-AC35-3410D99697F6" width="32" height="32">
+        <image name="44A90469-8507-471E-978C-5319442CBBC5" width="32" height="32">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOjtYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK0HCBEW
 GxwgISgrLjQ3VSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNSZXBzV05TQ29sb3KA

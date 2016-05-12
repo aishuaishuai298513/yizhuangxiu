@@ -102,7 +102,7 @@
 #pragma mark 返回每组行数
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (GetUserDefaultsGR) {
-        return 4;
+        return 5;
     }else {
         return 6;
     }
@@ -131,7 +131,8 @@
         
         if (GetUserDefaultsGR) {
 
-              money.text=[NSString stringWithFormat:@"￥123"];
+             // money.text=[NSString stringWithFormat:@"￥123"];
+            money.text=[NSString stringWithFormat:@"￥%@",self.myMoney.zhanghuyue];
             
         } else {
             if (self.myMoney.zhanghuyue) {
@@ -154,7 +155,8 @@
         [baozhengjin autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:cell.contentView withOffset:-20];
         if (GetUserDefaultsGR) {
             
-            baozhengjin.text = @"保证金:33233";
+            //baozhengjin.text = @"保证金:33233";
+            baozhengjin.text = [NSString stringWithFormat:@"保证金:%@",self.myMoney.baozhengjin];
             
         } else {
             if (self.myMoney.baozhengjin) {
@@ -173,7 +175,8 @@
         
         if (GetUserDefaultsGR) {
             
-            keyongyuelabel.text = @"可用余额:33233";
+            //keyongyuelabel.text = @"可用余额:33233";
+            keyongyuelabel.text = [NSString stringWithFormat:@"可用余额:%@",self.myMoney.keyongyue];
             
         } else {
             if (self.myMoney.keyongyue) {
@@ -195,7 +198,7 @@
         [cell1.contentView addSubview:title];
         NSArray * name;
         if (GetUserDefaultsGR) {
-            name=@[@"红包",@"提现",@"交易记录"];
+            name=@[@"红包",@"提现",@"交易记录",@"修改支付密码"];
         }else {
             name=@[@"红包",@"充值",@"提现",@"交易记录",@"修改支付密码"];
 
@@ -272,6 +275,13 @@
     }
     else if (indexPath.row==4)
     {
+        //工人修改密码
+        if(GetUserDefaultsGR)
+        {
+            PayPasswordViewController *payC = [[PayPasswordViewController alloc]init];
+            payC.payController = updatePassword;
+            [self.navigationController pushViewController:payC animated:YES];
+        }
         //雇主交易记录
         if (GetUserDefaultsGZ) {
             My_pocket_jiaoyijilu_ViewController * hb=[My_pocket_jiaoyijilu_ViewController new];

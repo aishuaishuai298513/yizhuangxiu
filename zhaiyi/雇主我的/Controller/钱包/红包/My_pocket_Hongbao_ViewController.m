@@ -97,13 +97,16 @@
             NSString *picStr = [NSString stringWithFormat:@"%@%@",YZX_BASY_URL,_imagUrl];
             
             [cell.headImage sd_setImageWithURL:[NSURL URLWithString:picStr] placeholderImage:nil];
-            cell.moneyLb.text = _moneyText;
+            
+            //[NSString stringWithFormat:@"¥%@",_moneyText];
+            cell.moneyLb.text = [NSString stringWithFormat:@"¥%@",_moneyText];
         } else {
             
             cell.nameLb.text = [NSString stringWithFormat:@"%@共收到红包",_name];
             NSString *picStr = [NSString stringWithFormat:@"%@%@",YZX_BASY_URL,_imagUrl];
             [cell.headImage sd_setImageWithURL:[NSURL URLWithString:picStr] placeholderImage:nil];
-            cell.moneyLb.text = _moneyText;
+            //cell.moneyLb.text = _moneyText;
+            cell.moneyLb.text = [NSString stringWithFormat:@"¥%@",_moneyText];
 
         }
         return cell;

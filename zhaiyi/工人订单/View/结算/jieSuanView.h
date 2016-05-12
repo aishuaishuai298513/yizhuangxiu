@@ -19,7 +19,7 @@ typedef void(^JieSuanFaluseBlock)(NSDictionary *response);
 @property (weak, nonatomic) IBOutlet UITextField *tianShuTextF;
 @property (nonatomic, strong) NSString *zhifufangshi;
 
-@property (nonatomic, assign) int tianshu;
+@property (nonatomic, assign) float tianshu;
 
 @property (nonatomic, copy)JieSuanSuccessBlock jieSuanSuccess;
 @property (nonatomic, copy)JieSuanFaluseBlock JieSuanFaluse;

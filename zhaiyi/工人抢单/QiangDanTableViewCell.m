@@ -23,9 +23,17 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *zhangDanId;
 
+@property (weak, nonatomic) IBOutlet UILabel *distanceL;
+
+
 @property (weak, nonatomic) IBOutlet UIImageView *BaoImage;
 
 - (IBAction)qiangBtn:(id)sender;
+
+@property (weak, nonatomic) IBOutlet UIImageView *redPoint;
+
+@property (nonatomic, assign)BOOL Statue;
+
 
 @end
 
@@ -34,11 +42,27 @@
 - (void)awakeFromNib {
     // Initialization code
     
+    [self setTimer];
     
+}
+
+-(void)setTimer
+{
+    NSTimer *timer = [NSTimer  scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(redPointAppear) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:timer forMode: NSDefaultRunLoopMode];
     
+}
+
+-(void)redPointAppear
+{
+    if (_Statue) {
+        self.redPoint.hidden = NO;
+    }else
+    {
+        self.redPoint.hidden = YES;
+    }
     
-    
-    
+    _Statue = !_Statue;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -65,12 +89,13 @@
  
     self.renShu.text = [NSString stringWithFormat:@"%@人",_cellModel.n];
     self.shengYuRenShu.text = [NSString stringWithFormat:@"余%@人",_cellModel.shengyu];
-    self.jiaGe.text = [NSString stringWithFormat:@"%d元/天",[_cellModel.price intValue]];
+    self.jiaGe.text = [NSString stringWithFormat:@"%.2f元/天",[_cellModel.price floatValue]];
+    self.distanceL.text = [NSString stringWithFormat:@"距离 %.1f km",[_cellModel.juli floatValue]];
     
     //富文本
     NSString *yuren = [NSString stringWithFormat:@"余%@人",_cellModel.shengyu];
     NSMutableAttributedString *attributeStr = [[NSMutableAttributedString alloc]initWithString:yuren];
-    [attributeStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:13] range:NSMakeRange(1, yuren.length-2)];
+    [attributeStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:18] range:NSMakeRange(1, yuren.length-2)];
     [attributeStr addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(1, yuren.length-2)];
 
     self.shengYuRenShu.attributedText = attributeStr;
